@@ -14,7 +14,7 @@ Ce projet consiste à développer une application Java pour gérer les salles pa
 
 ### Lien vers le board Github Project
 
-[GitHub Project Board](https://github.com/your-project-board-link)
+[GitHub Project Board](https://github.com/users/CapybaraPin/projects/17/views/1)
 
 ### Lien vers le dossier Google Drive
 
