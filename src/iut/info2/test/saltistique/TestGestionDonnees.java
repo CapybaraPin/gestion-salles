@@ -6,7 +6,7 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-import saltistic.modele.GestionDonnees;
+import iut.info2.saltistique.modele.GestionDonnees;
 
 import java.util.Date;
 
@@ -74,7 +74,9 @@ class TestGestionDonnees {
     final String[] LIGNES_INVALIDES_RESERVATIONS = {
             "R12345;20240101;E123456;Dupont Jean;21/10/2024;10h00;12h00;;", // ID de réservation trop court
             "R123456;20240101;E123456;Dupont Jean;21/10/2024;12h00;10h00;;", // Heure fin avant début
-            "R123456;20240101;E123456;Dupont Jean;21/10/2024;10h00;12h00;Commentaire;Commentaire;Commentaire;" // Trop de champs
+            "R123456;20240101;E123456;Dupont Jean;21/10/2024;10h00;12h00;Commentaire;Commentaire;Commentaire;", // Trop de champs
+            "R123456;20240101;E123456;Dupont Jean;21/10/2024;10h00;12h00", // Trop peu de champs
+            "R123456;20240101;E123456;Dupont Jean;21/10/2024;10h00;12h00;Commentaire;Commentaire;Commentaire;Commentaire" // Trop de champs
     };
 
     @BeforeAll
