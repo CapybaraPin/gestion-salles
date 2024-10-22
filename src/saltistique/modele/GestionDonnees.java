@@ -3,7 +3,7 @@
  * Tom GUTTIEREZ Jules VIALAS, pas de copyrights
  */
 
-package saltistic.modele;
+package saltistique.modele;
 
 import java.util.Date;
 
