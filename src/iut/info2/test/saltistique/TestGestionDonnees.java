@@ -1,4 +1,4 @@
-package test;
+package iut.info2.test.saltistique;
 
 import static org.junit.jupiter.api.Assertions.*;
 

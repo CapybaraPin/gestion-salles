@@ -2,7 +2,7 @@
  * Fichier.java          21/10/2024
  * IUT DE RODEZ            Pas de copyrights
  */
-package saltistique.modele;
+package iut.info2.saltistique.modele;
 
 import java.io.*;
 

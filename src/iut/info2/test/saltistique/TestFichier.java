@@ -1,4 +1,4 @@
-package test;
+package iut.info2.test.saltistique;
 
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
