@@ -18,20 +18,30 @@ class TestGestionDonnees {
             "Ident;Nom;Capacité;videoproj;ecranXXL;ordinateur;type;logiciels;imprimante",
             "Ident;Nom;Prenom;Telephone",
             "Ident;Activité",
-            "Ident;salle;employe;activite;date;heuredebut;heurefin;;;;;",
+            "Ident;salle;employe;activite;date;heuredebut;heurefin;;;;;"
     };
 
     final String[] RESULTAT_RECONNAITRE_ENTETES_VALIDES = {
             "salles",
             "employes",
             "activites",
-            "reservations",
+            "reservations"
+    };
+
+    final String[] LIGNES_VALIDES_ACTIVITES = {
+            "A0000001;réunion"
+    };
+
+    final String[] LIGNES_INVALIDES_ACTIVITES = {
+            "A0000002;", // manque l'activité
+            ";réunion", // manque l'identifiant
+            ";" // Manque les deux champs
     };
 
     final String[] ENTETES_NON_VALIDES = {
-            "Ident;Nom;Capacité;videoproj;ecranXXL;ordinateur;type;logiciels;imprimante;telephone",
-            "Ident;Nom;Prenom;",
-            "Ident",
+            "Ident;Nom;Capacité;videoproj;ecranXXL;ordinateur;type;logiciels", // pas assez de ;
+            "videoproj", // pas de ;
+            "Ident;salle;employe;activite;date;heuredebut;heurefin;;;;;;;" // trop de ;
     };
 
     final String[] LIGNES_VALIDES_EMPLOYES = {

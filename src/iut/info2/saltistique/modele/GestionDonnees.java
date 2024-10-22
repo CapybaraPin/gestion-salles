@@ -5,6 +5,9 @@
 
 package iut.info2.saltistique.modele;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 
 /**
@@ -78,19 +81,99 @@ public class GestionDonnees {
                     + DELIMITEUR // Délimiteur
                     + "([\\p{L} .'-]*)?$"; // Dernier champ : optionnel
 
+    /** Message d'erreur affiché lorsque le nombre de fichiers fournis est incorrect. */
+    private static final String ERREUR_NB_CHEMINS_FICHIERS =
+            "Erreur : Le nombre de fichiers à fournir n'est pas respecté";
+
+    /** Tableau contenant les objets Fichier pour chaque fichier à importer. */
     private Fichier[] fichiers;
+
+    /** Liste des types de fichiers (employés, salles, activités, réservations) importés à partir de leurs en-têtes. */
+    private ArrayList<String> typeFichier;
+
+    /** Tableau contenant le contenu (les lignes) d'un fichier sous forme de chaînes de caractères. */
+    private String[] contenu;
+
+    /** Liste des objets Salle importés depuis le fichier correspondant. */
+    private ArrayList<Salle> salles;
+
+    /** Liste des objets Activite importés depuis le fichier correspondant. */
+    private ArrayList<Activite> activites;
+
+    /** Liste des objets Utilisateur (employés) importés depuis le fichier correspondant. */
+    private ArrayList<Utilisateur> utilisateurs;
+
+    /** Liste des objets Reservation importés depuis le fichier correspondant. */
+    private ArrayList<Reservation> reservations;
+
 
     public GestionDonnees() {
     }
 
     /**
      * Importe les données depuis un tableau de chemins de fichiers.
+     * Chaque fichier doit contenir un type de données spécifique : employé, salle, activité ou réservation.
+     * Valide chaque ligne de données avec les expressions régulières définies pour chaque type de données.
      *
-     * @param cheminFichiers les chemins des fichiers à importer
+     * @param cheminFichiers tableau des chemins de fichiers à importer (doit contenir 4 fichiers)
+     * @throws IOException si un problème survient lors de la lecture des fichiers
+     * @throws IllegalArgumentException si le nombre de fichiers est incorrect ou si des fichiers du même type sont fournis plusieurs fois
      */
-    public void importerDonnees(String[] cheminFichiers) {
-        // TODO: implémenter ici
+    public void importerDonnees(String[] cheminFichiers) throws IOException {
+        if (cheminFichiers == null || cheminFichiers.length != 3) {
+            throw new IllegalArgumentException(ERREUR_NB_CHEMINS_FICHIERS);
+        }
+
+        fichiers = new Fichier[3];
+        typeFichier = new ArrayList<>();
+        utilisateurs = new ArrayList<>();
+        salles = new ArrayList<>();
+        activites = new ArrayList<>();
+        reservations = new ArrayList<>();
+
+        for (int rang = 0; rang < 4; rang++) {
+            fichiers[rang] = new Fichier(cheminFichiers[rang]);
+            contenu = fichiers[rang].contenuFichier();
+
+            String type = reconnaitreEntete(contenu[0], DELIMITEUR);
+            if (!typeFichier.contains(type)) {
+                typeFichier.add(type);
+            } else {
+                throw new IllegalArgumentException("Vous fournissez plusieurs fois le même type de fichier");
+            }
+
+            for (int rangLigne = 1; rangLigne < contenu.length; rangLigne++) { // On commence à 1 pour éviter l'en-tête
+                String ligne = contenu[rangLigne];
+                if (estLigneComplete(ligne, DELIMITEUR, type)) {
+                    String[] champs = ligne.split(DELIMITEUR);
+
+                    switch (type) {
+                        case "employes":
+                            Utilisateur utilisateur = new Utilisateur(champs[0], champs[1], champs[2], champs[3]);
+                            utilisateurs.add(utilisateur);
+                            break;
+                        case "salles":
+                            Salle salle = new Salle(champs[0],champs[1],Integer.valueOf(champs[2]),
+                                    Boolean.valueOf(champs[3]),Boolean.valueOf(champs[4]),Boolean.valueOf(champs[5]),
+                                    new GroupeOrdinateurs(Integer.valueOf(champs[6]),champs[7],champs[8].split(",")));
+                            salles.add(salle);
+                            break;
+                        case "activites":
+                            Activite activite = new Activite(champs[0], champs[1]);
+                            activites.add(activite);
+                            break;
+                        case "reservations":
+                            //Reservation reservation = TODO construire une instance de réservation
+                            //reservations.add(reservation);
+                            break;
+                        default:
+                            throw new IllegalArgumentException("Type de fichier inconnu : " + type);
+                    }
+                }
+            }
+        }
     }
+
 
     /**
      * Importe les données depuis une adresse IP et un port spécifiés.
@@ -131,6 +214,9 @@ public class GestionDonnees {
         // TODO implement here
         return null;
     }
+
+    public
+
     */
 
     /**
