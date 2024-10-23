@@ -36,7 +36,9 @@ public class ControleurAccueil {
     void clickImporterReseau() {
         System.out.println("Importer réseau");
 
-        Saltistique.changeScene(Scenes.IMPORTATION_RESEAU);
+        Saltistique.showPopUp(Scenes.IMPORTATION_RESEAU);
     }
+
+    
 
 }
