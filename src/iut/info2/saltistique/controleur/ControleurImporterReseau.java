@@ -44,12 +44,12 @@ public class ControleurImporterReseau {
      */
     @FXML
     void clickImporter() {
-        System.out.println("Adresse IP : " + adresseIp.getText()
-                + " Port : " + port.getText());
+        Saltistique.gestionDonnees.importerDonnees(adresseIp.getText(), Integer.parseInt(port.getText()));
     }
 
     /**
      * Ferme la fenêtre actuelle.
+     * @param event évenement de clique de souris
      */
     @FXML
     void fermerFenetre(MouseEvent event) {
@@ -57,6 +57,10 @@ public class ControleurImporterReseau {
         stage.close();
     }
 
+    /**
+     * Permet de vérifier les coordonnées de clique d'une souris
+     * @param event évenement de clique de souris
+     */
     @FXML
     void clicked(MouseEvent event) {
         x = event.getSceneX();
@@ -65,6 +69,7 @@ public class ControleurImporterReseau {
 
     /**
      * Permet de gérer le drag de la fenêtre (optionnel si vous voulez rendre la fenêtre mobile).
+     * @param event évenement de clique de souris
      */
     @FXML
     void dragged(MouseEvent event) {
