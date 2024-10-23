@@ -2,11 +2,32 @@
     -fx-background-color: #F7F8FA;
 }
 
+.background-radiant {
+    -fx-background-color: radial-gradient(center 65% 65%, radius 95%, rgba(122, 100, 240, 0.2007), rgba(53, 116, 240, 0))
+}
+.background-white {
+    -fx-background-color: #FFFFFF;
+}
+
 .btn-primary {
     -fx-background-color: #3574F0;
     -fx-border-radius: 4;
     -fx-font-family: "Inter", sans-serif;
     -fx-font-size: 13;
+}
+
+.burger{
+    -fx-shape: "M2.75,2.5h14.5s0.75,0,0.75,0.75v0s0,0.75,-0.75,0.75h-14.5s-0.75,0,-0.75,-0.75v0s0,-0.75,0.75,-0.75M2.75,7h14.5s0.75,0,0.75,0.75v0s0,0.75,-0.75,0.75h-14.5s-0.75,0,-0.75,-0.75v0s0,-0.75,0.75,-0.75M2.75,11.5h14.5s0.75,0,0.75,0.75v0s0,0.75,-0.75,0.75h-14.5s-0.75,0,-0.75,-0.75v0s0,-0.75,0.75,-0.75M2.75,16h14.5s0.75,0,0.75,0.75v0s0,0.75,-0.75,0.75h-14.5s-0.75,0,-0.75,-0.75v0s0,-0.75,0.75,-0.75";
+    -fx-background-color: #CED0D6;
+}
+
+.ico-close{
+    -fx-shape: "M 2 0 l 13 12 l -1 1 L 1 1 Z M 14 0 l 1 1 l -13 12 L 1 12 Z ";
+    -fx-background-color: #6C707E;
+}
+.ico-minimize{
+    -fx-shape: "M3";
+    -fx-background-color: #6C707E;
 }
 
 .btn-primary:hover {
@@ -56,6 +77,12 @@
     -fx-font-weight: 400;
 }
 
+.typo-large{
+    -fx-font-size: 18;
+    -fx-font-weight: 400;
+}
+
+
 .typo-paragraph {
     -fx-font-size: 13;
     -fx-font-weight: 400;
@@ -87,10 +114,35 @@
 
 .navbar-btn-close {
     -fx-text-fill: #6C707E;
-    -fx-background-color: #F7F8FA;
+    -fx-background-color: none;
 }
 
 .navbar-btn-close:hover {
     -fx-text-fill: #6C707E;
     -fx-background-color: #E81123;
+}
+
+.navbar-background {
+    -fx-background-color: #F7F8FA;
+    -fx-border-style: solid;
+    -fx-border-width: 0 0 1px 0;
+    -fx-border-color: #EBECF0;
+}
+.border-right{
+    -fx-background-color: none;
+    -fx-border-style: solid;
+    -fx-border-width: 0 1px 0 0;
+    -fx-border-color: #EBECF0;
+}
+.border {
+    -fx-border-style: solid;
+    -fx-border-width: 1px;
+    -fx-border-color: #EBECF0;
+}
+
+.btn-text{
+    -fx-text-fill: #3574F0;
+    -fx-font-size: 13;
+    -fx-font-family: "Inter", sans-serif;
+    -fx-background-color : none;
 }
