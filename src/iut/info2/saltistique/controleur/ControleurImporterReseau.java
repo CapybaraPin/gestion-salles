@@ -7,7 +7,15 @@ package iut.info2.saltistique.controleur;
 import iut.info2.saltistique.Saltistique;
 import iut.info2.saltistique.modele.Scenes;
 import javafx.fxml.FXML;
+import javafx.scene.Node;
 import javafx.scene.control.Button;
+import javafx.scene.control.TextField;
+import javafx.scene.control.Label;
+import javafx.scene.input.MouseEvent;
+import javafx.stage.Stage;
+
+import java.awt.*;
+import java.awt.event.ActionEvent;
 
 /**
  * Controleur de la vue d'importation des données depuis le réseau.
@@ -15,5 +23,54 @@ import javafx.scene.control.Button;
  * @author Hugo ROBLES
  */
 public class ControleurImporterReseau {
+
+
+    double x,y;
+
+    /** Champ contenant l'adresse IP renseignée par l'utilisateur */
+    @FXML
+    private TextField adresseIp;
+
+    /** Champ contenant le port renseigné par l'utilisateur */
+    @FXML
+    private TextField port;
+
+    /** Bouton d'éxecution de l'importation */
+    @FXML
+    private Button btnImporter;
+
+    /**
+     * Permet la gestion du click sur le bouton de démarage de l'importation
+     */
+    @FXML
+    void clickImporter() {
+        System.out.println("Adresse IP : " + adresseIp.getText()
+                + " Port : " + port.getText());
+    }
+
+    /**
+     * Ferme la fenêtre actuelle.
+     */
+    @FXML
+    void fermerFenetre(MouseEvent event) {
+        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        stage.close();
+    }
+
+    @FXML
+    void clicked(MouseEvent event) {
+        x = event.getSceneX();
+        y = event.getSceneY();
+    }
+
+    /**
+     * Permet de gérer le drag de la fenêtre (optionnel si vous voulez rendre la fenêtre mobile).
+     */
+    @FXML
+    void dragged(MouseEvent event) {
+        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        stage.setX(event.getScreenX() - x);
+        stage.setY(event.getScreenY() - y);
+    }
 
 }
