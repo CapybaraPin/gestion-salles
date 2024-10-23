@@ -10,6 +10,7 @@ import iut.info2.saltistique.Saltistique;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 
 /**
@@ -79,94 +80,135 @@ public class GestionDonnees implements Serializable {
     private static final String ERREUR_NB_CHEMINS_FICHIERS =
             "Erreur : Le nombre de fichiers à fournir n'est pas respecté";
 
-    /** Tableau contenant les objets Fichier pour chaque fichier à importer. */
     private Fichier[] fichiers;
+    private String[] typeFichier;
+    private String[][] contenu;
+    private int[] index;
+    String[] donnees;
 
-    /** Liste des types de fichiers (employés, salles, activités, réservations) importés à partir de leurs en-têtes. */
-    private ArrayList<String> typeFichier;
+    private Salle[] tempSalles;
+    private Activite[] tempActivites;
+    private Utilisateur[] tempUtilisateurs;
+    private Reservation[] tempReservations;
 
-    /** Tableau contenant le contenu (les lignes) d'un fichier sous forme de chaînes de caractères. */
-    private String[] contenu;
+    private Salle[] salles;
+    private Activite[] activites;
+    private Utilisateur[] utilisateurs;
+    private Reservation[] reservations;
 
-    /** Liste des objets Salle importés depuis le fichier correspondant. */
-    private ArrayList<Salle> salles;
+    private int indexReservation;
+    private int compteur;
 
-    /** Liste des objets Activite importés depuis le fichier correspondant. */
-    private ArrayList<Activite> activites;
-
-    /** Liste des objets Utilisateur (employés) importés depuis le fichier correspondant. */
-    private ArrayList<Utilisateur> utilisateurs;
-
-    /** Liste des objets Reservation importés depuis le fichier correspondant. */
-    private ArrayList<Reservation> reservations;
-
-
+    /**
+     * Constructeur de la classe GestionDonnees.
+     */
     public GestionDonnees() {
-        activites = new ArrayList<>();
     }
 
     /**
-     * Importe les données depuis un tableau de chemins de fichiers.
-     * Chaque fichier doit contenir un type de données spécifique : employé, salle, activité ou réservation.
-     * Valide chaque ligne de données avec les expressions régulières définies pour chaque type de données.
      *
-     * @param cheminFichiers tableau des chemins de fichiers à importer (doit contenir 4 fichiers)
-     * @throws IOException si un problème survient lors de la lecture des fichiers
-     * @throws IllegalArgumentException si le nombre de fichiers est incorrect ou si des fichiers du même type sont fournis plusieurs fois
+     * @param cheminFichiers
      */
-    public void importerDonnees(String[] cheminFichiers) throws IOException {
-        if (cheminFichiers == null || cheminFichiers.length != 3) {
-            throw new IllegalArgumentException(ERREUR_NB_CHEMINS_FICHIERS);
+    private void initialiserDonnees(String[] cheminFichiers) {
+        fichiers = new Fichier[cheminFichiers.length];
+        typeFichier = new String[3];
+
+        for(int rang = 0; rang < cheminFichiers.length; rang++) {
+            try {
+                fichiers[rang] = new Fichier(cheminFichiers[rang]);
+                contenu[rang] = fichiers[rang].contenuFichier();
+                typeFichier[rang] = reconnaitreEntete(contenu[rang][0],DELIMITEUR);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
 
-        fichiers = new Fichier[3];
-        typeFichier = new ArrayList<>();
-        utilisateurs = new ArrayList<>();
-        salles = new ArrayList<>();
-        activites = new ArrayList<>();
-        reservations = new ArrayList<>();
-
-        for (int rang = 0; rang < 4; rang++) {
-            fichiers[rang] = new Fichier(cheminFichiers[rang]);
-            contenu = fichiers[rang].contenuFichier();
-
-            String type = reconnaitreEntete(contenu[0], DELIMITEUR);
-            if (!typeFichier.contains(type)) {
-                typeFichier.add(type);
-            } else {
-                throw new IllegalArgumentException("Vous fournissez plusieurs fois le même type de fichier");
-            }
-
-            for (int rangLigne = 1; rangLigne < contenu.length; rangLigne++) { // On commence à 1 pour éviter l'en-tête
-                String ligne = contenu[rangLigne];
-                if (estLigneComplete(ligne, DELIMITEUR, type)) {
-                    String[] champs = ligne.split(DELIMITEUR);
-
-                    switch (type) {
-                        case "employes":
-                            Utilisateur utilisateur = new Utilisateur(champs[0], champs[1], champs[2], champs[3]);
-                            utilisateurs.add(utilisateur);
-                            break;
-                        case "salles":
-                            Salle salle = new Salle(champs[0],champs[1],Integer.valueOf(champs[2]),
-                                    Boolean.valueOf(champs[3]),Boolean.valueOf(champs[4]),Boolean.valueOf(champs[5]),
-                                    new GroupeOrdinateurs(Integer.valueOf(champs[6]),champs[7],champs[8].split(",")));
-                            salles.add(salle);
-                            break;
-                        case "activites":
-                            Activite activite = new Activite(champs[0], champs[1]);
-                            activites.add(activite);
-                            break;
-                        case "reservations":
-                            //Reservation reservation = TODO construire une instance de réservation
-                            //reservations.add(reservation);
-                            break;
-                        default:
-                            throw new IllegalArgumentException("Type de fichier inconnu : " + type);
-                    }
+        for (int rang = 0; rang < typeFichier.length; rang++) {
+            for (int secondRang = rang + 1; secondRang < typeFichier.length; secondRang++) {
+                if (typeFichier[rang] != null && typeFichier[rang].equals(typeFichier[secondRang])) {
+                    throw new IllegalArgumentException("Vous donnez plusieurs fois le même type de fichier.");
                 }
             }
         }
+    }
+
+    /**
+     * Importe les données depuis les fichiers spécifiés et les stocke dans les tableaux finaux
+     * des employés, salles, activités, et réservations après avoir vérifié leur validité.
+     * @param cheminFichiers Un tableau de chaînes de caractères représentant les chemins vers les fichiers à importer.
+     * @throws IOException Si une erreur d'entrée/sortie survient lors de la lecture des fichiers.
+     * @throws IllegalArgumentException Si des fichiers de types identiques sont fournis plusieurs fois ou si un format
+     * de fichier est invalide.
+     */
+    public void importerDonnees(String[] cheminFichiers) throws IOException {
+
+        if(cheminFichiers.length != 4) {
+            throw new IllegalArgumentException("Vous n'avez pas fourni tout les fichiers requis");
+        }
+
+        try {
+            initialiserDonnees(cheminFichiers);
+        } catch (IllegalArgumentException exception) {
+            exception.getMessage();
+        }
+
+        for (int rang = 0; rang < typeFichier.length && typeFichier[rang] != "reservations"; rang++) {
+
+            switch (typeFichier[rang]) {
+                case "employes":
+                    tempUtilisateurs = new Utilisateur[contenu[rang].length - 1];
+                    int indexEmployes = 0;
+                    for (int secondRang = 1; secondRang < contenu[rang].length; secondRang++) {
+                        if (estLigneComplete(contenu[rang][secondRang], DELIMITEUR, typeFichier[rang])) {
+                            donnees = contenu[rang][secondRang].split(DELIMITEUR);
+                            tempUtilisateurs[indexEmployes++] = new Utilisateur(donnees[0], donnees[1], donnees[2], donnees[3]);
+                        }
+                    }
+                    utilisateurs = Arrays.copyOf(tempUtilisateurs, indexEmployes);
+                    break;
+
+                case "salles":
+                    tempSalles = new Salle[contenu[rang].length - 1];
+                    int indexSalles = 0;
+                    for (int secondRang = 1; secondRang < contenu[rang].length; secondRang++) {
+                        if (estLigneComplete(contenu[rang][secondRang], DELIMITEUR, typeFichier[rang])) {
+                            donnees = contenu[rang][secondRang].split(DELIMITEUR);
+                            String[] logiciels = donnees[7].split(DELIMITEUR);
+                            tempSalles[indexSalles++] = new Salle(donnees[0], donnees[1], Integer.valueOf(donnees[2]),
+                                    Boolean.valueOf(donnees[3]), Boolean.valueOf(donnees[4]), Boolean.valueOf(donnees[8]),
+                                    new GroupeOrdinateurs(Integer.valueOf(donnees[5]), donnees[6], logiciels));
+                        }
+                    }
+                    salles = Arrays.copyOf(tempSalles, indexSalles);
+                    break;
+
+                case "activites":
+                    tempActivites = new Activite[contenu[rang].length - 1];
+                    int indexActivites = 0;
+                    for (int secondRang = 1; secondRang < contenu[rang].length; secondRang++) {
+                        if (estLigneComplete(contenu[rang][secondRang], DELIMITEUR, typeFichier[rang])) {
+                            donnees = contenu[rang][secondRang].split(DELIMITEUR);
+                            tempActivites[indexActivites++] = new Activite(donnees[0], donnees[1]);
+                        }
+                    }
+                    activites = Arrays.copyOf(tempActivites, indexActivites);
+                    break;
+
+                case "reservations":
+                    indexReservation = rang;
+                    break;
+            }
+        }
+        tempReservations = new Reservation[contenu[indexReservation].length - 1];
+        int indexReservations = 0;
+        for (int secondRang = 1; secondRang < contenu[indexReservation].length; secondRang++) {
+            if (estLigneComplete(contenu[indexReservation][secondRang], DELIMITEUR, typeFichier[indexReservation])) {
+                donnees = contenu[indexReservation][secondRang].split(DELIMITEUR);
+                // tempReservations[indexReservations++] = new Reservation(donnees); // TODO: Créer la réservation
+            }
+        }
+        reservations = Arrays.copyOf(tempReservations, indexReservations);
+
     }
 
 
@@ -217,19 +259,15 @@ public class GestionDonnees implements Serializable {
     }
 
     */
-    public ArrayList<Activite> getActivites() {
+    public Activite[] getActivites() {
         // TODO implement here
         return this.activites;
-    }/*
+    }
 
     public Reservation[] getReservations() {
         // TODO implement here
         return null;
     }
-
-    public
-
-    */
 
     /**
      * Reconnaît le type de fichier à partir de l'en-tête et du délimiteur fournis.
