@@ -4,6 +4,7 @@
  */
 package iut.info2.saltistique;
 
+import iut.info2.saltistique.modele.GestionDonnees;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -46,6 +47,9 @@ public class Saltistique extends Application {
     /** La fenêtre principale (ou scène principale) de l'application JavaFX. */
     private static Stage primaryStage;
 
+    /** Prend en charge le lien entre le controleur et le modèle */
+    public static GestionDonnees gestionDonnees;
+
     /**
      * Méthode de démarrage de l'application JavaFX.
      *
@@ -60,6 +64,14 @@ public class Saltistique extends Application {
         Saltistique.primaryStage = primaryStage;
         loadScenes();
         changeScene(Scenes.ACCUEIL);
+    }
+
+    /**
+     * TODO la javadoc
+     */
+    @Override
+    public void stop(){
+
     }
 
     /**
@@ -123,6 +135,9 @@ public class Saltistique extends Application {
      * @param args les arguments de ligne de commande
      */
     public static void main(String[] args) {
+
+        gestionDonnees = new GestionDonnees();
+
         launch();
     }
 }
