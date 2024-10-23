@@ -71,7 +71,7 @@ public class Saltistique extends Application {
      */
     @Override
     public void stop(){
-
+        // TODO Implémenter la fermeture des popUp en cas de fermeture de la fenetre principale
     }
 
     /**
