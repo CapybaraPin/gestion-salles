@@ -5,16 +5,21 @@
 
 package iut.info2.saltistique.modele;
 
+import iut.info2.saltistique.Saltistique;
+
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 
 /**
  * Classe responsable de la gestion des données, y compris l'importation et l'exportation des fichiers.
  * Elle contient des expressions régulières pour valider les entrées des employés, salles, activités et réservations.
  */
-public class GestionDonnees {
+public class GestionDonnees implements Serializable {
+
+    /** TODO : la javadoc */
+    private static final long serialVersionUID = 1L;
 
     /** Délimiteur utilisé dans les fichiers CSV */
     private static final String DELIMITEUR = ";";
@@ -97,6 +102,7 @@ public class GestionDonnees {
 
 
     public GestionDonnees() {
+        activites = new ArrayList<>();
     }
 
     /**
@@ -171,7 +177,16 @@ public class GestionDonnees {
      * @param port le port à utiliser pour l'importation
      */
     public void importerDonnees(String ip, int port) {
-        // TODO: implémenter ici
+        GestionDonnees gestionDonnee;
+        try {
+            Client client = new Client(ip, port);
+            gestionDonnee = (GestionDonnees) client.recevoir();
+            activites = gestionDonnee.getActivites();
+            client.arreter();
+        } catch (IOException | ClassNotFoundException e) {
+            //TODO gestion des exception (popup notification ?)
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -180,7 +195,14 @@ public class GestionDonnees {
      * @param port le port à utiliser pour l'exportation
      */
     public void exporterDonnees(int port) {
-        // TODO: implémenter ici
+        try {
+            Serveur serveur = new Serveur(port);
+            serveur.envoyer(this);
+            serveur.arreter();
+        } catch (IOException e) {
+            //TODO gestion des exception (popup notification ?)
+            e.printStackTrace();
+        }
     }
 
     /*
@@ -194,10 +216,11 @@ public class GestionDonnees {
         return null;
     }
 
-    public Activite[] getActivites() {
+    */
+    public ArrayList<Activite> getActivites() {
         // TODO implement here
-        return null;
-    }
+        return this.activites;
+    }/*
 
     public Reservation[] getReservations() {
         // TODO implement here
