@@ -84,7 +84,7 @@ public class GestionDonnees implements Serializable {
     private String[] typeFichier;
     private String[][] contenu;
     private int[] index;
-    String[] donnees;
+    private String[] donnees;
 
     private Salle[] tempSalles;
     private Activite[] tempActivites;
@@ -152,7 +152,7 @@ public class GestionDonnees implements Serializable {
             exception.getMessage();
         }
 
-        for (int rang = 0; rang < typeFichier.length && typeFichier[rang] != "reservations"; rang++) {
+        for (int rang = 0; rang < typeFichier.length; rang++) {
 
             switch (typeFichier[rang]) {
                 case "employes":
