@@ -1,0 +1,96 @@
+.background {
+    -fx-background-color: #F7F8FA;
+}
+
+.btn-primary {
+    -fx-background-color: #3574F0;
+    -fx-border-radius: 4;
+    -fx-font-family: "Inter", sans-serif;
+    -fx-font-size: 13;
+}
+
+.btn-primary:hover {
+    -fx-background-color: #3369D6;
+}
+
+.btn-primary:active {
+    -fx-background-color: #315FBD;
+}
+
+.btn-secondary {
+    -fx-background-color: #FFFFFF;
+    -fx-border-radius: 4;
+    -fx-border-color: #C9CCD6;
+    -fx-border-style: solid 1;
+    -fx-font-family: "Inter", sans-serif;
+    -fx-font-size: 13;
+}
+
+.btn-secondary:hover {
+    -fx-border-color: #A8ADBD;
+}
+
+.btn-secondary:active {
+    -fx-border-color: #818594;
+}
+
+.btn-disabled {
+    -fx-background-color: #EBECF0;
+    -fx-border-radius: 4;
+    -fx-font-family: "Inter", sans-serif;
+    -fx-font-size: 13;
+}
+
+.typo-h1 {
+    -fx-font-size: 20;
+    -fx-font-weight: 800;
+}
+
+.typo-h2 {
+    -fx-font-size: 16;
+    -fx-font-weight: 800;
+}
+
+.typo-default {
+    -fx-font-size: 13;
+    -fx-font-weight: 400;
+}
+
+.typo-paragraph {
+    -fx-font-size: 13;
+    -fx-font-weight: 400;
+}
+
+.typo-disabled {
+    -fx-font-size: 13;
+    -fx-text-fill: #6C707E;
+}
+
+.input-default {
+    -fx-background-color: #FFFFFF;
+    -fx-border-radius: 4;
+    -fx-border-color: #C9CCD6;
+    -fx-border-style: solid 1;
+    -fx-min-height: 28;
+    -fx-max-height: 28;
+    -fx-font-size: 13;
+}
+
+.help {
+    -fx-background-color: none;
+    -fx-font-size: 14;
+    -fx-border-radius: 50;
+    -fx-border-color: #C9CCD6;
+    -fx-alignment: center;
+    -fx-text-fill: #6C707E;
+}
+
+.navbar-btn-close {
+    -fx-text-fill: #6C707E;
+    -fx-background-color: #F7F8FA;
+}
+
+.navbar-btn-close:hover {
+    -fx-text-fill: #6C707E;
+    -fx-background-color: #E81123;
+}
