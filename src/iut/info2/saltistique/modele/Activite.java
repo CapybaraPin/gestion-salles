@@ -1,6 +1,10 @@
 package iut.info2.saltistique.modele;
 
-public class Activite {
+import java.io.Serializable;
+
+public class Activite implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     private String identifiant;
     private String nom;
@@ -10,4 +14,7 @@ public class Activite {
         this.nom = nom;
     }
 
+    public String getIdentifiant() {
+        return identifiant;
+    }
 }
