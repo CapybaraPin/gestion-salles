@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.lang.String?>
 <?import java.net.URL?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
@@ -11,9 +12,9 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="768.0" prefWidth="1366.0" styleClass="radiant" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="iut.info2.saltistique.controleur.ControleurAccueil">
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="768.0" prefWidth="1366.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="iut.info2.saltistique.controleur.ControleurAccueil">
    <children>
-      <HBox prefHeight="40.0" prefWidth="1366.0" styleClass="navbar-background">
+      <HBox fx:id="topBar" prefHeight="40.0" prefWidth="1366.0" styleClass="navbar-background">
          <children>
             <Button maxHeight="40.0" maxWidth="40.0" minHeight="40.0" minWidth="40.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="40.0" styleClass="border-right">
                <HBox.margin>
@@ -43,43 +44,108 @@
                   </Text>
                </children>
             </HBox>
-            <Button contentDisplay="CENTER" maxHeight="40.0" maxWidth="40.0" minHeight="40.0" minWidth="40.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="40.0" styleClass="navbar-btn-close">
+            <Button fx:id="navbarBtnMinimize" contentDisplay="CENTER" maxHeight="40.0" maxWidth="40.0" minHeight="40.0" minWidth="40.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="40.0" styleClass="navbar-btn-minimize">
                <graphic>
-                  <Pane maxHeight="1.0" maxWidth="10.0" minHeight="1.0" minWidth="10.0" prefHeight="1.0" prefWidth="10.0" styleClass="ico-minimize" />
+                  <Pane fx:id="icoMinimize" maxHeight="1.0" maxWidth="10.0" minHeight="1.0" minWidth="10.0" prefHeight="1.0" prefWidth="10.0" styleClass="ico-minimize" />
                </graphic>
             </Button>
-            <Button contentDisplay="CENTER" maxHeight="40.0" maxWidth="40.0" minHeight="40.0" minWidth="40.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="40.0" styleClass="navbar-btn-close">
+            <Button fx:id="navbarBtnClose" contentDisplay="CENTER" maxHeight="40.0" maxWidth="40.0" minHeight="40.0" minWidth="40.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="40.0" styleClass="navbar-btn-close">
                <graphic>
-                  <Pane maxHeight="10.0" maxWidth="10.0" minHeight="10.0" minWidth="10.0" prefHeight="10.0" prefWidth="10.0" styleClass="ico-close" />
+                  <Pane fx:id="icoMaximize" maxHeight="10.0" maxWidth="10.0" minHeight="10.0" minWidth="10.0" prefHeight="10.0" prefWidth="10.0" styleClass="ico-close" />
                </graphic>
             </Button>
          </children>
       </HBox>
-      <HBox prefHeight="764.0" prefWidth="1266.0">
+      <VBox prefHeight="794.0" prefWidth="1276.0">
          <children>
-            <Button mnemonicParsing="false" styleClass="btn-text" text="explorateur de fichier">
-               <HBox.margin>
-                  <Insets left="20.0" top="20.0" />
-               </HBox.margin>
-            </Button>
-            <Button mnemonicParsing="false" onAction="#clickImporterReseau" styleClass="btn-text" text="réseau">
-               <HBox.margin>
-                  <Insets left="20.0" top="20.0" />
-               </HBox.margin>
-            </Button>
-            <Button mnemonicParsing="false" styleClass="btn-text" text="Aide">
-               <HBox.margin>
-                  <Insets left="20.0" top="20.0" />
-               </HBox.margin>
-            </Button>
+            <VBox alignment="CENTER" prefHeight="200.0" prefWidth="426.0">
+               <children>
+                  <Text strokeType="OUTSIDE" strokeWidth="0.0" styleClass="typo-large" text="Aucune données chargées">
+                     <font>
+                        <Font size="13.0" />
+                     </font>
+                     <VBox.margin>
+                        <Insets bottom="16.0" />
+                     </VBox.margin>
+                  </Text>
+                  <HBox alignment="CENTER_LEFT" prefHeight="17.0" prefWidth="284.0">
+                     <children>
+                        <Text strokeType="OUTSIDE" strokeWidth="0.0" styleClass="typo-default" text="• Importer les données via">
+                           <font>
+                              <Font size="13.0" />
+                           </font>
+                        </Text>
+                        <Button minHeight="14.0" mnemonicParsing="false" prefHeight="59.0" prefWidth="127.0" styleClass="btn-text" text="explorateur de fichier">
+                           <HBox.margin>
+                              <Insets />
+                           </HBox.margin>
+                           <padding>
+                              <Insets bottom="1.0" />
+                           </padding>
+                        </Button>
+                     </children>
+                  </HBox>
+                  <HBox alignment="CENTER_LEFT" prefHeight="17.0" prefWidth="284.0">
+                     <children>
+                        <Text strokeType="OUTSIDE" strokeWidth="0.0" styleClass="typo-default" text="• Importer les données via">
+                           <font>
+                              <Font size="13.0" />
+                           </font>
+                        </Text>
+                        <Button minHeight="13.0" mnemonicParsing="false" onAction="#clickImporterReseau" prefHeight="19.0" prefWidth="42.0" styleClass="btn-text" text="réseau">
+                           <padding>
+                              <Insets bottom="1.0" />
+                           </padding>
+                        </Button>
+                     </children>
+                  </HBox>
+                  <HBox alignment="CENTER_LEFT" prefHeight="17.0" prefWidth="284.0">
+                     <children>
+                        <Text strokeType="OUTSIDE" strokeWidth="0.0" styleClass="typo-default" text="• Glissez-déposez les fichiers ici">
+                           <font>
+                              <Font size="13.0" />
+                           </font>
+                        </Text>
+                     </children>
+                  </HBox>
+                  <HBox alignment="CENTER_LEFT" prefHeight="17.0" prefWidth="284.0">
+                     <children>
+                        <Text strokeType="OUTSIDE" strokeWidth="0.0" styleClass="typo-default" text="•">
+                           <font>
+                              <Font size="13.0" />
+                           </font>
+                        </Text>
+                        <Button minHeight="14.0" mnemonicParsing="false" prefHeight="19.0" prefWidth="32.0" styleClass="btn-text" text="Aide">
+                           <padding>
+                              <Insets bottom="1.0" />
+                           </padding>
+                        </Button>
+                     </children>
+                  </HBox>
+               </children>
+               <VBox.margin>
+                  <Insets left="455.0" right="455.0" top="150.0" />
+               </VBox.margin>
+            </VBox>
          </children>
          <VBox.margin>
-            <Insets bottom="40.0" left="50.0" right="50.0" top="40.0" />
+            <Insets bottom="40.0" left="45.0" right="45.0" top="40.0" />
          </VBox.margin>
-      </HBox>
+         <padding>
+            <Insets bottom="40.0" left="40.0" right="40.0" top="40.0" />
+         </padding>
+         <styleClass>
+            <String fx:value="background-white" />
+            <String fx:value="border" />
+         </styleClass>
+      </VBox>
    </children>
    <stylesheets>
       <URL value="@application.css" />
       <URL value="@style.css" />
    </stylesheets>
+   <styleClass>
+      <String fx:value="background-radiant" />
+      <String fx:value="border" />
+   </styleClass>
 </VBox>

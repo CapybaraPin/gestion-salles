@@ -3,7 +3,7 @@
 }
 
 .background-radiant {
-    -fx-background-color: radial-gradient(center 65% 65%, radius 95%, rgba(122, 100, 240, 0.2007), rgba(53, 116, 240, 0))
+    -fx-background-color: radial-gradient(center 65% 65%, radius 95%, rgba(122, 100, 240, 0.2007), rgba(53, 116, 240, 0));
 }
 .background-white {
     -fx-background-color: #FFFFFF;
@@ -21,13 +21,19 @@
     -fx-background-color: #CED0D6;
 }
 
+
+
 .ico-close{
     -fx-shape: "M 2 0 l 13 12 l -1 1 L 1 1 Z M 14 0 l 1 1 l -13 12 L 1 12 Z ";
     -fx-background-color: #6C707E;
 }
 .ico-minimize{
-    -fx-shape: "M3";
+    -fx-shape: "M3,8H13V9H3Z";
     -fx-background-color: #6C707E;
+}
+
+.bg-gray-light {
+    -fx-background-color: #DFE1E5;
 }
 
 .btn-primary:hover {
@@ -120,6 +126,14 @@
 .navbar-btn-close:hover {
     -fx-text-fill: #6C707E;
     -fx-background-color: #E81123;
+}
+
+.navbar-btn-minimize {
+    -fx-background-color: none;
+}
+
+.navbar-btn-minimize:hover {
+    -fx-background-color: #DFE1E5;
 }
 
 .navbar-background {

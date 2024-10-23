@@ -62,6 +62,10 @@ public class Saltistique extends Application {
     @Override
     public void start(Stage primaryStage) {
         Saltistique.primaryStage = primaryStage;
+        // disable barre de titre
+        primaryStage.initStyle(StageStyle.UNDECORATED);
+        primaryStage.setResizable(false);
+
         loadScenes();
         changeScene(Scenes.ACCUEIL);
     }
@@ -108,6 +112,7 @@ public class Saltistique extends Application {
         if (scene != null) {
             primaryStage.setScene(scene);
             primaryStage.show();
+
         } else {
             System.err.println("Impossible de charger la scène : " + sceneEnum.name());
         }
