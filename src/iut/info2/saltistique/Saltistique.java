@@ -8,6 +8,7 @@ import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 
 import java.util.EnumMap;
 import java.io.IOException;
@@ -48,8 +49,9 @@ public class Saltistique extends Application {
     /**
      * Méthode de démarrage de l'application JavaFX.
      *
-     * <p> Cette méthode est appelée automatiquement lors du lancement de l'application.
-     * Elle initialise la fenêtre principale et charge toutes les scènes définies dans l'énumération {@link Scenes}. </p>
+     * <p> Cette méthode est appelée automatiquement lors du lancement
+     * de l'application. Elle initialise la fenêtre principale et charge
+     * toutes les scènes définies dans l'énumération {@link Scenes}. </p>
      *
      * @param primaryStage la fenêtre principale de l'application où les scènes seront affichées
      */
@@ -61,7 +63,8 @@ public class Saltistique extends Application {
     }
 
     /**
-     * Charge toutes les scènes définies dans l'énumération {@link Scenes} et les stocke dans l'EnumMap {@link #scenes}.
+     * Charge toutes les scènes définies dans l'énumération {@link Scenes} et
+     * les stocke dans l'EnumMap {@link #scenes}.
      *
      * <p> Chaque fichier FXML est chargé une seule fois lors
      * de l'initialisation ensuite associée à son type {@link Scenes}.</p>
@@ -96,6 +99,19 @@ public class Saltistique extends Application {
         } else {
             System.err.println("Impossible de charger la scène : " + sceneEnum.name());
         }
+    }
+
+    /**
+     * TODO faire la javadoc
+     * @param sceneEnum
+     */
+    public static void showPopUp(Scenes sceneEnum) {
+        Scene scene = scenes.get(sceneEnum);
+        Stage popUp = new Stage();
+        popUp.initStyle(StageStyle.UNDECORATED);
+        popUp.setResizable(false);
+        popUp.setScene(scene);
+        popUp.show();
     }
 
     /**
