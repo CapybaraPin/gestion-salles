@@ -57,29 +57,18 @@ public class GestionDonnees {
 
     /** Expression régulière pour valider les réservations */
     private static final String REGEX_RESERVATIONS =
-            "^(R\\d{6})" // Identifiant : 'R' suivi de 6 chiffres
-                    + DELIMITEUR // Délimiteur
-                    + "(\\d{8})" // Date : format YYYYMMDD
-                    + DELIMITEUR // Délimiteur
-                    + "(E\\d{6})" // Identifiant de l'employé : 'E' suivi de 6 chiffres
-                    + DELIMITEUR // Délimiteur
-                    + "([\\p{L} .'-]+)" // Nom : lettres, espaces, points, apostrophes ou tirets
-                    + DELIMITEUR // Délimiteur
-                    + "(\\d{2}/\\d{2}/\\d{4})" // Date : format JJ/MM/AAAA
-                    + DELIMITEUR // Délimiteur
-                    + "([01]?\\d|2[0-3])h[0-5]\\d" // Heure de début : format HHhMM
-                    + DELIMITEUR // Délimiteur
-                    + "([01]?\\d|2[0-3])h[0-5]\\d" // Heure de fin : format HHhMM
-                    + DELIMITEUR // Délimiteur
-                    + "([\\p{L} .'-]*)" // Commentaire : optionnel
-                    + DELIMITEUR // Délimiteur
-                    + "([\\p{L} .'-]*)?" // Deuxième commentaire : optionnel
-                    + DELIMITEUR // Délimiteur
-                    + "([\\p{L} .'-]*)?" // Troisième commentaire : optionnel
-                    + DELIMITEUR // Délimiteur
-                    + "(\\d{4})?" // Année : optionnelle
-                    + DELIMITEUR // Délimiteur
-                    + "([\\p{L} .'-]*)?$"; // Dernier champ : optionnel
+            "^R\\d{6}" + DELIMITEUR + // Identifiant : 'R' suivi de 6 chiffres
+                    "\\d{8}" + DELIMITEUR + // Salle : 8 chiffres
+                    "E\\d{6}" + DELIMITEUR + // Employé : 'E' suivi de 6 chiffres
+                    "[^"+ DELIMITEUR +"]+" + DELIMITEUR + // Activité : tout sauf le délimiteur
+                    "\\d{2}/\\d{2}/\\d{4}" + DELIMITEUR + // Date : JJ/MM/AAAA
+                    "\\d{1,2}h\\d{2}" + DELIMITEUR + // Heure de début : HHhMM
+                    "\\d{1,2}h\\d{2}" + DELIMITEUR + // Heure de fin : HHhMM
+                    "(?:[^"+ DELIMITEUR +"]*)" + DELIMITEUR + // Commentaire ou organisation : tout sauf le délimiteur ou vide
+                    "[A-Za-z]*" + DELIMITEUR + // Nom de l'employé : une ou plusieurs lettres ou vide
+                    "[A-Za-z]*" + DELIMITEUR + // Prenom de l'employé : une ou plusieurs lettres ou vide
+                    "(?:\\d{10}|)" + DELIMITEUR + // Téléphone de l'employé : 10 chiffres ou vide
+                    "(?:[^"+ DELIMITEUR +"]*)$"; // Activité : tout sauf le délimiteur ou vide
 
     /** Message d'erreur affiché lorsque le nombre de fichiers fournis est incorrect. */
     private static final String ERREUR_NB_CHEMINS_FICHIERS =
