@@ -136,11 +136,8 @@ public class GestionDonnees implements Serializable {
      * Importe les données depuis les fichiers spécifiés et les stocke dans les tableaux finaux
      * des employés, salles, activités, et réservations après avoir vérifié leur validité.
      * @param cheminFichiers Un tableau de chaînes de caractères représentant les chemins vers les fichiers à importer.
-     * @throws IOException Si une erreur d'entrée/sortie survient lors de la lecture des fichiers.
-     * @throws IllegalArgumentException Si des fichiers de types identiques sont fournis plusieurs fois ou si un format
-     * de fichier est invalide.
      */
-    public void importerDonnees(String[] cheminFichiers) throws IOException {
+    public void importerDonnees(String[] cheminFichiers) {
 
         if(cheminFichiers.length != 4) {
             throw new IllegalArgumentException("Vous n'avez pas fourni tout les fichiers requis");

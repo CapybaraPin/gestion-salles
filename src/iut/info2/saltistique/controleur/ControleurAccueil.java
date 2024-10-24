@@ -11,10 +11,16 @@ import iut.info2.saltistique.modele.Scenes;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
+import javafx.scene.input.DragEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.List;
 
 /**
  * Controleur de la vue d'Accueil du logiciel
@@ -123,5 +129,54 @@ public class ControleurAccueil {
         Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
         stage.setX(event.getScreenX() - xOffset);
         stage.setY(event.getScreenY() - yOffset);
+    }
+
+    @FXML
+    void onDragOver(DragEvent event) {
+        if (event.getDragboard().hasFiles()) {
+            event.acceptTransferModes(javafx.scene.input.TransferMode.ANY);
+        }
+    }
+
+    /**
+     * Lorsque des fichiers sont déposés dans la fenêtre, on les importe
+     */
+    @FXML
+    void filesDragged(DragEvent event) throws IOException {
+        List files = event.getDragboard().getFiles();
+        String[] chemins;
+        chemins = new String[files.size()];
+
+        for (Object file : files) {
+            chemins[files.indexOf(file)] = ((File) file).getAbsolutePath();
+        }
+
+        Saltistique.gestionDonnees.importerDonnees(chemins);
+    }
+
+    /**
+     * Ouvre l'explorateur de fichier pour sélectionner les fichiers à importer
+     */
+    @FXML
+    void clickImporterFichier(MouseEvent event) {
+        System.out.println("test");
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Sélectionnez les fichiers à importer");
+
+        fileChooser.getExtensionFilters().addAll(
+                new FileChooser.ExtensionFilter("Fichiers CSV", "*.csv")
+        );
+
+        // on récupère la fenêtre principale pour afficher la fenêtre de sélection
+        Stage primaryStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        List<File> files = fileChooser.showOpenMultipleDialog(primaryStage);
+
+        if (files != null) {
+            String[] chemins = new String[files.size()];
+            for (int i = 0; i < files.size(); i++) {
+                chemins[i] = files.get(i).getAbsolutePath();
+            }
+            Saltistique.gestionDonnees.importerDonnees(chemins);
+        }
     }
 }
