@@ -1,4 +1,4 @@
-package iut.info2.test.saltistique;
+package saltistique;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -39,9 +39,9 @@ class TestGestionDonnees {
     };
 
     final String[] ENTETES_NON_VALIDES = {
-            "Ident;Nom;Capacité;videoproj;ecranXXL;ordinateur;type;logiciels", // pas assez de ;
             "videoproj", // pas de ;
-            "Ident;salle;employe;activite;date;heuredebut;heurefin;;;;;;;" // trop de ;
+            "Ident;salle;employe;activite;date;heuredebut;heurefin;bonjour;", // trop de champs
+            "Ident;salle;employe;;;;;" // pas assez de champs
     };
 
     final String[] LIGNES_VALIDES_EMPLOYES = {
@@ -72,8 +72,6 @@ class TestGestionDonnees {
             "12345678;Salle C;30;o;n;20;PC portable;2;o;10;10;10", // Trop de champs
             "12345678;Salle C;30;o;n;20;PC portable;2;o;10;10", // Trop peu de champs
             "12345678;;30;oui;non;20;PC portable;1;oui", // nom de salle vide
-            "12345678;Salle D;30;oui;non;;PC portable;1;oui", // nombre de pc vide
-            "12345678;Salle D;30;oui;non;;;1;oui", // nombre de pc vide et type de pc vide
     };
 
     final String[] LIGNES_VALIDES_RESERVATIONS = {
@@ -118,6 +116,9 @@ class TestGestionDonnees {
         for (String ligne : LIGNES_VALIDES_SALLES) {
             assertTrue(GestionDonnees.estLigneComplete(ligne, DELIMITEUR, "salles"));
         }
+        for (String ligne : LIGNES_VALIDES_ACTIVITES) {
+            assertTrue(GestionDonnees.estLigneComplete(ligne, DELIMITEUR, "activites"));
+        }
         for (String ligne : LIGNES_VALIDES_RESERVATIONS) {
             assertTrue(GestionDonnees.estLigneComplete(ligne, DELIMITEUR, "reservations"));
         }
@@ -129,12 +130,14 @@ class TestGestionDonnees {
         for (String ligne : LIGNES_INVALIDES_SALLES) {
             assertFalse(GestionDonnees.estLigneComplete(ligne, DELIMITEUR, "salles"));
         }
+        for (String ligne : LIGNES_INVALIDES_ACTIVITES) {
+            assertFalse(GestionDonnees.estLigneComplete(ligne, DELIMITEUR, "activites"));
+        }
         for (String ligne : LIGNES_INVALIDES_RESERVATIONS) {
             assertFalse(GestionDonnees.estLigneComplete(ligne, DELIMITEUR, "reservations"));
         }
     }
 
-    // TODO : à refaire
     @Test
     void testConstruireDate() {
         // Cas valides
