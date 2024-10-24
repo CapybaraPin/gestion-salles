@@ -2,7 +2,7 @@
  * ControleurAccueil.java           SAE 3.A.01
  * IUT de RODEZ, tous les droits sont réservés
  *
- * @autor Tom GUTIERREZ
+ * @author Tom GUTIERREZ
  */
 package iut.info2.saltistique.controleur;
 
@@ -11,6 +11,7 @@ import iut.info2.saltistique.modele.Scenes;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
@@ -21,11 +22,6 @@ import javafx.stage.Stage;
  * @author Hugo ROBLES
  */
 public class ControleurAccueil {
-
-
-    /** Fenêtre principale de l'application */
-    @FXML
-    private Stage primaryStage;
 
     /**
      * Bouton d'accès à la vue d'importation depuis des fichiers
@@ -63,6 +59,29 @@ public class ControleurAccueil {
     @FXML
     private Button navbarBtnMinimize;
 
+    /** Position de la souris en abscisse */
+    double xOffset = 0;
+
+    /** Position de la souris en ordonné */
+    double yOffset = 0;
+
+    /**
+     * Initialise différents éléments de la vue d'accueil.
+     */
+    @FXML
+    void initialize() {
+        setHoverEffect();
+    }
+
+    /**
+     * Ferme la fenêtre actuelle.
+     * @param event évenement de clique de souris
+     */
+    @FXML
+    void fermerFenetre(MouseEvent event) {
+        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        stage.close();
+    }
 
     /**
      * Permet la gestion du click sur le bouton d'accès
@@ -70,16 +89,12 @@ public class ControleurAccueil {
      */
     @FXML
     void clickImporterReseau() {
-        System.out.println("Importer réseau");
-
         Saltistique.showPopUp(Scenes.IMPORTATION_RESEAU);
     }
 
-    @FXML
-    void initialize() {
-        setHoverEffect();
-    }
-
+    /**
+     * Ajoute les effets de survol sur les boutons de la barre de navigation.
+     */
     private void setHoverEffect() {
         navbarBtnClose.setOnMouseEntered(event -> {
             icoMaximize.getStyleClass().add("bg-gray-light");
@@ -89,5 +104,24 @@ public class ControleurAccueil {
         });
     }
 
+    /**
+     * récupère les coordonnées de la souris lors du clique
+     * @param event
+     */
+    @FXML
+    void clicked(MouseEvent event) {
+        xOffset = event.getSceneX();
+        yOffset = event.getSceneY();
+    }
 
+    /**
+     * Permet de déplacer la fenêtre en fonction des coordonnées de la souris
+     * @param event
+     */
+    @FXML
+    void dragged(MouseEvent event) {
+        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        stage.setX(event.getScreenX() - xOffset);
+        stage.setY(event.getScreenY() - yOffset);
+    }
 }

@@ -14,7 +14,7 @@
 
 <VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="768.0" prefWidth="1366.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="iut.info2.saltistique.controleur.ControleurAccueil">
    <children>
-      <HBox fx:id="topBar" prefHeight="40.0" prefWidth="1366.0" styleClass="navbar-background">
+      <HBox fx:id="topBar" onMouseDragged="#dragged" onMousePressed="#clicked" prefHeight="40.0" prefWidth="1366.0" styleClass="navbar-background">
          <children>
             <Button maxHeight="40.0" maxWidth="40.0" minHeight="40.0" minWidth="40.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="40.0" styleClass="border-right">
                <HBox.margin>
@@ -49,7 +49,7 @@
                   <Pane fx:id="icoMinimize" maxHeight="1.0" maxWidth="10.0" minHeight="1.0" minWidth="10.0" prefHeight="1.0" prefWidth="10.0" styleClass="ico-minimize" />
                </graphic>
             </Button>
-            <Button fx:id="navbarBtnClose" contentDisplay="CENTER" maxHeight="40.0" maxWidth="40.0" minHeight="40.0" minWidth="40.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="40.0" styleClass="navbar-btn-close">
+            <Button fx:id="navbarBtnClose" contentDisplay="CENTER" maxHeight="40.0" maxWidth="40.0" minHeight="40.0" minWidth="40.0" mnemonicParsing="false" onMouseClicked="#fermerFenetre" prefHeight="40.0" prefWidth="40.0" styleClass="navbar-btn-close">
                <graphic>
                   <Pane fx:id="icoMaximize" maxHeight="10.0" maxWidth="10.0" minHeight="10.0" minWidth="10.0" prefHeight="10.0" prefWidth="10.0" styleClass="ico-close" />
                </graphic>

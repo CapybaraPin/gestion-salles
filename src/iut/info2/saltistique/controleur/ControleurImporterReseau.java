@@ -5,17 +5,12 @@
 package iut.info2.saltistique.controleur;
 
 import iut.info2.saltistique.Saltistique;
-import iut.info2.saltistique.modele.Scenes;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
-import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
-
-import java.awt.*;
-import java.awt.event.ActionEvent;
 
 /**
  * Controleur de la vue d'importation des données depuis le réseau.
@@ -38,6 +33,12 @@ public class ControleurImporterReseau {
     /** Bouton d'éxecution de l'importation */
     @FXML
     private Button btnImporter;
+
+    /** Position de la souris en abscisse */
+    double xOffset = 0;
+
+    /** Position de la souris en ordonné */
+    double yOffset = 0;
 
     /**
      * Permet la gestion du click sur le bouton de démarage de l'importation
@@ -63,10 +64,9 @@ public class ControleurImporterReseau {
      */
     @FXML
     void clicked(MouseEvent event) {
-        x = event.getSceneX();
-        y = event.getSceneY();
+        xOffset = event.getSceneX();
+        yOffset = event.getSceneY();
     }
-
     /**
      * Permet de gérer le drag de la fenêtre (optionnel si vous voulez rendre la fenêtre mobile).
      * @param event évenement de clique de souris
@@ -74,8 +74,7 @@ public class ControleurImporterReseau {
     @FXML
     void dragged(MouseEvent event) {
         Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-        stage.setX(event.getScreenX() - x);
-        stage.setY(event.getScreenY() - y);
+        stage.setX(event.getScreenX() - xOffset);
+        stage.setY(event.getScreenY() - yOffset);
     }
-
 }
