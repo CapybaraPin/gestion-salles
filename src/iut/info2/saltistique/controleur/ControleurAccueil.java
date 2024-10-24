@@ -15,6 +15,7 @@ import javafx.scene.input.DragEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
@@ -28,30 +29,17 @@ import java.util.List;
  * @author Hugo ROBLES
  */
 public class ControleurAccueil {
-
-    /**
-     * Bouton d'accès à la vue d'importation depuis des fichiers
-     */
-    @FXML
-    private Button btnImporterFichier;
-
-    /**
-     * Bouton d'accès à la vue d'importation depuis le réseau
-     */
-    @FXML
-    private Button btnImporterReseau;
-
-    /**
-     * Bouton d'accès à la vue d'aide
-     */
-    @FXML
-    private Button btnAide;
-
     /**
      * Bouton de fermeture de l'application
      */
     @FXML
     private Button navbarBtnClose;
+
+    /**
+     * Menu de navigation
+     */
+    @FXML
+    private VBox menuContainer;
 
     /**
      * Icône de fermeture de la fenêtre
@@ -65,10 +53,14 @@ public class ControleurAccueil {
     @FXML
     private Button navbarBtnMinimize;
 
-    /** Position de la souris en abscisse */
+    /**
+     * Position de la souris en abscisse
+     */
     double xOffset = 0;
 
-    /** Position de la souris en ordonné */
+    /**
+     * Position de la souris en ordonné
+     */
     double yOffset = 0;
 
     /**
@@ -131,6 +123,11 @@ public class ControleurAccueil {
         stage.setY(event.getScreenY() - yOffset);
     }
 
+    /**
+     * Permet de gérer le drag and drop de fichiers
+     * Accepte le transfert si des fichiers sont sur le point d'être déposés
+     * @param event
+     */
     @FXML
     void onDragOver(DragEvent event) {
         if (event.getDragboard().hasFiles()) {
@@ -140,6 +137,7 @@ public class ControleurAccueil {
 
     /**
      * Lorsque des fichiers sont déposés dans la fenêtre, on les importe
+     * @param event évenement de drag and drop
      */
     @FXML
     void filesDragged(DragEvent event) throws IOException {
@@ -151,11 +149,16 @@ public class ControleurAccueil {
             chemins[files.indexOf(file)] = ((File) file).getAbsolutePath();
         }
 
-        Saltistique.gestionDonnees.importerDonnees(chemins);
+        try {
+            Saltistique.gestionDonnees.importerDonnees(chemins);
+        } catch (Exception e) {
+            System.out.println("Erreur lors de l'importation des fichiers : " + e.getMessage());
+        }
     }
 
     /**
      * Ouvre l'explorateur de fichier pour sélectionner les fichiers à importer
+     * @param event évenement de clique de souris
      */
     @FXML
     void clickImporterFichier(MouseEvent event) {
@@ -176,7 +179,36 @@ public class ControleurAccueil {
             for (int i = 0; i < files.size(); i++) {
                 chemins[i] = files.get(i).getAbsolutePath();
             }
-            Saltistique.gestionDonnees.importerDonnees(chemins);
+            try {
+                Saltistique.gestionDonnees.importerDonnees(chemins);
+            } catch (Exception e) {
+                System.out.println("Erreur lors de l'importation des fichiers : " + e.getMessage());
+            }
         }
+    }
+
+    /**
+     * Permet de gérer l'affichage du menu de navigation
+     * lors du clique sur l'icône de burger
+     */
+    @FXML
+    void burgerClicked() {
+        if (menuContainer.isVisible()) {
+            menuContainer.setVisible(false);
+            menuContainer.setMouseTransparent(true);
+        } else {
+            menuContainer.setVisible(true);
+            menuContainer.setMouseTransparent(false);
+        }
+    }
+
+    /**
+     * Permet de réduire la fenêtre
+     * @param event
+     */
+    @FXML
+    void reduireFenetre(MouseEvent event) {
+        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        stage.setIconified(true);
     }
 }
