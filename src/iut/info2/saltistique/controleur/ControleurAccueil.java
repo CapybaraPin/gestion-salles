@@ -13,7 +13,6 @@ import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.input.DragEvent;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
@@ -22,6 +21,8 @@ import javafx.stage.Stage;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
+
+import java.awt.*;
 
 /**
  * Controleur de la vue d'Accueil du logiciel
@@ -210,5 +211,41 @@ public class ControleurAccueil {
     void reduireFenetre(MouseEvent event) {
         Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
         stage.setIconified(true);
+    }
+
+    /**
+     * Gère le clic sur le bouton d'aide et tente d'ouvrir un fichier PDF d'aide utilisateur.
+     * Cette méthode vérifie si le fichier PDF spécifié existe, si le système prend en charge
+     * l'ouverture de fichiers via Desktop, et tente d'ouvrir le fichier.
+     * Si l'une de ces vérifications échoue, une exception appropriée est levée et gérée.
+     * @throws IOException si le fichier PDF n'existe pas ou s'il y a une erreur lors de l'ouverture du fichier.
+     * @throws UnsupportedOperationException si Desktop n'est pas supportée sur le système ou si l'action d'ouverture
+     * de fichier n'est pas supportée.
+     */
+    @FXML
+    void clickAide() {
+        try {
+            // TODO : Lien relatif
+            File pdfFile = new File("/Users/hugorobles/Desktop/gestion-salles/src/ressources/noticeUtilisation.pdf");
+
+            if (!pdfFile.exists()) {
+                throw new IOException("Le fichier spécifié n'existe pas.");
+            }
+
+            if (!Desktop.isDesktopSupported()) {
+                throw new UnsupportedOperationException("Desktop n'est pas supporté sur ce système.");
+            }
+
+            Desktop desktop = Desktop.getDesktop();
+
+            if (!desktop.isSupported(Desktop.Action.OPEN)) {
+                throw new UnsupportedOperationException("L'ouverture de fichiers n'est pas supportée sur ce système.");
+            }
+
+            desktop.open(pdfFile);  // Ouvrir le fichier PDF
+
+        } catch (IOException | UnsupportedOperationException e) {
+            System.out.println("Erreur : " + e.getMessage());
+        }
     }
 }

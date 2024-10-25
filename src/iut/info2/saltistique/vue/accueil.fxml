@@ -121,7 +121,7 @@
                                     <Font size="13.0" />
                                  </font>
                               </Text>
-                              <Button minHeight="14.0" mnemonicParsing="false" prefHeight="19.0" prefWidth="32.0" styleClass="btn-text" text="Aide">
+                              <Button onAction="#clickAide" minHeight="14.0" mnemonicParsing="false" prefHeight="19.0" prefWidth="32.0" styleClass="btn-text" text="Aide">
                                  <padding>
                                     <Insets bottom="1.0" />
                                  </padding>
