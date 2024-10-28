@@ -1,8 +1,8 @@
 /*
- * ControleurAccueil.java           SAE 3.A.01
+ * ControleurAccueil.java               20/10/2024
  * IUT de RODEZ, tous les droits sont réservés
  *
- * @author Tom GUTIERREZ
+ * @author Tom GUTIERREZ & Hugo ROBLES
  */
 package iut.info2.saltistique.controleur;
 
@@ -27,7 +27,7 @@ import java.awt.*;
 /**
  * Controleur de la vue d'Accueil du logiciel
  *
- * @author Hugo ROBLES
+ * @author Tom GUTIERREZ & Hugo ROBLES
  */
 public class ControleurAccueil {
     /**
@@ -223,10 +223,25 @@ public class ControleurAccueil {
         stage.setIconified(true);
     }
 
+
+    /**
+     * Handler pour le clic sur le bouton d'aide
+     * Cela permet d'ouvrir le fichier PDF d'aide utilisateur
+     * et de fermer le menu de navigation si celui-ci est ouvert
+     */
+    @FXML
+    void handlerAide() {
+        clickAide();
+        if (menuContainer.isVisible()) {
+            burgerClicked();
+        }
+    }
+
+
     /**
      * Gère le clic sur le bouton d'aide et tente d'ouvrir un fichier PDF d'aide utilisateur.
      * Cette méthode vérifie si le fichier PDF spécifié existe, si le système prend en charge
-     * l'ouverture de fichiers via Desktop, et tente d'ouvrir le fichier.
+     * l'ouverture de fichiers via Desktop, et tente d'ouvrir le fichier
      * Si l'une de ces vérifications échoue, une exception appropriée est levée et gérée.
      * @throws IOException si le fichier PDF n'existe pas ou s'il y a une erreur lors de l'ouverture du fichier.
      * @throws UnsupportedOperationException si Desktop n'est pas supportée sur le système ou si l'action d'ouverture

@@ -182,7 +182,7 @@
                                     <Insets bottom="5.0" top="5.0" />
                                  </VBox.margin>
                               </Separator>
-                              <HBox alignment="CENTER_LEFT" onMouseClicked="#clickAide" prefHeight="6.0" prefWidth="268.0" styleClass="btn-menu">
+                              <HBox alignment="CENTER_LEFT" onMouseClicked="#handlerAide" prefHeight="6.0" prefWidth="268.0" styleClass="btn-menu">
                                  <children>
                                     <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true" scaleX="0.9" scaleY="0.9">
                                        <image>
