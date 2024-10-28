@@ -43,6 +43,13 @@ public class ControleurAccueil {
     private VBox menuContainer;
 
     /**
+     * layer permettant de fermer le menu de navigation
+     * lors du clique en dehors de celui-ci
+     */
+    @FXML
+    private Pane layerMenu;
+
+    /**
      * Icône de fermeture de la fenêtre
      */
     @FXML
@@ -190,16 +197,19 @@ public class ControleurAccueil {
 
     /**
      * Permet de gérer l'affichage du menu de navigation
-     * lors du clique sur l'icône de burger
+     * lorsque l'utilisateur clique sur l'icône de burger
+     * celui ci s'affiche ou se cache
      */
     @FXML
     void burgerClicked() {
         if (menuContainer.isVisible()) {
             menuContainer.setVisible(false);
             menuContainer.setMouseTransparent(true);
+            layerMenu.setMouseTransparent(true);
         } else {
             menuContainer.setVisible(true);
             menuContainer.setMouseTransparent(false);
+            layerMenu.setMouseTransparent(false);
         }
     }
 

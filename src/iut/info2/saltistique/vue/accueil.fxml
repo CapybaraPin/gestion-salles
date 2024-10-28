@@ -74,14 +74,14 @@
                               <Insets bottom="16.0" />
                            </VBox.margin>
                         </Text>
-                        <HBox alignment="CENTER_LEFT" prefHeight="17.0" prefWidth="284.0">
+                        <HBox alignment="CENTER_LEFT" prefHeight="19.0" prefWidth="282.0">
                            <children>
                               <Text strokeType="OUTSIDE" strokeWidth="0.0" styleClass="typo-default" text="• Importer les données via">
                                  <font>
                                     <Font size="13.0" />
                                  </font>
                               </Text>
-                              <Button minHeight="14.0" mnemonicParsing="false" onMouseClicked="#clickImporterFichier" prefHeight="15.0" prefWidth="131.0" styleClass="btn-text" text="explorateur de fichier">
+                              <Button minHeight="14.0" mnemonicParsing="false" onMouseClicked="#clickImporterFichier" prefHeight="16.0" prefWidth="128.0" styleClass="btn-text" text="explorateur de fichier">
                                  <HBox.margin>
                                     <Insets />
                                  </HBox.margin>
@@ -91,14 +91,14 @@
                               </Button>
                            </children>
                         </HBox>
-                        <HBox alignment="CENTER_LEFT" prefHeight="17.0" prefWidth="284.0">
+                        <HBox alignment="CENTER_LEFT" prefHeight="19.0" prefWidth="282.0">
                            <children>
                               <Text strokeType="OUTSIDE" strokeWidth="0.0" styleClass="typo-default" text="• Importer les données via">
                                  <font>
                                     <Font size="13.0" />
                                  </font>
                               </Text>
-                              <Button minHeight="13.0" mnemonicParsing="false" onAction="#clickImporterReseau" prefHeight="15.0" prefWidth="46.0" styleClass="btn-text" text="réseau">
+                              <Button minHeight="13.0" mnemonicParsing="false" onAction="#clickImporterReseau" prefHeight="28.0" prefWidth="46.0" styleClass="btn-text" text="réseau">
                                  <padding>
                                     <Insets bottom="1.0" />
                                  </padding>
@@ -121,7 +121,7 @@
                                     <Font size="13.0" />
                                  </font>
                               </Text>
-                              <Button onAction="#clickAide" minHeight="14.0" mnemonicParsing="false" prefHeight="19.0" prefWidth="32.0" styleClass="btn-text" text="Aide">
+                              <Button minHeight="14.0" mnemonicParsing="false" onAction="#clickAide" prefHeight="19.0" prefWidth="32.0" styleClass="btn-text" text="Aide">
                                  <padding>
                                     <Insets bottom="1.0" />
                                  </padding>
@@ -145,6 +145,7 @@
                   <Insets bottom="40.0" left="45.0" right="45.0" top="40.0" />
                </StackPane.margin>
             </VBox>
+            <Pane fx:id="layerMenu" mouseTransparent="true" onMouseClicked="#burgerClicked" prefHeight="200.0" prefWidth="200.0" />
             <HBox maxHeight="1.0" maxWidth="1.0" minHeight="1.0" minWidth="1.0" prefHeight="100.0" prefWidth="200.0">
                <children>
                   <VBox fx:id="menuContainer" minWidth="300.0" prefHeight="725.0" prefWidth="169.0" visible="false">
@@ -181,7 +182,7 @@
                                     <Insets bottom="5.0" top="5.0" />
                                  </VBox.margin>
                               </Separator>
-                              <HBox alignment="CENTER_LEFT" prefHeight="6.0" prefWidth="268.0" styleClass="btn-menu">
+                              <HBox alignment="CENTER_LEFT" onMouseClicked="#clickAide" prefHeight="6.0" prefWidth="268.0" styleClass="btn-menu">
                                  <children>
                                     <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true" scaleX="0.9" scaleY="0.9">
                                        <image>
