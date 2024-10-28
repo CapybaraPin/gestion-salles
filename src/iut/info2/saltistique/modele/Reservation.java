@@ -1,8 +1,11 @@
 package iut.info2.saltistique.modele;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public class Reservation {
+public class Reservation implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     private String identifiant;
     private Date dateDebut;

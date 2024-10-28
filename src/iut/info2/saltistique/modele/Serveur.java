@@ -11,93 +11,90 @@ import java.net.ServerSocket;
 import java.net.Socket;
 
 /**
- * La classe Serveur représente un serveur simple qui accepte une connexion
- * client via un socket, puis envoie des objets au client connecté.
- * Cette classe étend {@link Thread} afin de pouvoir gérer des opérations
- * réseau de manière parallèle.
+ * La classe Serveur représente un serveur simple qui accepte des connexions
+ * clients via un socket, puis envoie un objet au client connecté.
+ * Cette classe implémente {@link Runnable} pour permettre l'exécution
+ * du serveur dans un thread séparé. Cela permet une écoute continue
+ * des connexions clients sans bloquer l'application principale.
  *
- * <p>Le serveur écoute sur un port spécifique, attend qu'un client se connecte,
- * puis fournit des méthodes pour envoyer des objets au client et pour arrêter
- * le serveur.</p>
- * 
+ * <p>Le serveur écoute sur un port spécifique, attend une connexion, puis
+ * fournit des méthodes pour envoyer un objet et pour arrêter le serveur.</p>
+ *
  * @author Dorian ADAMS, Hugo ROBLES
  */
-public class Serveur extends Thread {
+public class Serveur implements Runnable {
 
     /** Port commun entre serveur et client */
     private int port;
 
     /** Socket de lancement du serveur */
-    private Socket socket;
+    private ServerSocket serverSocket;
 
-    /** Timeout en millisecondes pour l'acceptation des connexions */
-    private static final int TIMEOUT = 10000; // 10 secondes
+    /** Objet à envoyer aux clients */
+    private Object objet;
 
     /**
      * Constructeur de la classe Serveur.
-     * Initialise le serveur sur le port spécifié et attend qu'un client
-     * se connecte.
      *
-     * @param port le numéro de port sur lequel le serveur écoute.
+     * @param port Le numéro de port sur lequel le serveur écoute.
+     * @param objetAEnvoyer L'objet à envoyer aux clients connectés.
+     * @throws IllegalArgumentException si l'objet n'implémente pas Serializable,
+     *                                  si le port n'est pas compris entre 1024 et 65535.
      */
-    public Serveur(int port) {
+    public Serveur(int port, Object objetAEnvoyer) {
         if (port < 1024 || port > 65535) {
             throw new IllegalArgumentException("Le numéro de port doit être compris entre 1024 et 65535.");
         }
-
-        this.port = port;
-
-        try {
-            ServerSocket serverSocket = new ServerSocket(this.port);
-            serverSocket.setSoTimeout(TIMEOUT);
-
-            System.out.println("En attente de connexion client sur le port : " + this.port);
-            socket = serverSocket.accept();
-
-        } catch (IOException e) {
-            System.err.println("Erreur lors de la connexion au client : " + e.getMessage());
-        }
-    }
-
-    /**
-     * Envoie un objet au client connecté.
-     *
-     * <p>Cette méthode utilise un flux de sortie d'objet {@link ObjectOutputStream}
-     * pour transmettre un objet à travers le socket vers le client.</p>
-     *
-     * @param donnees l'objet à envoyer au client. Cet objet doit être sérialisable.
-     * @throws IOException si une erreur d'entrée/sortie se produit lors de l'envoi des données.
-     * @throws IllegalArgumentException si l'objet à envoyer n'est pas sérialisable.
-     */
-    public void envoyer(Object donnees) throws IOException {
-        if (!(donnees instanceof Serializable)) {
+        if (!(objetAEnvoyer instanceof Serializable)) {
             throw new IllegalArgumentException("L'objet doit implémenter Serializable.");
         }
+        this.port = port;
+        this.objet = objetAEnvoyer;
+    }
 
-        if (this.socket != null && !this.socket.isClosed()) {
-            try {
-                ObjectOutputStream oos = new ObjectOutputStream(this.socket.getOutputStream());
-                oos.writeObject(donnees);  // Envoie l'objet au client
-                System.out.println("Objet envoyé au client : " + donnees);
-            } catch (IOException e) {
-                System.err.println("Erreur lors de l'envoi de l'objet au client : " + e.getMessage());
+    /**
+     * Méthode principale de la classe, exécutée dans un thread séparé.
+     *
+     * Cette méthode initialise le socket serveur et écoute en continu
+     * les connexions client tant que isRunning est vrai.
+     * Lorsqu'un client se connect, le serveur lui envoie automatiquement
+     * l'objet spécifié.
+     */
+    @Override
+    public void run() {
+        try {
+            serverSocket = new ServerSocket(port);
+            System.out.println("Serveur démarrer sur le port : " + port);
+
+            while (!serverSocket.isClosed()) {
+                try {
+                    Socket clientSocket = serverSocket.accept();
+                    ObjectOutputStream oos = new ObjectOutputStream(clientSocket.getOutputStream());
+                    oos.writeObject(this.objet);  // Envoie l'objet au client
+                    System.out.println("Objet envoyé au client : " + objet);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
-        } else {
-            System.err.println("Aucun client n'est connecté pour recevoir des données.");
+
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
     /**
-     * Ferme le socket du serveur, arrêtant ainsi la connexion avec le client.
+     * Ferme le socket du serveur, arrêtant ainsi la connexion avec les clients.
      *
      * @throws IOException si une erreur d'entrée/sortie se produit lors de la fermeture du socket.
      */
-    public void arreter() throws IOException {
-        if (this.socket != null && !this.socket.isClosed()) {
-            this.socket.close();
-            System.out.println("Connexion fermée avec le client.");
-        } else {
-            System.err.println("Le socket est déjà fermé ou n'a pas encore été ouvert.");
+    public void arreter() {
+        if(serverSocket != null && !serverSocket.isClosed()) {
+            try {
+                serverSocket.close();
+                System.out.println("Serveur arreter");
+            } catch (IOException e) {
+                System.err.println("Erreur lors de la fermeture du serveur : " + e.getMessage());
+            }
         }
     }
 

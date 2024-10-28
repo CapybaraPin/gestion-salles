@@ -49,6 +49,8 @@ public class GestionDonnees implements Serializable {
     private int indexReservation;
     private int compteur;
 
+    public Serveur serveur;
+
     /**
      * Constructeur de la classe GestionDonnees.
      */
@@ -166,16 +168,13 @@ public class GestionDonnees implements Serializable {
      * @param port le port à utiliser pour l'importation
      */
     public void importerDonnees(String ip, int port) {
-        GestionDonnees gestionDonnee;
-        try {
-            Client client = new Client(ip, port);
-            gestionDonnee = (GestionDonnees) client.recevoir();
-            activites = gestionDonnee.getActivites();
-            client.arreter();
-        } catch (IOException | ClassNotFoundException e) {
-            //TODO gestion des exception (popup notification ?)
-            e.printStackTrace();
-        }
+        Object[] donnee;
+        Client client = new Client(ip, port);
+        donnee = (Object[]) client.connect();
+        this.activites = (Activite[]) donnee[0];
+        this.reservations = (Reservation[]) donnee[1];
+        this.salles = (Salle[]) donnee[2];
+        this.utilisateurs = (Utilisateur[]) donnee[3];
     }
 
     /**
@@ -184,36 +183,29 @@ public class GestionDonnees implements Serializable {
      * @param port le port à utiliser pour l'exportation
      */
     public void exporterDonnees(int port) {
-        try {
-            Serveur serveur = new Serveur(port);
-            serveur.envoyer(this);
-            serveur.arreter();
-        } catch (IOException e) {
-            //TODO gestion des exception (popup notification ?)
-            e.printStackTrace();
-        }
+        //TODO : vérification des donnée a envoyé
+        Object[] donnee = {activites, reservations, salles, utilisateurs};
+        this.serveur = new Serveur(port, donnee);
+        Thread serveurThread = new Thread(serveur);
+        serveurThread.start();
     }
 
-    /*
+
     public Salle[] getSalles() {
-        // TODO implement here
-        return null;
+        return this.salles;
     }
 
     public Utilisateur[] getUtilisateurs() {
-        // TODO implement here
-        return null;
+        return this.utilisateurs;
     }
 
-    */
+
     public Activite[] getActivites() {
-        // TODO implement here
         return this.activites;
     }
 
     public Reservation[] getReservations() {
-        // TODO implement here
-        return null;
+        return this.reservations;
     }
 
     /**

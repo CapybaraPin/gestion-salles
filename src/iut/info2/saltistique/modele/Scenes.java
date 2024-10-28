@@ -16,7 +16,8 @@ package iut.info2.saltistique.modele;
 public enum Scenes {
 
     ACCUEIL("/iut/info2/saltistique/vue/accueil.fxml"),
-    IMPORTATION_RESEAU("/iut/info2/saltistique/vue/importerReseau.fxml");
+    IMPORTATION_RESEAU("/iut/info2/saltistique/vue/importerReseau.fxml"),
+    EXPORTER_RESEAU("/iut/info2/saltistique/vue/exporterReseau.fxml");
 
     /** Le chemin du fichier FXML correspondant à la scène. */
     private String chemin;
