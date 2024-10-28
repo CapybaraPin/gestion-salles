@@ -225,8 +225,7 @@ public class ControleurAccueil {
     @FXML
     void clickAide() {
         try {
-            // TODO : Lien relatif
-            File pdfFile = new File("/Users/hugorobles/Desktop/gestion-salles/src/ressources/noticeUtilisation.pdf");
+            File pdfFile = new File("src/ressources/noticeUtilisation.pdf");
 
             if (!pdfFile.exists()) {
                 throw new IOException("Le fichier spécifié n'existe pas.");
