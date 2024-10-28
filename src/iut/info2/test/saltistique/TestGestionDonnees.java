@@ -1,4 +1,4 @@
-package saltistique;
+package iut.info2.test.saltistique;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -14,34 +14,75 @@ class TestGestionDonnees {
 
     final String DELIMITEUR = ";";
 
+    /**
+     * Entêtes valides pour les fichiers CSV
+     */
     final String[] ENTETES_VALIDES = {
-            "Ident;Nom;Capacité;videoproj;ecranXXL;ordinateur;type;logiciels;imprimante",
-            "Ident;Nom;Prenom;Telephone",
-            "Ident;Activité",
-            "Ident;salle;employe;activite;date;heuredebut;heurefin;;;;;"
+            "Ident;Nom;Capacité;videoproj;ecranXXL;ordinateur;type;logiciels;imprimante", // salles
+            "Ident;Nom;Prenom;Telephone", // employes
+            "Ident;Activité", // activites
+            "Ident;salle;employe;activite;date;heuredebut;heurefin;;;;;" // reservations
     };
 
-    final String[] RESULTAT_RECONNAITRE_ENTETES_VALIDES = {
+    /**
+     * Résultats attendus pour les ENTETES_VALIDES
+     * Correspond aussi aux types de fichiers
+     */
+    final String[] TYPE_FICHIERS = {
             "salles",
             "employes",
             "activites",
             "reservations"
     };
 
+    /**
+     * Lignes valides pour les activités
+     */
     final String[] LIGNES_VALIDES_ACTIVITES = {
-            "A0000001;réunion"
+            "A0000001;réunion", // avec accent
+            "A0000001;entretien" // sans accent
+
     };
 
+    /**
+     * Lignes invalides pour les activités
+     */
     final String[] LIGNES_INVALIDES_ACTIVITES = {
-            "A0000002;", // manque l'activité
-            ";réunion", // manque l'identifiant
-            ";" // Manque les deux champs
+            "A0000002;", // activité manquante
+            ";réunion", // identifiant manquant
+            ";" // les deux champs manquants
     };
 
-    final String[] ENTETES_NON_VALIDES = {
-            "videoproj", // pas de ;
+    /**
+     * Entêtes non valides pour les fichiers CSV salles
+     */
+    final String[] ENTETES_NON_VALIDES_SALLES = {
+            "A0000001", // pas assez de champs
             "Ident;salle;employe;activite;date;heuredebut;heurefin;bonjour;", // trop de champs
-            "Ident;salle;employe;;;;;" // pas assez de champs
+    };
+
+    /**
+     * Entêtes non valides pour les fichiers CSV employes
+     */
+    final String[] ENTETES_NON_VALIDES_EMPLOYES = {
+            "Ident;Nom;Prenom", // pas assez de champs
+            "Ident;Nom;Prenom;Telephone;Adresse" // trop de champs
+    };
+
+    /**
+     * Entêtes non valides pour les fichiers CSV activites
+     */
+    final String[] ENTETES_NON_VALIDES_ACTIVITES = {
+            "Ident;Activité;Type", // trop de champs
+            "Ident" // pas assez de champs
+    };
+
+    /**
+     * Entêtes non valides pour les fichiers CSV reservations
+     */
+    final String[] ENTETES_NON_VALIDES_RESERVATIONS = {
+            "Ident;Salle;Employe;Activite;Date;HeureDebut;HeureFin;Commentaire", // pas assez de champs
+            "Ident;Salle;Employe;Activite;Date;HeureDebut;HeureFin;Commentaire;Commentaire;Commentaire;Commentaire;Commentaire" // trop de champs
     };
 
     final String[] LIGNES_VALIDES_EMPLOYES = {
@@ -100,10 +141,23 @@ class TestGestionDonnees {
     @Test
     void testReconnaitreEntete() {
         for (int i = 0; i < ENTETES_VALIDES.length; i++) {
-            assertEquals(RESULTAT_RECONNAITRE_ENTETES_VALIDES[i], GestionDonnees.reconnaitreEntete(ENTETES_VALIDES[i], DELIMITEUR));
+            assertEquals(TYPE_FICHIERS[i], GestionDonnees.reconnaitreEntete(ENTETES_VALIDES[i], DELIMITEUR));
         }
-        for (String entete : ENTETES_NON_VALIDES) {
-            assertNull(GestionDonnees.reconnaitreEntete(entete, DELIMITEUR));
+        for (int i = 0; i < ENTETES_NON_VALIDES_SALLES.length; i++) {
+            assertNotEquals(TYPE_FICHIERS[0],
+                         GestionDonnees.reconnaitreEntete(ENTETES_NON_VALIDES_SALLES[i], DELIMITEUR));
+        }
+        for (int i = 0; i < ENTETES_NON_VALIDES_EMPLOYES.length; i++) {
+            assertNotEquals(TYPE_FICHIERS[1],
+                         GestionDonnees.reconnaitreEntete(ENTETES_NON_VALIDES_EMPLOYES[i], DELIMITEUR));
+        }
+        for (int i = 0; i < ENTETES_NON_VALIDES_ACTIVITES.length; i++) {
+            assertNotEquals(TYPE_FICHIERS[2],
+                         GestionDonnees.reconnaitreEntete(ENTETES_NON_VALIDES_ACTIVITES[i], DELIMITEUR));
+        }
+        for (int i = 0; i < ENTETES_NON_VALIDES_RESERVATIONS.length; i++) {
+            assertNotEquals(TYPE_FICHIERS[3],
+                         GestionDonnees.reconnaitreEntete(ENTETES_NON_VALIDES_RESERVATIONS[i], DELIMITEUR));
         }
     }
 
@@ -111,30 +165,30 @@ class TestGestionDonnees {
     void testEstLigneComplete() {
         // Tests valides
         for (String ligne : LIGNES_VALIDES_EMPLOYES) {
-            assertTrue(GestionDonnees.estLigneComplete(ligne, DELIMITEUR, "employes"));
+            assertTrue(GestionDonnees.estLigneComplete(ligne, DELIMITEUR, TYPE_FICHIERS[1]));
         }
         for (String ligne : LIGNES_VALIDES_SALLES) {
-            assertTrue(GestionDonnees.estLigneComplete(ligne, DELIMITEUR, "salles"));
+            assertTrue(GestionDonnees.estLigneComplete(ligne, DELIMITEUR, TYPE_FICHIERS[0]));
         }
         for (String ligne : LIGNES_VALIDES_ACTIVITES) {
-            assertTrue(GestionDonnees.estLigneComplete(ligne, DELIMITEUR, "activites"));
+            assertTrue(GestionDonnees.estLigneComplete(ligne, DELIMITEUR, TYPE_FICHIERS[2]));
         }
         for (String ligne : LIGNES_VALIDES_RESERVATIONS) {
-            assertTrue(GestionDonnees.estLigneComplete(ligne, DELIMITEUR, "reservations"));
+            assertTrue(GestionDonnees.estLigneComplete(ligne, DELIMITEUR, TYPE_FICHIERS[3]));
         }
 
         // Tests invalides
         for (String ligne : LIGNES_INVALIDES_EMPLOYES) {
-            assertFalse(GestionDonnees.estLigneComplete(ligne, DELIMITEUR, "employes"));
+            assertFalse(GestionDonnees.estLigneComplete(ligne, DELIMITEUR, TYPE_FICHIERS[1]));
         }
         for (String ligne : LIGNES_INVALIDES_SALLES) {
-            assertFalse(GestionDonnees.estLigneComplete(ligne, DELIMITEUR, "salles"));
+            assertFalse(GestionDonnees.estLigneComplete(ligne, DELIMITEUR, TYPE_FICHIERS[0]));
         }
         for (String ligne : LIGNES_INVALIDES_ACTIVITES) {
-            assertFalse(GestionDonnees.estLigneComplete(ligne, DELIMITEUR, "activites"));
+            assertFalse(GestionDonnees.estLigneComplete(ligne, DELIMITEUR, TYPE_FICHIERS[2]));
         }
         for (String ligne : LIGNES_INVALIDES_RESERVATIONS) {
-            assertFalse(GestionDonnees.estLigneComplete(ligne, DELIMITEUR, "reservations"));
+            assertFalse(GestionDonnees.estLigneComplete(ligne, DELIMITEUR, TYPE_FICHIERS[3]));
         }
     }
 

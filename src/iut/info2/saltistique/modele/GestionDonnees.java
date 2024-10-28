@@ -6,6 +6,7 @@
 package iut.info2.saltistique.modele;
 
 import iut.info2.saltistique.Saltistique;
+import iut.info2.saltistique.modele.Regex;
 
 import java.io.IOException;
 import java.io.Serializable;
@@ -24,57 +25,6 @@ public class GestionDonnees implements Serializable {
 
     /** Délimiteur utilisé dans les fichiers CSV */
     private static final String DELIMITEUR = ";";
-
-    /** Expression régulière pour valider les employés */
-    private static final String REGEX_EMPLOYES =
-            "^E\\d{6}" // Identifiant : commence par 'E' suivi de 6 chiffres
-                    + DELIMITEUR // Délimiteur
-                    + "[A-Za-z]+" // Nom : une ou plusieurs lettres
-                    + DELIMITEUR // Délimiteur
-                    + "[A-Za-z]+" // Prénom : une ou plusieurs lettres
-                    + DELIMITEUR // Délimiteur
-                    + "\\d{4}$"; // Téléphone : exactement 4 chiffres
-
-    /** Expression régulière pour valider les salles */
-    private static final String REGEX_SALLES =
-            "^([0-9]{8})" // Identifiant : exactement 8 chiffres
-                    + DELIMITEUR // Délimiteur
-                    + "([^" + DELIMITEUR + "]+)" // Nom de la salle : tout caractère sauf le délimiteur
-                    + DELIMITEUR // Délimiteur
-                    + "([0-9]+)" // Capacité : un ou plusieurs chiffres
-                    + DELIMITEUR // Délimiteur
-                    + "([onON][^" + DELIMITEUR + "]*)" // Vidéo : 'o' ou 'n'
-                    + DELIMITEUR // Délimiteur
-                    + "([onON][^" + DELIMITEUR + "]*)" // Tableau : 'o' ou 'n'
-                    + DELIMITEUR // Délimiteur
-                    + "([0-9]*)" // Ordinateurs : un ou plusieurs chiffres
-                    + DELIMITEUR // Délimiteur
-                    + "([^" + DELIMITEUR + "]*)" // Type : tout caractère sauf le délimiteur
-                    + DELIMITEUR // Délimiteur
-                    + "([^" + DELIMITEUR + "]*)" // Logiciels : tout caractère sauf le délimiteur
-                    + DELIMITEUR // Délimiteur
-                    + "([onON][^" + DELIMITEUR + "]*|)$"; // Climatisation : optionnelle
-
-    /** Expression régulière pour valider les activités */
-    private static final String REGEX_ACTIVITES =
-            "^A[0-9]{7}" // Identifiant : commence par 'A' suivi de 7 chiffres
-                    + DELIMITEUR // Délimiteur
-                    + "[^" + DELIMITEUR + "]+$"; // Nom de l'activité : tout caractère sauf le délimiteur
-
-    /** Expression régulière pour valider les réservations */
-    private static final String REGEX_RESERVATIONS =
-            "^R\\d{6}" + DELIMITEUR + // Identifiant : 'R' suivi de 6 chiffres
-                    "\\d{8}" + DELIMITEUR + // Salle : 8 chiffres
-                    "E\\d{6}" + DELIMITEUR + // Employé : 'E' suivi de 6 chiffres
-                    "[^"+ DELIMITEUR +"]+" + DELIMITEUR + // Activité : tout sauf le délimiteur
-                    "\\d{2}/\\d{2}/\\d{4}" + DELIMITEUR + // Date : JJ/MM/AAAA
-                    "\\d{1,2}h\\d{2}" + DELIMITEUR + // Heure de début : HHhMM
-                    "\\d{1,2}h\\d{2}" + DELIMITEUR + // Heure de fin : HHhMM
-                    "(?:[^"+ DELIMITEUR +"]*)" + DELIMITEUR + // Commentaire ou organisation : tout sauf le délimiteur ou vide
-                    "[A-Za-z]*" + DELIMITEUR + // Nom de l'employé : une ou plusieurs lettres ou vide
-                    "[A-Za-z]*" + DELIMITEUR + // Prenom de l'employé : une ou plusieurs lettres ou vide
-                    "(?:\\d{10}|)" + DELIMITEUR + // Téléphone de l'employé : 10 chiffres ou vide
-                    "(?:[^"+ DELIMITEUR +"]*)$"; // Activité : tout sauf le délimiteur ou vide
 
     /** Message d'erreur affiché lorsque le nombre de fichiers fournis est incorrect. */
     private static final String ERREUR_NB_CHEMINS_FICHIERS =
@@ -306,10 +256,10 @@ public class GestionDonnees implements Serializable {
         }
 
         String regex = switch (typeFichier) {
-            case "employes" -> REGEX_EMPLOYES;
-            case "salles" -> REGEX_SALLES;
-            case "activites" -> REGEX_ACTIVITES;
-            case "reservations" -> REGEX_RESERVATIONS;
+            case "employes" -> Regex.EMPLOYES.getRegex(";");
+            case "salles" -> Regex.SALLES.getRegex(";");
+            case "activites" -> Regex.ACTIVITES.getRegex(";");
+            case "reservations" -> Regex.RESERVATIONS.getRegex(";");
             default -> throw new IllegalArgumentException("Type de fichier inconnu : " + typeFichier);
         };
 
