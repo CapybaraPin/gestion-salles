@@ -128,6 +128,19 @@ class TestGestionDonnees {
             "R123456;20240101;E123456;Dupont Jean;21/10/2024;10h00;12h00;Commentaire;Commentaire;Commentaire;Commentaire" // Trop de champs
     };
 
+    private static final String[] CHEMINS_VALIDES = {
+            "iut/info2/test/resources/salles.csv",
+            "iut/info2/test/resources/employes.csv",
+            "iut/info2/test/resources/activites.csv",
+            "iut/info2/test/resources/reservations.csv"
+    };
+
+    private static final String[] CHEMINS_INVALIDES = {
+            "iut/info2/test/resources/fichier_invalide.csv", // Données incorrectes
+            "iut/info2/test/resources/fichier_vide.csv", // Fichier vide
+            "iut/info2/test/resources/format_inconnu.csv" // Format non reconnu
+    };
+
     @BeforeAll
     static void setUpBeforeClass() throws Exception {
         System.out.println("====== TEST DE LA CLASSE GestionDonnees ======");
@@ -218,5 +231,79 @@ class TestGestionDonnees {
         assertThrows(IllegalArgumentException.class, () -> {
             GestionDonnees.construireDate("21/10/2024", "10h60");
         });
+    }
+
+    @Test
+    void testImporterDonneesAvecFichiersValides() {
+        GestionDonnees gestion = new GestionDonnees();
+
+        try {
+            gestion.importerDonnees(CHEMINS_VALIDES);
+
+            assertNotNull(gestion.getSalles(), "Les salles doivent être importées.");
+            assertNotNull(gestion.getEmployes(), "Les employés doivent être importés.");
+            assertNotNull(gestion.getActivites(), "Les activités doivent être importées.");
+            assertNotNull(gestion.getReservations(), "Les réservations doivent être importées.");
+
+            assertEquals(2, gestion.getSalles().size(), "Nombre de salles incorrect.");
+            assertEquals(2, gestion.getEmployes().size(), "Nombre d'employés incorrect.");
+            assertEquals(2, gestion.getActivites().size(), "Nombre d'activités incorrect.");
+            assertEquals(2, gestion.getReservations().size(), "Nombre de réservations incorrect.");
+        } catch (Exception e) {
+            e.getMessage());
+        }
+    }
+
+    @Test
+    void testImporterDonneesAvecFichiersInvalides() {
+        GestionDonnees gestion = new GestionDonnees();
+
+        try {
+            gestion.importerDonnees(CHEMINS_INVALIDES);
+
+            assertEquals(0, gestion.getSalles().size(), "Pas de salles pour fichier invalide.");
+            assertEquals(0, gestion.getEmployes().size(), "Pas d'employés pour fichier invalide.");
+            assertEquals(0, gestion.getActivites().size(), "Pas d'activités pour fichier invalide.");
+            assertEquals(0, gestion.getReservations().size(), "Pas de réservations pour fichier invalide.");
+
+        } catch (Exception e) {
+            e.getMessage());
+        }
+    }
+
+    @Test
+    void testImporterDonneesFichierInexistant() {
+        GestionDonnees gestion = new GestionDonnees();
+        String[] cheminInexistant = { "src/test/resources/inexistant.csv" };
+
+        assertThrows(Exception.class, () -> {
+            gestion.importerDonnees(cheminInexistant);
+        }, "Une exception doit être levée pour un fichier inexistant.");
+    }
+
+    @Test
+    void testImporterDonneesMixtes() {
+        GestionDonnees gestion = new GestionDonnees();
+        String[] cheminsMixtes = {
+                CHEMINS_VALIDES[0],
+                CHEMINS_INVALIDES[0],
+                CHEMINS_VALIDES[1]
+        };
+
+        try {
+            gestion.importerDonnees(cheminsMixtes);
+
+            assertNotNull(gestion.getSalles(), "Les salles doivent être importées.");
+            assertNotNull(gestion.getEmployes(), "Les employés doivent être importés.");
+
+            assertEquals(2, gestion.getSalles().size(), "Nombre de salles incorrect.");
+            assertEquals(2, gestion.getEmployes().size(), "Nombre d'employés incorrect.");
+
+            assertEquals(0, gestion.getActivites().size(), "Aucune activité ne doit être importée.");
+            assertEquals(0, gestion.getReservations().size(), "Aucune réservation ne doit être importée.");
+
+        } catch (Exception e) {
+            fail("Erreur inattendue pour fichiers mixtes : " + e.getMessage());
+        }
     }
 }
