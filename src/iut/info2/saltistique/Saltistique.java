@@ -9,6 +9,7 @@ import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
@@ -47,6 +48,8 @@ public class Saltistique extends Application {
 
     /** La fenêtre principale (ou scène principale) de l'application JavaFX. */
     private static Stage primaryStage;
+
+    private static Stage popUp;
 
     /** Prend en charge le lien entre le controleur et le modèle */
     public static GestionDonnees gestionDonnees;
@@ -93,6 +96,7 @@ public class Saltistique extends Application {
                 FXMLLoader loader = new FXMLLoader(getClass().getResource(sceneEnum.getChemin()));
                 Scene scene = new Scene(loader.load());
                 scenes.put(sceneEnum, scene);
+
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -126,11 +130,17 @@ public class Saltistique extends Application {
      */
     public static void showPopUp(Scenes sceneEnum) {
         Scene scene = scenes.get(sceneEnum);
-        Stage popUp = new Stage();
+        popUp = new Stage();
         popUp.initStyle(StageStyle.UNDECORATED);
         popUp.setResizable(false);
         popUp.setScene(scene);
-        popUp.show();
+        popUp.initModality(Modality.APPLICATION_MODAL);
+        popUp.showAndWait();
+
+    }
+
+    public static void showNotification(String title, String message) {
+        //TODO : affichage d'une notification
     }
 
     /**

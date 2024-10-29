@@ -237,6 +237,10 @@ public class ControleurAccueil {
         }
     }
 
+    /**
+     * Handler pour le clic sur le bouton d'exportation des données
+     * Cela permet d'ouvir la fenètre permettant l'exportation des données.
+     */
     @FXML
     void handlerPartager() {
         Saltistique.showPopUp(Scenes.EXPORTER_RESEAU);
