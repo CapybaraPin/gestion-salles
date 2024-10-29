@@ -237,6 +237,11 @@ public class ControleurAccueil {
         }
     }
 
+    @FXML
+    void handlerPartager() {
+        Saltistique.showPopUp(Scenes.EXPORTER_RESEAU);
+    }
+
 
     /**
      * Gère le clic sur le bouton d'aide et tente d'ouvrir un fichier PDF d'aide utilisateur.

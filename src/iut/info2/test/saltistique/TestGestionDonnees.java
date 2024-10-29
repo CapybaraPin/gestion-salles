@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Test;
 
 import iut.info2.saltistique.modele.GestionDonnees;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 class TestGestionDonnees {
 
@@ -128,17 +128,27 @@ class TestGestionDonnees {
             "R123456;20240101;E123456;Dupont Jean;21/10/2024;10h00;12h00;Commentaire;Commentaire;Commentaire;Commentaire" // Trop de champs
     };
 
-    private static final String[] CHEMINS_VALIDES = {
-            "iut/info2/test/resources/salles.csv",
-            "iut/info2/test/resources/employes.csv",
-            "iut/info2/test/resources/activites.csv",
-            "iut/info2/test/resources/reservations.csv"
+    /**
+     * Date valide pour les tests
+     */
+    final String[][] DATE_VALIDE = {
+            {"21/10/2024", "10h00"}, // cas normal
+            {"21/10/2024", "00h00"}, // heure limite basse
+            {"21/10/2024", "23h59"}, // heure limite haute
+            {"29/02/2024", "23h59"} // bissextile
     };
 
-    private static final String[] CHEMINS_INVALIDES = {
-            "iut/info2/test/resources/fichier_invalide.csv", // Données incorrectes
-            "iut/info2/test/resources/fichier_vide.csv", // Fichier vide
-            "iut/info2/test/resources/format_inconnu.csv" // Format non reconnu
+    /**
+     * Date invalide pour les tests
+     */
+    final String[][] DATE_INVALIDE = {
+            {"15/08/2023", "25h00"},   // Heure invalide
+            {"15/08/2023", "1030"},    // Format de l'heure incorrect
+            {"15/08/2023", ""},        // Heure nulle
+            {"32/01/2023", "10h30"},   // Jour invalide
+            {"32/01/2023", "25h00"},   // Date et heure invalides
+            {"15-08-2023", "10h30"},   // Format de la date incorrect
+            {"", "10h30"}              // Date vide
     };
 
     @BeforeAll
@@ -156,21 +166,21 @@ class TestGestionDonnees {
         for (int i = 0; i < ENTETES_VALIDES.length; i++) {
             assertEquals(TYPE_FICHIERS[i], GestionDonnees.reconnaitreEntete(ENTETES_VALIDES[i], DELIMITEUR));
         }
-        for (int i = 0; i < ENTETES_NON_VALIDES_SALLES.length; i++) {
+        for (String entetesNonValidesSalle : ENTETES_NON_VALIDES_SALLES) {
             assertNotEquals(TYPE_FICHIERS[0],
-                         GestionDonnees.reconnaitreEntete(ENTETES_NON_VALIDES_SALLES[i], DELIMITEUR));
+                    GestionDonnees.reconnaitreEntete(entetesNonValidesSalle, DELIMITEUR));
         }
-        for (int i = 0; i < ENTETES_NON_VALIDES_EMPLOYES.length; i++) {
+        for (String entetesNonValidesEmploye : ENTETES_NON_VALIDES_EMPLOYES) {
             assertNotEquals(TYPE_FICHIERS[1],
-                         GestionDonnees.reconnaitreEntete(ENTETES_NON_VALIDES_EMPLOYES[i], DELIMITEUR));
+                    GestionDonnees.reconnaitreEntete(entetesNonValidesEmploye, DELIMITEUR));
         }
-        for (int i = 0; i < ENTETES_NON_VALIDES_ACTIVITES.length; i++) {
+        for (String entetesNonValidesActivite : ENTETES_NON_VALIDES_ACTIVITES) {
             assertNotEquals(TYPE_FICHIERS[2],
-                         GestionDonnees.reconnaitreEntete(ENTETES_NON_VALIDES_ACTIVITES[i], DELIMITEUR));
+                    GestionDonnees.reconnaitreEntete(entetesNonValidesActivite, DELIMITEUR));
         }
-        for (int i = 0; i < ENTETES_NON_VALIDES_RESERVATIONS.length; i++) {
+        for (String entetesNonValidesReservation : ENTETES_NON_VALIDES_RESERVATIONS) {
             assertNotEquals(TYPE_FICHIERS[3],
-                         GestionDonnees.reconnaitreEntete(ENTETES_NON_VALIDES_RESERVATIONS[i], DELIMITEUR));
+                    GestionDonnees.reconnaitreEntete(entetesNonValidesReservation, DELIMITEUR));
         }
     }
 
@@ -208,102 +218,14 @@ class TestGestionDonnees {
     @Test
     void testConstruireDate() {
         // Cas valides
-        try {
-            Date dateValide = GestionDonnees.construireDate("21/10/2024", "10h00");
-            assertNotNull(dateValide);
-        } catch (IllegalArgumentException e) {
-            fail("L'exception ne devrait pas être levée pour une date valide.");
+        for (String[] date : DATE_VALIDE) {
+            LocalDateTime d = GestionDonnees.construireDate(date[0], date[1]);
+            assertNotNull(d);
         }
 
         // Cas invalides
-        assertThrows(IllegalArgumentException.class, () -> {
-            GestionDonnees.construireDate("21/10/2024", "10h");
-        });
-
-        assertThrows(IllegalArgumentException.class, () -> {
-            GestionDonnees.construireDate("21/10/2024", "25h00");
-        });
-
-        assertThrows(IllegalArgumentException.class, () -> {
-            GestionDonnees.construireDate("32/10/2024", "10h00");
-        });
-
-        assertThrows(IllegalArgumentException.class, () -> {
-            GestionDonnees.construireDate("21/10/2024", "10h60");
-        });
-    }
-
-    @Test
-    void testImporterDonneesAvecFichiersValides() {
-        GestionDonnees gestion = new GestionDonnees();
-
-        try {
-            gestion.importerDonnees(CHEMINS_VALIDES);
-
-            assertNotNull(gestion.getSalles(), "Les salles doivent être importées.");
-            assertNotNull(gestion.getEmployes(), "Les employés doivent être importés.");
-            assertNotNull(gestion.getActivites(), "Les activités doivent être importées.");
-            assertNotNull(gestion.getReservations(), "Les réservations doivent être importées.");
-
-            assertEquals(2, gestion.getSalles().size(), "Nombre de salles incorrect.");
-            assertEquals(2, gestion.getEmployes().size(), "Nombre d'employés incorrect.");
-            assertEquals(2, gestion.getActivites().size(), "Nombre d'activités incorrect.");
-            assertEquals(2, gestion.getReservations().size(), "Nombre de réservations incorrect.");
-        } catch (Exception e) {
-            e.getMessage());
-        }
-    }
-
-    @Test
-    void testImporterDonneesAvecFichiersInvalides() {
-        GestionDonnees gestion = new GestionDonnees();
-
-        try {
-            gestion.importerDonnees(CHEMINS_INVALIDES);
-
-            assertEquals(0, gestion.getSalles().size(), "Pas de salles pour fichier invalide.");
-            assertEquals(0, gestion.getEmployes().size(), "Pas d'employés pour fichier invalide.");
-            assertEquals(0, gestion.getActivites().size(), "Pas d'activités pour fichier invalide.");
-            assertEquals(0, gestion.getReservations().size(), "Pas de réservations pour fichier invalide.");
-
-        } catch (Exception e) {
-            e.getMessage());
-        }
-    }
-
-    @Test
-    void testImporterDonneesFichierInexistant() {
-        GestionDonnees gestion = new GestionDonnees();
-        String[] cheminInexistant = { "src/test/resources/inexistant.csv" };
-
-        assertThrows(Exception.class, () -> {
-            gestion.importerDonnees(cheminInexistant);
-        }, "Une exception doit être levée pour un fichier inexistant.");
-    }
-
-    @Test
-    void testImporterDonneesMixtes() {
-        GestionDonnees gestion = new GestionDonnees();
-        String[] cheminsMixtes = {
-                CHEMINS_VALIDES[0],
-                CHEMINS_INVALIDES[0],
-                CHEMINS_VALIDES[1]
-        };
-
-        try {
-            gestion.importerDonnees(cheminsMixtes);
-
-            assertNotNull(gestion.getSalles(), "Les salles doivent être importées.");
-            assertNotNull(gestion.getEmployes(), "Les employés doivent être importés.");
-
-            assertEquals(2, gestion.getSalles().size(), "Nombre de salles incorrect.");
-            assertEquals(2, gestion.getEmployes().size(), "Nombre d'employés incorrect.");
-
-            assertEquals(0, gestion.getActivites().size(), "Aucune activité ne doit être importée.");
-            assertEquals(0, gestion.getReservations().size(), "Aucune réservation ne doit être importée.");
-
-        } catch (Exception e) {
-            fail("Erreur inattendue pour fichiers mixtes : " + e.getMessage());
+        for (String[] date : DATE_INVALIDE) {
+            assertThrows(IllegalArgumentException.class, () -> GestionDonnees.construireDate(date[0], date[1]));
         }
     }
 }

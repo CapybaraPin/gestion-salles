@@ -58,9 +58,10 @@
     -fx-background-color: #FFFFFF;
     -fx-border-radius: 4;
     -fx-border-color: #C9CCD6;
-    -fx-border-style: solid 1;
+    -fx-border-style: solid;
     -fx-font-family: "Inter 28pt Medium";
     -fx-font-size: 13;
+    -fx-border-width: 1;
 }
 
 .btn-secondary:hover {
@@ -122,10 +123,11 @@
     -fx-background-color: #FFFFFF;
     -fx-border-radius: 4;
     -fx-border-color: #C9CCD6;
-    -fx-border-style: solid 1;
+    -fx-border-style: solid;
     -fx-min-height: 28;
     -fx-max-height: 28;
     -fx-font-size: 13;
+    -fx-border-width: 1;
 }
 
 .help {

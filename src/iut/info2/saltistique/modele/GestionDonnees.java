@@ -5,13 +5,13 @@
 
 package iut.info2.saltistique.modele;
 
-import iut.info2.saltistique.Saltistique;
-import iut.info2.saltistique.modele.Regex;
-
-import java.io.IOException;
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Arrays;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.Date;
 
 /**
@@ -48,6 +48,8 @@ public class GestionDonnees implements Serializable {
 
     private int indexReservation;
     private int compteur;
+
+    public Serveur serveur;
 
     /**
      * Constructeur de la classe GestionDonnees.
@@ -166,16 +168,13 @@ public class GestionDonnees implements Serializable {
      * @param port le port à utiliser pour l'importation
      */
     public void importerDonnees(String ip, int port) {
-        GestionDonnees gestionDonnee;
-        try {
-            Client client = new Client(ip, port);
-            gestionDonnee = (GestionDonnees) client.recevoir();
-            activites = gestionDonnee.getActivites();
-            client.arreter();
-        } catch (IOException | ClassNotFoundException e) {
-            //TODO gestion des exception (popup notification ?)
-            e.printStackTrace();
-        }
+        Object[] donnee;
+        Client client = new Client(ip, port);
+        donnee = (Object[]) client.connect();
+        this.activites = (Activite[]) donnee[0];
+        this.reservations = (Reservation[]) donnee[1];
+        this.salles = (Salle[]) donnee[2];
+        this.utilisateurs = (Utilisateur[]) donnee[3];
     }
 
     /**
@@ -184,36 +183,29 @@ public class GestionDonnees implements Serializable {
      * @param port le port à utiliser pour l'exportation
      */
     public void exporterDonnees(int port) {
-        try {
-            Serveur serveur = new Serveur(port);
-            serveur.envoyer(this);
-            serveur.arreter();
-        } catch (IOException e) {
-            //TODO gestion des exception (popup notification ?)
-            e.printStackTrace();
-        }
+        //TODO : vérification des donnée a envoyé
+        Object[] donnee = {activites, reservations, salles, utilisateurs};
+        this.serveur = new Serveur(port, donnee);
+        Thread serveurThread = new Thread(serveur);
+        serveurThread.start();
     }
 
-    /*
+
     public Salle[] getSalles() {
-        // TODO implement here
-        return null;
+        return this.salles;
     }
 
     public Utilisateur[] getUtilisateurs() {
-        // TODO implement here
-        return null;
+        return this.utilisateurs;
     }
 
-    */
+
     public Activite[] getActivites() {
-        // TODO implement here
         return this.activites;
     }
 
     public Reservation[] getReservations() {
-        // TODO implement here
-        return null;
+        return this.reservations;
     }
 
     /**
@@ -266,9 +258,9 @@ public class GestionDonnees implements Serializable {
         if (ligne.matches(regex)) {
             if ("reservations".equals(typeFichier)) {
                 String[] attributs = ligne.split(delimiteur);
-                Date dateDebut = construireDate(attributs[4], attributs[5]); // Indice dateDebut
-                Date dateFin = construireDate(attributs[4], attributs[6]); // Indice dateFin
-                return dateDebut.before(dateFin);
+                LocalDateTime dateDebut = construireDate(attributs[4], attributs[5]); // Indice dateDebut
+                LocalDateTime dateFin = construireDate(attributs[4], attributs[6]); // Indice dateFin
+                return dateDebut.isBefore(dateFin);
             }
             return true;
         }
@@ -284,35 +276,35 @@ public class GestionDonnees implements Serializable {
      *
      * @param date la date au format "JJ/MM/AAAA"
      * @param heureMinutes l'heure au format "XXhXX"
-     * @return un objet Date correspondant à la date et l'heure fournies
+     * @return un objet LocalDateTime correspondant à la date et l'heure fournies
      * @throws IllegalArgumentException si le format est incorrect ou si la date n'est pas valide
      */
-    public static Date construireDate(String date, String heureMinutes) {
+    public static LocalDateTime construireDate(String date, String heureMinutes) {
+        DateTimeFormatter formatDate;
+        DateTimeFormatter formatHeure;
+        LocalDate dateConvertie;
+        LocalTime heureConvertie;
+
+
+        // Vérifie que les arguments ne sont pas nuls
         if (date == null || heureMinutes == null) {
             throw new IllegalArgumentException("Les arguments ne peuvent pas être nuls.");
         }
 
-        if (!date.matches("^\\d{2}/\\d{2}/\\d{4}$") || !heureMinutes.matches("^\\d{2}h\\d{2}$")) {
-            throw new IllegalArgumentException("Le format de la date ou de l'heure est incorrect.");
+        // Définit les formats attendus pour la date et l'heure
+        formatDate = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        formatHeure = DateTimeFormatter.ofPattern("HH'h'mm");
+
+        try {
+            // convertit les chaînes de caractères en LocalDate et LocalTime
+            dateConvertie = LocalDate.parse(date, formatDate);
+            heureConvertie = LocalTime.parse(heureMinutes, formatHeure);
+
+
+        } catch (DateTimeParseException e) {
+            throw new IllegalArgumentException("Le format de la date ou de l'heure est incorrect.", e);
         }
 
-        String[] dateDecoupe = date.split("/");
-        String[] heureDecoupe = heureMinutes.split("h");
-
-        int jour = Integer.parseInt(dateDecoupe[0]);
-        int mois = Integer.parseInt(dateDecoupe[1]) - 1; // Les mois commencent à 0 en Java
-        int annee = Integer.parseInt(dateDecoupe[2]);
-        int heures = Integer.parseInt(heureDecoupe[0]);
-        int minutes = Integer.parseInt(heureDecoupe[1]);
-
-        Date dateTransformee = new Date(annee - 1900, mois, jour, heures, minutes); // Les années commencent à 1900
-
-        if (dateTransformee.getDate() != jour || dateTransformee.getMonth() != mois ||
-                dateTransformee.getYear() != (annee - 1900) || dateTransformee.getHours() != heures ||
-                dateTransformee.getMinutes() != minutes) {
-            throw new IllegalArgumentException("La date n'est pas valide.");
-        }
-
-        return dateTransformee;
+        return LocalDateTime.of(dateConvertie, heureConvertie);
     }
 }

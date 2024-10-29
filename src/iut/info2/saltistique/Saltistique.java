@@ -8,6 +8,7 @@ import iut.info2.saltistique.modele.GestionDonnees;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
@@ -65,7 +66,8 @@ public class Saltistique extends Application {
         // disable barre de titre
         primaryStage.initStyle(StageStyle.UNDECORATED);
         primaryStage.setResizable(false);
-
+        primaryStage.setTitle("Gestion de salles");
+        primaryStage.getIcons().add(new Image("/iut/info2/saltistique/vue/logo.png"));
         loadScenes();
         changeScene(Scenes.ACCUEIL);
     }

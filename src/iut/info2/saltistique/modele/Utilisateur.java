@@ -1,6 +1,10 @@
 package iut.info2.saltistique.modele;
 
-public class Utilisateur {
+import java.io.Serializable;
+
+public class Utilisateur implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     private String identifiant;
     private String nom;
