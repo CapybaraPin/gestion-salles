@@ -251,13 +251,13 @@ class TestGestionDonnees {
 
             // Vérification que chaque classe d'équivalence valide est bien remplie
             assertNotNull(gestion.getSalles(), "Les salles doivent être importées.");
-            assertNotNull(gestion.getEmployes(), "Les employés doivent être importés.");
+            assertNotNull(gestion.getUtilisateurs(), "Les employés doivent être importés.");
             assertNotNull(gestion.getActivites(), "Les activités doivent être importées.");
             assertNotNull(gestion.getReservations(), "Les réservations doivent être importées.");
 
             // Nombre d'éléments (utiliser des valeurs ajustées selon le contenu de chaque fichier)
             assertEquals(2, gestion.getSalles().size(), "Nombre de salles incorrect.");
-            assertEquals(2, gestion.getEmployes().size(), "Nombre d'employés incorrect.");
+            assertEquals(2, gestion.getUtilisateurs().size(), "Nombre d'employés incorrect.");
             assertEquals(2, gestion.getActivites().size(), "Nombre d'activités incorrect.");
             assertEquals(2, gestion.getReservations().size(), "Nombre de réservations incorrect.");
         } catch (Exception e) {
@@ -274,7 +274,7 @@ class TestGestionDonnees {
 
             // Vérifie que les fichiers invalides n'ont pas ajouté de données
             assertEquals(0, gestion.getSalles().size(), "Pas de salles pour fichier invalide.");
-            assertEquals(0, gestion.getEmployes().size(), "Pas d'employés pour fichier invalide.");
+            assertEquals(0, gestion.getUtilisateurs().size(), "Pas d'employés pour fichier invalide.");
             assertEquals(0, gestion.getActivites().size(), "Pas d'activités pour fichier invalide.");
             assertEquals(0, gestion.getReservations().size(), "Pas de réservations pour fichier invalide.");
 
@@ -307,11 +307,11 @@ class TestGestionDonnees {
 
             // Les fichiers valides doivent être importés
             assertNotNull(gestion.getSalles(), "Les salles doivent être importées.");
-            assertNotNull(gestion.getEmployes(), "Les employés doivent être importés.");
+            assertNotNull(gestion.getUtilisateurs(), "Les employés doivent être importés.");
 
             // Vérification du nombre d'éléments importés
             assertEquals(2, gestion.getSalles().size(), "Nombre de salles incorrect.");
-            assertEquals(2, gestion.getEmployes().size(), "Nombre d'employés incorrect.");
+            assertEquals(2, gestion.getUtilisateurs().size(), "Nombre d'employés incorrect.");
 
             // Vérification des catégories non affectées
             assertEquals(0, gestion.getActivites().size(), "Aucune activité ne doit être importée.");
