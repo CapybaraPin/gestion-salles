@@ -57,16 +57,16 @@
             </Label>
          </children>
       </HBox>
-      <HBox alignment="CENTER_LEFT">
+      <HBox alignment="CENTER_LEFT" prefHeight="17.0" prefWidth="229.0">
          <children>
-            <TextField fx:id="adresseIp" maxHeight="28.0" maxWidth="136.0" minHeight="28.0" minWidth="136.0" prefHeight="28.0" prefWidth="136.0" promptText="Adresse IP" styleClass="input-default">
+            <Label styleClass="typo-disabled" text="Adresse de la machine : ">
                <HBox.margin>
-                  <Insets left="25.0" />
+                  <Insets left="33.0" />
                </HBox.margin>
-            </TextField>
-            <Label styleClass="typo-disabled" text="Adresse de la machine">
+            </Label>
+            <Label fx:id="adresseIp" styleClass="typo-disabled" text="127.0.0.1">
                <HBox.margin>
-                  <Insets left="25.0" />
+                  <Insets left="20.0" />
                </HBox.margin>
             </Label>
          </children>
@@ -76,16 +76,16 @@
       </HBox>
       <HBox alignment="CENTER_LEFT">
          <children>
-            <TextField fx:id="port" maxHeight="28.0" maxWidth="136.0" minHeight="28.0" minWidth="136.0" prefHeight="28.0" prefWidth="136.0" promptText="Port" styleClass="input-default">
+            <Label styleClass="typo-disabled" text="Port de partage :">
                <HBox.margin>
-                  <Insets left="25.0" />
-               </HBox.margin>
-            </TextField>
-            <Label styleClass="typo-disabled" text="8080">
-               <HBox.margin>
-                  <Insets left="25.0" />
+                  <Insets left="33.0" />
                </HBox.margin>
             </Label>
+            <TextField fx:id="port" maxHeight="28.0" maxWidth="136.0" minHeight="28.0" minWidth="136.0" prefHeight="28.0" prefWidth="136.0" promptText="Port" styleClass="input-default">
+               <HBox.margin>
+                  <Insets left="20.0" />
+               </HBox.margin>
+            </TextField>
          </children>
       </HBox>
       <Line endX="507.0" stroke="#ebecf0">

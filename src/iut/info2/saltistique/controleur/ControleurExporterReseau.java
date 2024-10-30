@@ -9,8 +9,12 @@ import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
+import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
+
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 
 /**
  * Controleur de la vue d'importation des données depuis le réseau.
@@ -22,13 +26,13 @@ public class ControleurExporterReseau {
 
     double x,y;
 
-    /** Champ contenant l'adresse IP renseignée par l'utilisateur */
-    @FXML
-    private TextField adresseIp;
-
     /** Champ contenant le port renseigné par l'utilisateur */
     @FXML
     private TextField port;
+
+    /** Label contenant l'adresse IP de la machine */
+    @FXML
+    private Label adresseIp;
 
     /** Bouton d'éxecution de l'importation */
     @FXML
@@ -41,15 +45,33 @@ public class ControleurExporterReseau {
     double yOffset = 0;
 
     /**
+     * Initialise différents éléments de la vue d'accueil.
+     */
+    @FXML
+    void initialize() {
+        try {
+            String localIP = InetAddress.getLocalHost().getHostAddress();
+            adresseIp.setText(localIP);
+        } catch (UnknownHostException e) {
+            adresseIp.setText("Erreur : IP non trouvée");
+            e.printStackTrace();
+        }
+    }
+
+    /**
      * Permet la gestion du click sur le bouton de démarage de l'importation
      */
     @FXML
     void clickStartStop() {
         if(Saltistique.gestionDonnees.serveur != null) {
+
+            // Arrêt du serveur
             Saltistique.gestionDonnees.serveur.arreter();
             Saltistique.gestionDonnees.serveur = null;
             btnStartStop.setText("Démarrer le serveur");
         } else {
+
+            // Démarrage du serveur
             Saltistique.gestionDonnees.exporterDonnees(Integer.parseInt(port.getText()));
             btnStartStop.setText("Arrêter le serveur");
         }
