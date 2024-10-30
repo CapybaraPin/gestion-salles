@@ -7,12 +7,16 @@
 package iut.info2.saltistique.controleur;
 
 import iut.info2.saltistique.Saltistique;
+import iut.info2.saltistique.modele.Notification;
 import iut.info2.saltistique.modele.Scenes;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.DragEvent;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
@@ -30,53 +34,41 @@ import java.awt.*;
  * @author Tom GUTIERREZ & Hugo ROBLES
  */
 public class ControleurAccueil {
-    /**
-     * Bouton de fermeture de l'application
-     */
+    /** Bouton de fermeture de l'application */
     @FXML
     private Button navbarBtnClose;
 
-    /**
-     * Menu de navigation
-     */
+    /** Menu de navigation */
     @FXML
     private VBox menuContainer;
 
-    /**
-     * layer permettant de fermer le menu de navigation
-     * lors du clique en dehors de celui-ci
-     */
+    /** layer permettant de fermer le menu de navigation
+     * lors du clique en dehors de celui-ci */
     @FXML
     private Pane layerMenu;
 
-    /**
-     * Icône de fermeture de la fenêtre
-     */
+    /** Icône de fermeture de la fenêtre */
     @FXML
     private Pane icoMaximize;
 
-    /**
-     * Bouton de réduction de la fenêtre
-     */
-    @FXML
-    private Button navbarBtnMinimize;
-
-    /**
-     * Position de la souris en abscisse
-     */
+    /** Position de la souris en abscisse */
     double xOffset = 0;
 
-    /**
-     * Position de la souris en ordonné
-     */
+    /** Position de la souris en ordonné */
     double yOffset = 0;
 
-    /**
-     * Initialise différents éléments de la vue d'accueil.
-     */
+    /** Initialise différents éléments de la vue d'accueil. */
     @FXML
     void initialize() {
         setHoverEffect();
+    }
+
+    /**
+     * Affchage d'une notification
+     */
+    static void afficherNotification(String titre, String description){
+
+       // TODO : Comment faire ?
     }
 
     /**
