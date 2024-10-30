@@ -261,7 +261,7 @@
                <children>
                   <VBox mouseTransparent="true" prefHeight="725.0" prefWidth="338.0">
                      <children>
-                        <HBox minWidth="362.0" prefHeight="100.0" prefWidth="200.0" styleClass="notification" visible="false">
+                        <HBox fx:id="notifFrame" minWidth="362.0" prefHeight="100.0" prefWidth="200.0" styleClass="notification" visible="false">
                            <children>
                               <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
