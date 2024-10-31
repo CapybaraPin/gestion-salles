@@ -40,14 +40,14 @@ public class GestionDonnees implements Serializable {
 
     public Serveur serveur;
 
-    private Fichier fichierActivite;
-    private Fichier fichierReservation;
-    private Fichier fichierSalle;
-    private Fichier fichierUtilisateur;
-    private ArrayList<String[]> lignesIncorrectesActivite;
-    private ArrayList<String[]> lignesIncorrectesReservation;
-    private ArrayList<String[]> lignesIncorrectesSalle;
-    private ArrayList<String[]> lignesIncorrectesUtilisateur;
+    private Fichier fichierActivites;
+    private Fichier fichierReservations;
+    private Fichier fichierSalles;
+    private Fichier fichierUtilisateurs;
+    private ArrayList<String[]> lignesIncorrectesActivites;
+    private ArrayList<String[]> lignesIncorrectesReservations;
+    private ArrayList<String[]> lignesIncorrectesSalles;
+    private ArrayList<String[]> lignesIncorrectesUtilisateurs;
 
 
     /**
@@ -60,10 +60,10 @@ public class GestionDonnees implements Serializable {
         reservations = new HashMap<>();
         salles = new HashMap<>();
         utilisateurs = new HashMap<>();
-        lignesIncorrectesActivite = new ArrayList<>();
-        lignesIncorrectesReservation = new ArrayList<>();
-        lignesIncorrectesSalle = new ArrayList<>();
-        lignesIncorrectesUtilisateur = new ArrayList<>();
+        lignesIncorrectesActivites = new ArrayList<>();
+        lignesIncorrectesReservations = new ArrayList<>();
+        lignesIncorrectesSalles = new ArrayList<>();
+        lignesIncorrectesUtilisateurs = new ArrayList<>();
     }
 
     /**
@@ -82,15 +82,15 @@ public class GestionDonnees implements Serializable {
             throw new IOException(e.getMessage());
         }
 
-        if (fichierActivite == null || fichierReservation == null || fichierSalle == null || fichierUtilisateur == null) {
+        if (fichierActivites == null || fichierReservations == null || fichierSalles == null || fichierUtilisateurs == null) {
             throw new IllegalArgumentException("Les fichiers n'ont pas été correctement importés.");
         }
 
         try {
-            AjouterDonnees(fichierActivite.contenuFichier(), this::ajouterActivite);
-            AjouterDonnees(fichierSalle.contenuFichier(), this::ajouterSalle);
-            AjouterDonnees(fichierUtilisateur.contenuFichier(), this::ajouterUtilisateur);
-            AjouterDonnees(fichierReservation.contenuFichier(), this::ajouterReservation);
+            ajouterDonnees(fichierActivites.contenuFichier(), this::ajouterActivite);
+            ajouterDonnees(fichierSalles.contenuFichier(), this::ajouterSalle);
+            ajouterDonnees(fichierUtilisateurs.contenuFichier(), this::ajouterUtilisateur);
+            ajouterDonnees(fichierReservations.contenuFichier(), this::ajouterReservation);
         } catch (IOException e) {
             throw new IOException(e.getMessage());
         }
@@ -100,7 +100,7 @@ public class GestionDonnees implements Serializable {
         // TODO : ne pas ajouter les lignes vide et l'entete dans les talbeauxligne incorrectes
     }
 
-    private void AjouterDonnees(String[] contenuFichier, Consumer<String> ajouterLigne) throws IOException {
+    private void ajouterDonnees(String[] contenuFichier, Consumer<String> ajouterLigne) throws IOException {
         for (String ligne : contenuFichier) {
             ajouterLigne.accept(ligne);
         }
@@ -111,10 +111,10 @@ public class GestionDonnees implements Serializable {
         reservations.clear();
         salles.clear();
         utilisateurs.clear();
-        lignesIncorrectesActivite.clear();
-        lignesIncorrectesReservation.clear();
-        lignesIncorrectesSalle.clear();
-        lignesIncorrectesUtilisateur.clear();
+        lignesIncorrectesActivites.clear();
+        lignesIncorrectesReservations.clear();
+        lignesIncorrectesSalles.clear();
+        lignesIncorrectesUtilisateurs.clear();
     }
 
 
@@ -239,7 +239,7 @@ public class GestionDonnees implements Serializable {
 
     /**
      * Permet de stocker les fichiers dans les attributs de la classe
-     * fichierActivite, fichierReservation, fichierSalle, fichierUtilisateur
+     * fichierActivites, fichierReservations, fichierSalles, fichierUtilisateurs
      * Si un fichier n'est pas reconnu alors une exception est levée et
      * tous les fichiers sont remis à null
      * @param cheminFichiers
@@ -262,19 +262,19 @@ public class GestionDonnees implements Serializable {
         for (int i = 0; i < 4; i++) {
             switch (fichiers[i].contenuFichier()[0].split(DELIMITEUR).length) {
                 case 4:
-                    fichierUtilisateur = fichiers[i];
+                    fichierUtilisateurs = fichiers[i];
                     break;
                 case 9:
-                    fichierSalle = fichiers[i];
+                    fichierSalles = fichiers[i];
                     break;
                 case 2:
-                    fichierActivite = fichiers[i];
+                    fichierActivites = fichiers[i];
                     break;
                 case 7:
-                    fichierReservation = fichiers[i];
+                    fichierReservations = fichiers[i];
                     break;
                 default:
-                    fichierActivite = fichierReservation = fichierSalle = fichierUtilisateur = null; // Remise à zéro
+                    fichierActivites = fichierReservations = fichierSalles = fichierUtilisateurs = null; // Remise à zéro
                     throw new IllegalArgumentException("Fichier non reconnu");
             }
         }
@@ -307,7 +307,7 @@ public class GestionDonnees implements Serializable {
         }
 
         if (messageErreur != null) {
-            lignesIncorrectesActivite.add(new String[]{ligne, messageErreur});
+            lignesIncorrectesActivites.add(new String[]{ligne, messageErreur});
         }
     }
 
@@ -356,7 +356,7 @@ public class GestionDonnees implements Serializable {
         }
 
         if (messageErreur != null) {
-            lignesIncorrectesSalle.add(new String[]{ligne, messageErreur});
+            lignesIncorrectesSalles.add(new String[]{ligne, messageErreur});
         }
     }
 
@@ -438,7 +438,7 @@ public class GestionDonnees implements Serializable {
         }
 
         if (messageErreur != null) {
-            lignesIncorrectesReservation.add(new String[]{ligne, messageErreur});
+            lignesIncorrectesReservations.add(new String[]{ligne, messageErreur});
         }
     }
 
@@ -594,7 +594,7 @@ public class GestionDonnees implements Serializable {
         }
 
         if (messageErreur != null) {
-            lignesIncorrectesUtilisateur.add(new String[]{ligne, messageErreur});
+            lignesIncorrectesUtilisateurs.add(new String[]{ligne, messageErreur});
         }
     }
 
