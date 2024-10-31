@@ -52,6 +52,7 @@ public class GestionDonnees implements Serializable {
     private ArrayList<String[]> lignesIncorrectesSalles;
     private ArrayList<String[]> lignesIncorrectesUtilisateurs;
 
+    public float progress = 0;
 
     /**
      * Constructeur de la classe GestionDonnees.
@@ -81,6 +82,7 @@ public class GestionDonnees implements Serializable {
             System.out.println("Impossible d'importer les fichiers");
         }
     }
+
 
     /**
      * Importe les données depuis les fichiers spécifiés et les stocke dans les tableaux finaux
@@ -133,6 +135,14 @@ public class GestionDonnees implements Serializable {
         lignesIncorrectesUtilisateurs.clear();
     }
 
+    public void setProgress(float progress) {
+        System.out.println("Progression : " + progress);
+        this.progress = progress;
+    }
+
+    public float getProgress() {
+        return this.progress;
+    }
 
     /**
      * Importe les données depuis une adresse IP et un port spécifiés.

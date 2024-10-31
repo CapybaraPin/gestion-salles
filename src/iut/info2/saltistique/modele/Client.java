@@ -1,5 +1,8 @@
 package iut.info2.saltistique.modele;
 
+import iut.info2.saltistique.Saltistique;
+import iut.info2.saltistique.controleur.ControleurImporterReseau;
+
 import java.io.*;
 import java.net.Socket;
 
@@ -102,6 +105,8 @@ public class Client {
             if (bytesRead == -1) {
                 throw new EOFException("Fin de fichier inattendue");
             }
+
+            Saltistique.gestionDonnees.setProgress((float) bytesRead / tailleFichier);
 
             bos.write(buffer, 0, bytesRead);
             totalRead += bytesRead;

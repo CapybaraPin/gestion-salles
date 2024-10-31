@@ -8,8 +8,11 @@ import iut.info2.saltistique.Saltistique;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.ProgressBar;
 import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 /**
@@ -44,12 +47,42 @@ public class ControleurImporterReseau {
     /** Position de la souris en ordonné */
     double yOffset = 0;
 
+    @FXML
+    private Label progressLabel;
+
+    @FXML
+    private VBox progressVbox;
+
+    @FXML
+    private ProgressBar progressBar;
+
     /**
      * Permet la gestion du click sur le bouton de démarage de l'importation
      */
     @FXML
     void clickImporter() {
        Saltistique.gestionDonnees.importerDonnees(adresseIp.getText(), Integer.parseInt(port.getText()));
+       progressControl(0.1f);
+    }
+
+    /**
+     * Si la valeur de paramètre est à null alors la vbox est pas visible,
+     * sinon la valeur est définie sur la progressBar
+     */
+    @FXML
+    void progressControl(float valeur) {
+        progressVbox.setVisible(true);
+        progressBar.setProgress(valeur);
+        progressLabel.setText("Importation des données en cours : " + valeur + "%");
+
+    }
+
+    public void onProgressUpdate(double progress) {
+        // Met à jour l'interface graphique dans le thread JavaFX
+        javafx.application.Platform.runLater(() -> {
+            progressBar.setProgress(progress);
+            progressLabel.setText("Progression : " + (int) (progress * 100) + "%");
+        });
     }
 
     /**

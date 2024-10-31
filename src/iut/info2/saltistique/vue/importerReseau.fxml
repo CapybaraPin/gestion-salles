@@ -1,5 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.lang.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.shape.*?>
+<?import javafx.scene.text.*?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.Cursor?>
 <?import javafx.scene.control.Button?>
@@ -12,9 +19,9 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.shape.Line?>
 <?import javafx.scene.text.Font?>
-
 <?import java.lang.String?>
-<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="259.0" prefWidth="507.0" stylesheets="@style.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="iut.info2.saltistique.controleur.ControleurImporterReseau">
+
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="287.0" prefWidth="507.0" stylesheets="@style.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="iut.info2.saltistique.controleur.ControleurImporterReseau">
    <children>
       <GridPane minHeight="33.0" minWidth="507.0" onMouseDragged="#dragged" onMousePressed="#clicked" prefHeight="33.0" prefWidth="507.0">
         <columnConstraints>
@@ -82,12 +89,30 @@
             </Label>
          </children>
       </HBox>
+      <VBox fx:id="progressVbox" prefHeight="66.0" prefWidth="508.0" visible="false">
+         <children>
+            <Line endX="507.0" stroke="#ebecf0" />
+            <ProgressBar fx:id="progressBar" prefHeight="20.0" prefWidth="445.0" progress="0.18">
+               <VBox.margin>
+                  <Insets left="25.0" top="10.0" />
+               </VBox.margin>
+            </ProgressBar>
+            <Label fx:id="progressLabel" text="Importation en cours...">
+               <VBox.margin>
+                  <Insets left="25.0" />
+               </VBox.margin>
+            </Label>
+         </children>
+         <VBox.margin>
+            <Insets top="5.0" />
+         </VBox.margin>
+      </VBox>
       <Line endX="507.0" stroke="#ebecf0">
          <VBox.margin>
-            <Insets top="25.0" />
+            <Insets top="10.0" />
          </VBox.margin>
       </Line>
-      <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0">
+      <HBox alignment="CENTER" prefHeight="69.0" prefWidth="505.0">
          <children>
             <HBox alignment="CENTER_LEFT" HBox.hgrow="ALWAYS">
                <children>
