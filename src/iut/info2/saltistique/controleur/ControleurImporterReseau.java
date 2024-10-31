@@ -34,6 +34,10 @@ public class ControleurImporterReseau {
     @FXML
     private Button btnImporter;
 
+    /** Bouton d'appel de la notice */
+    @FXML
+    private Button btnAide;
+
     /** Position de la souris en abscisse */
     double xOffset = 0;
 
@@ -45,7 +49,7 @@ public class ControleurImporterReseau {
      */
     @FXML
     void clickImporter() {
-        Saltistique.gestionDonnees.importerDonnees(adresseIp.getText(), Integer.parseInt(port.getText()));
+       Saltistique.gestionDonnees.importerDonnees(adresseIp.getText(), Integer.parseInt(port.getText()));
     }
 
     /**

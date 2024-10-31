@@ -5,6 +5,7 @@
 
 package iut.info2.saltistique.modele;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.Collection;
@@ -32,6 +33,8 @@ public class GestionDonnees implements Serializable {
     /** Message d'erreur affiché lorsque le nombre de fichiers fournis est incorrect. */
     private static final String ERREUR_NB_CHEMINS_FICHIERS =
             "Erreur : Le nombre de fichiers à fournir n'est pas respecté";
+
+    private Fichier[] fichiers;
 
     private HashMap<Integer, Salle> salles;
     private HashMap<Integer, Activite> activites;
@@ -64,6 +67,19 @@ public class GestionDonnees implements Serializable {
         lignesIncorrectesReservations = new ArrayList<>();
         lignesIncorrectesSalles = new ArrayList<>();
         lignesIncorrectesUtilisateurs = new ArrayList<>();
+
+        try{
+            this.fichiers = new Fichier[]{
+                    new Fichier("src/ressources/fichiers/activites.csv"),
+                    new Fichier("src/ressources/fichiers/employes.csv"),
+                    new Fichier("src/ressources/fichiers/reservations.csv"),
+                    new Fichier("src/ressources/fichiers/salles.csv")
+            };
+
+            System.out.println("Fichiers bien importés");
+        } catch (Exception e) {
+            System.out.println("Impossible d'importer les fichiers");
+        }
     }
 
     /**
@@ -125,13 +141,17 @@ public class GestionDonnees implements Serializable {
      * @param port le port à utiliser pour l'importation
      */
     public void importerDonnees(String ip, int port) {
-        Object[] donnee;
+
+        File dossierSauvegarde = new File("src/ressources/fichiers/reception");
+
+        File[] fichiersExistants = dossierSauvegarde.listFiles();
+        if (fichiersExistants != null && fichiersExistants.length > 0) {
+            // Le dossier n'est pas vide
+            System.err.println("Le dossier de sauvegarde n'est pas vide. Déchargez les données...");
+        }
+
         Client client = new Client(ip, port);
-        donnee = (Object[]) client.connect();
-//        this.activites = (Activite[]) donnee[0]; // todo : Fix me
-//        this.reservations = (Reservation[]) donnee[1];
-//        this.salles = (Salle[]) donnee[2];
-//        this.utilisateurs = (Utilisateur[]) donnee[3];
+        client.reception();
     }
 
     /**
@@ -140,13 +160,10 @@ public class GestionDonnees implements Serializable {
      * @param port le port à utiliser pour l'exportation
      */
     public void exporterDonnees(int port) {
-        //TODO : vérification des donnée a envoyé
-        Object[] donnee = {activites, reservations, salles, utilisateurs};
-        this.serveur = new Serveur(port, donnee);
+        this.serveur = new Serveur(port, this.fichiers);
         Thread serveurThread = new Thread(serveur);
         serveurThread.start();
     }
-
 
     public HashMap<Integer, Salle> getSalles() {
         return this.salles;
