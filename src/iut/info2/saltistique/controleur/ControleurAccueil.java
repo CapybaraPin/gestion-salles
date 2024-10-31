@@ -83,7 +83,7 @@ public class ControleurAccueil {
 
     /**
      * Permet la gestion du click sur le bouton d'accès
-     * à l'importantion depuis le réseau.
+     * à l'importation depuis le réseau.
      */
     @FXML
     void clickImporterReseau() {
@@ -151,6 +151,8 @@ public class ControleurAccueil {
 
         try {
             Saltistique.gestionDonnees.importerDonnees(chemins);
+            Saltistique.changeScene(Scenes.CONSULTER_DONNEES);
+
         } catch (Exception e) {
             System.out.println("Erreur lors de l'importation des fichiers : " + e.getMessage());
         }
@@ -181,6 +183,7 @@ public class ControleurAccueil {
             }
             try {
                 Saltistique.gestionDonnees.importerDonnees(chemins);
+                Saltistique.changeScene(Scenes.CONSULTER_DONNEES);
             } catch (Exception e) {
                 System.out.println("Erreur lors de l'importation des fichiers : " + e.getMessage());
             }
@@ -273,4 +276,5 @@ public class ControleurAccueil {
             System.out.println("Erreur : " + e.getMessage());
         }
     }
+
 }
