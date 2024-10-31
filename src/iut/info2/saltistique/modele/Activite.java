@@ -17,4 +17,8 @@ public class Activite implements Serializable {
     public String getIdentifiant() {
         return identifiant;
     }
+
+    public String getNom() {
+        return nom;
+    }
 }

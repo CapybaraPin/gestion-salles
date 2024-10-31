@@ -15,11 +15,10 @@ public enum Regex {
          */
         @Override
         public String getRegex(String delimiteur) {
-            return "^E\\d{6}" + delimiteur // Identifiant : commence par 'E' suivi de 6 chiffres
-                    + "[A-Za-z]+" + delimiteur // Nom : une ou plusieurs lettres
-                    + "[A-Za-z]+" // Prénom : une ou plusieurs lettres
-                    + delimiteur // Délimiteur
-                    + "\\d{4}$"; // Téléphone : exactement 4 chiffres
+            return "^E\\d{6}" + delimiteur + // Identifiant : 'E' suivi de 6 chiffres
+                    "[^;]+" + delimiteur + // Nom : tout caractère sauf le délimiteur
+                    "[^;]+" + delimiteur + // Prénom : tout caractère sauf le délimiteur
+                    "(\\d{4})?$"; // Téléphone : 4 chiffres ou vide
         }
     },
     SALLES {
@@ -73,8 +72,8 @@ public enum Regex {
                     + "\\d{1,2}h\\d{2}" + delimiteur // Heure de début : HHhMM
                     + "\\d{1,2}h\\d{2}" + delimiteur // Heure de fin : HHhMM
                     + "(?:[^" + delimiteur + "]*)" + delimiteur // Commentaire ou organisation : tout sauf le délimiteur ou vide
-                    + "[A-Za-z]*" + delimiteur // Nom de l'employé : une ou plusieurs lettres ou vide
-                    + "[A-Za-z]*" + delimiteur // Prénom de l'employé : une ou plusieurs lettres ou vide
+                    + "(?:[^" + delimiteur + "]*)" + delimiteur // Nom de l'employé : tout sauf le délimiteur ou vide
+                    + "(?:[^" + delimiteur + "]*)" + delimiteur // Prénom de l'employé : tout sauf le délimiteur ou vide
                     + "(?:\\d{10}|)" + delimiteur // Téléphone de l'employé : 10 chiffres ou vide
                     + "(?:[^" + delimiteur + "]*)$"; // Activité : tout sauf le délimiteur ou vide
         }

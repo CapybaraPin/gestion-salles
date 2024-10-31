@@ -124,13 +124,12 @@ public class Fichier {
 
         // Première lecture : initialiser le nombre de lignes
         try {
-            while ((ligneAct = tamponFichier.readLine()) != null) {
+            while (tamponFichier.readLine() != null) {
                 nbLignes++;
             }
         } catch (IOException e) {
             throw new IOException(ERREUR_CONTENU_FICHIER, e);
         }
-
         if (nbLignes == 0) {
             throw new IOException("Le fichier est vide.");
         }
@@ -154,6 +153,16 @@ public class Fichier {
             }
         } catch (IOException e) {
             throw new IOException(ERREUR_CONTENU_FICHIER, e);
+        }
+
+        tamponFichier.close();
+        lecteurFichier.close();
+
+        try {
+            lecteurFichier = new FileReader(fichierExploite);
+            tamponFichier = new BufferedReader(lecteurFichier);
+        } catch (IOException e) {
+            throw new IOException(ERREUR_OUVERTURE_FICHIER + fichierExploite.getName(), e);
         }
 
         return contenu;

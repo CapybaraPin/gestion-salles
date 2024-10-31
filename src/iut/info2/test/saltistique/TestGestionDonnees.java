@@ -2,12 +2,15 @@ package iut.info2.test.saltistique;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import iut.info2.saltistique.modele.Fichier;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import iut.info2.saltistique.modele.GestionDonnees;
 
+import java.io.IOException;
+import java.io.StringReader;
 import java.time.LocalDateTime;
 
 class TestGestionDonnees {
@@ -175,25 +178,27 @@ class TestGestionDonnees {
     }
 
     @Test
-    void testReconnaitreEntete() {
-        for (int i = 0; i < ENTETES_VALIDES.length; i++) {
-            assertEquals(TYPE_FICHIERS[i], GestionDonnees.reconnaitreEntete(ENTETES_VALIDES[i], DELIMITEUR));
-        }
-        for (String entetesNonValidesSalle : ENTETES_NON_VALIDES_SALLES) {
-            assertNotEquals(TYPE_FICHIERS[0],
-                    GestionDonnees.reconnaitreEntete(entetesNonValidesSalle, DELIMITEUR));
-        }
-        for (String entetesNonValidesEmploye : ENTETES_NON_VALIDES_EMPLOYES) {
-            assertNotEquals(TYPE_FICHIERS[1],
-                    GestionDonnees.reconnaitreEntete(entetesNonValidesEmploye, DELIMITEUR));
-        }
-        for (String entetesNonValidesActivite : ENTETES_NON_VALIDES_ACTIVITES) {
-            assertNotEquals(TYPE_FICHIERS[2],
-                    GestionDonnees.reconnaitreEntete(entetesNonValidesActivite, DELIMITEUR));
-        }
-        for (String entetesNonValidesReservation : ENTETES_NON_VALIDES_RESERVATIONS) {
-            assertNotEquals(TYPE_FICHIERS[3],
-                    GestionDonnees.reconnaitreEntete(entetesNonValidesReservation, DELIMITEUR));
+    void testImporterDonnees() {
+        GestionDonnees gestion = new GestionDonnees();
+
+        // test fonctionnel de la méthode importerDonnees
+        // à refaire entièrement avec les tests unitaires
+        try {
+            gestion.importerDonnees(CHEMINS_VALIDES);
+
+            // Vérification que chaque classe d'équivalence valide est bien remplie
+            assertNotNull(gestion.getSalles(), "Les salles doivent être importées.");
+            assertNotNull(gestion.getUtilisateurs(), "Les employés doivent être importés.");
+            assertNotNull(gestion.getActivites(), "Les activités doivent être importées.");
+            assertNotNull(gestion.getReservations(), "Les réservations doivent être importées.");
+
+            // Nombre d'éléments
+            assertEquals(9, gestion.getSalles().size(), "Nombre de salles incorrect.");
+            assertEquals(8, gestion.getUtilisateurs().size(), "Nombre d'employés incorrect.");
+            assertEquals(6, gestion.getActivites().size(), "Nombre d'activités incorrect.");
+            assertEquals(18, gestion.getReservations().size(), "Nombre de réservations incorrect.");
+        } catch (Exception e) {
+            fail("Erreur inattendue : " + e.getMessage());
         }
     }
 
