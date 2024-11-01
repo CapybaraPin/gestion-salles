@@ -190,21 +190,40 @@
                                     <Insets bottom="5.0" top="5.0" />
                                  </VBox.margin>
                               </Separator>
-                              <HBox alignment="CENTER_LEFT" onMouseClicked="#handlerPartager" prefHeight="6.0" prefWidth="268.0" styleClass="btn-menu">
+                              <HBox alignment="CENTER_LEFT" onMouseClicked="#clickDechargerDonnees" prefHeight="6.0" prefWidth="268.0" styleClass="btn-menu">
                                  <children>
                                     <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true" scaleX="0.9" scaleY="0.9">
                                        <image>
-                                          <Image url="@notice.png" />
+                                          <Image url="@unload.png" />
                                        </image>
                                        <HBox.margin>
                                           <Insets right="5.0" />
                                        </HBox.margin>
                                     </ImageView>
-                                    <Text strokeType="OUTSIDE" strokeWidth="0.0" styleClass="typo-default" text="Partager les donnee" />
+                                    <Text strokeType="OUTSIDE" strokeWidth="0.0" styleClass="typo-default" text="Décharger les données" />
                                  </children>
                                  <padding>
                                     <Insets left="10.0" right="10.0" />
                                  </padding>
+                              </HBox>
+                              <HBox alignment="CENTER_LEFT" onMouseClicked="#handlerPartager" prefHeight="6.0" prefWidth="268.0" styleClass="btn-menu">
+                                 <children>
+                                    <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true" scaleX="0.9" scaleY="0.9">
+                                       <image>
+                                          <Image url="@send.png" />
+                                       </image>
+                                       <HBox.margin>
+                                          <Insets right="5.0" />
+                                       </HBox.margin>
+                                    </ImageView>
+                                    <Text strokeType="OUTSIDE" strokeWidth="0.0" styleClass="typo-default" text="Partager les données" />
+                                 </children>
+                                 <padding>
+                                    <Insets left="10.0" right="10.0" />
+                                 </padding>
+                                 <VBox.margin>
+                                    <Insets bottom="5.0" top="5.0" />
+                                 </VBox.margin>
                               </HBox>
                               <Separator prefWidth="200.0" styleClass="menu-sepator" />
                               <HBox alignment="CENTER_LEFT" onMouseClicked="#handlerAide" prefHeight="6.0" prefWidth="268.0" styleClass="btn-menu">
@@ -222,15 +241,18 @@
                                  <padding>
                                     <Insets left="10.0" right="10.0" />
                                  </padding>
+                                 <VBox.margin>
+                                    <Insets bottom="5.0" top="5.0" />
+                                 </VBox.margin>
                               </HBox>
                               <Separator prefWidth="200.0" styleClass="menu-sepator">
                                  <VBox.margin>
-                                    <Insets bottom="5.0" top="5.0" />
+                                    <Insets />
                                  </VBox.margin>
                               </Separator>
                               <HBox alignment="CENTER_LEFT" onMouseClicked="#fermerFenetre" prefHeight="6.0" prefWidth="268.0" styleClass="btn-menu">
                                  <children>
-                                    <ImageView fitHeight="20.0" fitWidth="40.0" opacity="0.0" pickOnBounds="true" preserveRatio="true" scaleX="0.8" scaleY="0.8">
+                                    <ImageView fitHeight="20.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true" scaleX="0.8" scaleY="0.8">
                                        <image>
                                           <Image url="@quit.png" />
                                        </image>
@@ -243,6 +265,9 @@
                                  <padding>
                                     <Insets left="10.0" right="10.0" />
                                  </padding>
+                                 <VBox.margin>
+                                    <Insets top="3.0" />
+                                 </VBox.margin>
                               </HBox>
                            </children>
                            <padding>

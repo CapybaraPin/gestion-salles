@@ -88,6 +88,14 @@ public class ControleurAccueil {
     }
 
     /**
+     * Permet la gestion du click sur le bouton de déchangement des données
+     */
+    @FXML
+    void clickDechargerDonnees() {
+        Saltistique.gestionDonnees.viderDonnees();
+    }
+
+    /**
      * Ajoute les effets de survol sur les boutons de la barre de navigation.
      */
     private void setHoverEffect() {

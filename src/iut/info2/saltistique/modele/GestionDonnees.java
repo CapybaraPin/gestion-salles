@@ -52,8 +52,6 @@ public class GestionDonnees implements Serializable {
     private ArrayList<String[]> lignesIncorrectesSalles;
     private ArrayList<String[]> lignesIncorrectesUtilisateurs;
 
-    public float progress = 0;
-
     /**
      * Constructeur de la classe GestionDonnees.
      * Initialise les tableaux des employés, salles, activités, et réservations.
@@ -124,24 +122,20 @@ public class GestionDonnees implements Serializable {
         }
     }
 
-    private void viderDonnees() {
-        activites.clear();
-        reservations.clear();
-        salles.clear();
-        utilisateurs.clear();
-        lignesIncorrectesActivites.clear();
-        lignesIncorrectesReservations.clear();
-        lignesIncorrectesSalles.clear();
-        lignesIncorrectesUtilisateurs.clear();
-    }
-
-    public void setProgress(float progress) {
-        System.out.println("Progression : " + progress);
-        this.progress = progress;
-    }
-
-    public float getProgress() {
-        return this.progress;
+    public void viderDonnees() {
+        try{
+            activites.clear();
+            reservations.clear();
+            salles.clear();
+            utilisateurs.clear();
+            lignesIncorrectesActivites.clear();
+            lignesIncorrectesReservations.clear();
+            lignesIncorrectesSalles.clear();
+            lignesIncorrectesUtilisateurs.clear();
+            System.out.println("Données vidé avec succès");
+        } catch (Exception e) {
+            System.err.println("Impossible de vider les données");
+        }
     }
 
     /**
