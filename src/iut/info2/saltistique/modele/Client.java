@@ -106,8 +106,6 @@ public class Client {
                 throw new EOFException("Fin de fichier inattendue");
             }
 
-            Saltistique.gestionDonnees.setProgress((float) bytesRead / tailleFichier);
-
             bos.write(buffer, 0, bytesRead);
             totalRead += bytesRead;
         }
