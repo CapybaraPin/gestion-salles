@@ -7,16 +7,13 @@
 package iut.info2.saltistique.controleur;
 
 import iut.info2.saltistique.Saltistique;
-import iut.info2.saltistique.modele.Notification;
+import iut.info2.saltistique.modele.GestionDonnees;
 import iut.info2.saltistique.modele.Scenes;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.image.ImageView;
 import javafx.scene.input.DragEvent;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
@@ -152,6 +149,7 @@ public class ControleurAccueil {
         try {
             Saltistique.gestionDonnees.importerDonnees(chemins);
             Saltistique.changeScene(Scenes.CONSULTER_DONNEES);
+            ControleurConsulterDonnees.initialiserTableaux();
 
         } catch (Exception e) {
             System.out.println("Erreur lors de l'importation des fichiers : " + e.getMessage());

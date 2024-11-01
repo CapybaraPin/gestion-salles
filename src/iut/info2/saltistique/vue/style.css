@@ -234,3 +234,20 @@
     -fx-background-color: #27282E;
     -fx-background-radius: 8px;
 }
+
+.table-view {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+}
+
+.table-view .column-header-background{
+    -fx-background-color: transparent;
+}
+
+.table-view .column-header {
+    -fx-background-color: transparent;
+    -fx-border-color: #EBECF0;
+    -fx-text-fill: #3574F0;
+    -fx-font-size: 13;
+    -fx-font-family: "Inter 28pt Medium";
+}

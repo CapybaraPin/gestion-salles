@@ -46,7 +46,9 @@ public class Saltistique extends Application {
     /** Un EnumMap qui stocke les scènes associées à chaque valeur de l'énumération {@link Scenes}. */
     private static EnumMap<Scenes, Scene> scenes = new EnumMap<>(Scenes.class);
 
-    /** La fenêtre principale (ou scène principale) de l'application JavaFX. */
+    /**
+     * La fenêtre principale (ou scène principale) de l'application JavaFX.
+     */
     private static Stage primaryStage;
 
     private static Stage popUp;
@@ -156,5 +158,9 @@ public class Saltistique extends Application {
         gestionDonnees = new GestionDonnees();
 
         launch();
+    }
+
+    public static Stage getPrimaryStage() {
+        return primaryStage;
     }
 }
