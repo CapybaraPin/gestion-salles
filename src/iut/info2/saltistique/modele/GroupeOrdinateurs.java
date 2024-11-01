@@ -11,4 +11,14 @@ public class GroupeOrdinateurs {
         this.type = type;
         this.logiciels = logiciels;
     }
+
+    public String getType() {
+        return this.type;
+    }
+    public String[] getLogiciels() {
+        return this.logiciels;
+    }
+    public int getQuantite() {
+        return this.quantite;
+    }
 }

@@ -23,4 +23,40 @@ public class Salle implements Serializable {
         this.imprimante = imprimante;
         this.ordinateurs = ordinateurs;
     }
+
+    public String getIdentifiant() {
+        return identifiant;
+    }
+
+    public String getNom() {
+        return nom;
+    }
+
+    public int getCapacite() {
+        return capacite;
+    }
+
+    public boolean isVideoProjecteur() {
+        return videoProjecteur;
+    }
+
+    public boolean isEcranXXL() {
+        return ecranXXL;
+    }
+
+    public boolean isImprimante() {
+        return imprimante;
+    }
+
+    public int getOrdinateurs() {
+        return ordinateurs.getQuantite();
+    }
+
+    public String getType() {
+        return ordinateurs.getType();
+    }
+
+    public String[] getLogiciels() {
+        return ordinateurs.getLogiciels();
+    }
 }

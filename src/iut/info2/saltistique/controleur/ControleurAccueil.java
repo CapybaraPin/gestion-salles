@@ -157,7 +157,6 @@ public class ControleurAccueil {
         try {
             Saltistique.gestionDonnees.importerDonnees(chemins);
             Saltistique.changeScene(Scenes.CONSULTER_DONNEES);
-            ControleurConsulterDonnees.initialiserTableaux();
 
         } catch (Exception e) {
             System.out.println("Erreur lors de l'importation des fichiers : " + e.getMessage());

@@ -17,4 +17,21 @@ public class Utilisateur implements Serializable {
         this.prenom = prenom;
         this.numeroTelephone = numeroTelephone;
     }
+
+    public String getIdentifiant() {
+        return identifiant;
+    }
+
+    public String getNom() {
+        return nom;
+    }
+
+    public String getPrenom() {
+        return prenom;
+    }
+
+    public String getNumeroTelephone() {
+        return numeroTelephone;
+    }
+
 }
