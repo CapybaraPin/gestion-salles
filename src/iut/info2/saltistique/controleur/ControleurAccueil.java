@@ -1,5 +1,5 @@
 /*
- * ControleurAccueil.java               20/10/2024
+ * ControleurAccueil.java 20/10/2024
  * IUT de RODEZ, tous les droits sont réservés
  *
  * @author Tom GUTIERREZ & Hugo ROBLES
@@ -38,8 +38,8 @@ public class ControleurAccueil {
     @FXML
     private VBox menuContainer;
 
-    /** layer permettant de fermer le menu de navigation
-     * lors du clique en dehors de celui-ci */
+    /** Layer permettant de fermer le menu de navigation
+     * lors du click en dehors de celui-ci */
     @FXML
     private Pane layerMenu;
 
@@ -107,7 +107,7 @@ public class ControleurAccueil {
     }
 
     /**
-     * récupère les coordonnées de la souris lors du clique
+     * Récupère les coordonnées de la souris lors du click
      * @param event
      */
     @FXML
@@ -200,7 +200,7 @@ public class ControleurAccueil {
     /**
      * Permet de gérer l'affichage du menu de navigation
      * lorsque l'utilisateur clique sur l'icône de burger
-     * celui ci s'affiche ou se cache
+     * celui-ci s'affiche ou se cache
      */
     @FXML
     void burgerClicked() {

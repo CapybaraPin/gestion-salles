@@ -15,8 +15,12 @@ public class GroupeOrdinateurs {
     public String getType() {
         return this.type;
     }
-    public String[] getLogiciels() {
-        return this.logiciels;
+    public String getLogiciels() {
+        String logicielsRetour = "";
+        for (int i = 0; i < logiciels.length; i++) {
+            logicielsRetour += logiciels[i].toLowerCase() + ", ";
+        }
+        return logicielsRetour;
     }
     public int getQuantite() {
         return this.quantite;

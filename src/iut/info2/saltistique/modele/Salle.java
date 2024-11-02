@@ -62,7 +62,7 @@ public class Salle implements Serializable {
         return ordinateurs.getType();
     }
 
-    public String[] getLogiciels() {
+    public String getLogiciels() {
         if (ordinateurs == null) {
             return null;
         }

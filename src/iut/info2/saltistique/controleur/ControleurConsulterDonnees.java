@@ -1,3 +1,10 @@
+/*
+ * ControleurConsulterDonnees.java 02/11/2024
+ * IUT de RODEZ, tous les droits sont réservés
+ *
+ * @author Jules VIALAS
+ */
+
 package iut.info2.saltistique.controleur;
 
 import iut.info2.saltistique.Saltistique;
@@ -18,11 +25,8 @@ import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.time.LocalDateTime;
-import java.util.HashMap;
 import java.util.Map;
-
 import javafx.scene.control.TableColumn;
-
 import static iut.info2.saltistique.Saltistique.gestionDonnees;
 
 /**
@@ -31,7 +35,6 @@ import static iut.info2.saltistique.Saltistique.gestionDonnees;
  * (réservations, activités, employés, salles) ainsi que le contrôle des boutons
  * et autres éléments interactifs de l'interface.
  *
- * @author Jules VIALAS
  */
 public class ControleurConsulterDonnees {
 
@@ -81,7 +84,7 @@ public class ControleurConsulterDonnees {
 
     /** Colonne pour le numéro de téléphone de l'employé. */
     @FXML
-    public TableColumn<Utilisateur, String> Numero_de_telephone;
+    public TableColumn<Utilisateur, String> numeroDeTelephone;
 
     /** Colonne pour l'identifiant de l'activité. */
     @FXML
@@ -97,11 +100,11 @@ public class ControleurConsulterDonnees {
 
     /** Colonne pour la date de début de la réservation. */
     @FXML
-    public TableColumn<Reservation, LocalDateTime> Date_de_debut;
+    public TableColumn<Reservation, LocalDateTime> dateDeDebut;
 
     /** Colonne pour la date de fin de la réservation. */
     @FXML
-    public TableColumn<Reservation, LocalDateTime> Date_de_fin;
+    public TableColumn<Reservation, LocalDateTime> dateDeFin;
 
     /** Colonne pour la description de la réservation. */
     @FXML
@@ -161,7 +164,7 @@ public class ControleurConsulterDonnees {
     @FXML
     public TableColumn<Salle, Integer> Capacite;
 
-    /** Colonne pour la disponibilité d'un vidéo projecteur. */
+    /** Colonne pour la disponibilité d'une vidéo projecteur. */
     @FXML
     public TableColumn<Salle, Boolean> VideoProjecteur;
 
@@ -184,6 +187,14 @@ public class ControleurConsulterDonnees {
     /** Colonne pour la disponibilité d'une imprimante. */
     @FXML
     public TableColumn<Salle, Boolean> Imprimante;
+
+    /**
+     * Listes observables contenant les objets de chaques types.
+     * Ces listes sont utilisées pour afficher et gérer les types de données disponibles
+     * dans l'application, permettant la liaison de données pour des composants
+     * de l'interface utilisateur, tels que des tableaux ou des listes.
+     *
+     */
     private ObservableList<Salle> listeSalles;
     private ObservableList<Activite> listeActivites;
     private ObservableList<Utilisateur> listeEmployes;
@@ -193,44 +204,35 @@ public class ControleurConsulterDonnees {
      * Initialise le contrôleur et configure les tableaux.
      */
     public void initialize() {
-        // Initialisez les ObservableLists
         listeSalles = FXCollections.observableArrayList();
         listeActivites = FXCollections.observableArrayList();
         listeEmployes = FXCollections.observableArrayList();
         listeReservations = FXCollections.observableArrayList();
-
-        // Charger les données dans les listes
         initialiserTableaux();
-
-        // Configurer les TableView
         initialiserTableauSalles();
         initialiserTableauActivites();
         initialiserTableauEmployes();
         initialiserTableauReservations();
     }
 
+    /**
+     * Initialise les listes de salles, d'activités, d'employés et de réservations
+     * en les remplissant avec les données fournies par le gestionnaire de données.
+     *
+     * Cette méthode parcourt les entrées des collections de données et les ajoute
+     * aux listes correspondantes.
+     */
     private void initialiserTableaux() {
-        // Charger les salles
-        HashMap<Integer, Salle> salles = gestionDonnees.getSalles();
-        for (Map.Entry<Integer, Salle> entry : salles.entrySet()) {
+        for (Map.Entry<Integer, Salle> entry : gestionDonnees.getSalles().entrySet()) {
             listeSalles.add(entry.getValue());
         }
-
-        // Charger les activités
-        HashMap<Integer, Activite> activites = gestionDonnees.getActivites();
-        for (Map.Entry<Integer, Activite> entry : activites.entrySet()) {
+        for (Map.Entry<Integer, Activite> entry : gestionDonnees.getActivites().entrySet()) {
             listeActivites.add(entry.getValue());
         }
-
-        // Charger les utilisateurs
-        HashMap<Integer, Utilisateur> utilisateurs = gestionDonnees.getUtilisateurs();
-        for (Map.Entry<Integer, Utilisateur> entry : utilisateurs.entrySet()) {
+        for (Map.Entry<Integer, Utilisateur> entry : gestionDonnees.getUtilisateurs().entrySet()) {
             listeEmployes.add(entry.getValue());
         }
-
-        // Charger les réservations
-        HashMap<Integer, Reservation> reservations = gestionDonnees.getReservations();
-        for (Map.Entry<Integer, Reservation> entry : reservations.entrySet()) {
+        for (Map.Entry<Integer, Reservation> entry : gestionDonnees.getReservations().entrySet()) {
             listeReservations.add(entry.getValue());
         }
     }
@@ -239,40 +241,16 @@ public class ControleurConsulterDonnees {
      * Méthode pour rafraîchir les tableaux après l'importation de nouvelles données.
      */
     public void rafraichirTableaux() {
-        // Vider les listes actuelles pour éviter les doublons
         listeSalles.clear();
         listeActivites.clear();
         listeEmployes.clear();
         listeReservations.clear();
-
-        // Charger les nouvelles données dans les listes à partir de gestionDonnees
-        HashMap<Integer, Salle> salles = gestionDonnees.getSalles();
-        for (Map.Entry<Integer, Salle> entry : salles.entrySet()) {
-            listeSalles.add(entry.getValue());
-        }
-
-        HashMap<Integer, Activite> activites = gestionDonnees.getActivites();
-        for (Map.Entry<Integer, Activite> entry : activites.entrySet()) {
-            listeActivites.add(entry.getValue());
-        }
-
-        HashMap<Integer, Utilisateur> utilisateurs = gestionDonnees.getUtilisateurs();
-        for (Map.Entry<Integer, Utilisateur> entry : utilisateurs.entrySet()) {
-            listeEmployes.add(entry.getValue());
-        }
-
-        HashMap<Integer, Reservation> reservations = gestionDonnees.getReservations();
-        for (Map.Entry<Integer, Reservation> entry : reservations.entrySet()) {
-            listeReservations.add(entry.getValue());
-        }
-
-        // Mettre à jour les TableView avec les listes mises à jour
+        initialiserTableaux();
         tableauSalles.setItems(listeSalles);
         tableauActivites.setItems(listeActivites);
         tableauEmployes.setItems(listeEmployes);
         tableauReservations.setItems(listeReservations);
     }
-
 
     /**
      * Initialise le tableau des salles.
@@ -306,7 +284,7 @@ public class ControleurConsulterDonnees {
         IdentifiantEmploye.setCellValueFactory(new PropertyValueFactory<>("identifiant"));
         NomEmploye.setCellValueFactory(new PropertyValueFactory<>("nom"));
         Prenom.setCellValueFactory(new PropertyValueFactory<>("prenom"));
-        Numero_de_telephone.setCellValueFactory(new PropertyValueFactory<>("numeroTelephone"));
+        numeroDeTelephone.setCellValueFactory(new PropertyValueFactory<>("numeroTelephone"));
         tableauEmployes.setItems(listeEmployes);
     }
 
@@ -315,8 +293,8 @@ public class ControleurConsulterDonnees {
      */
     private void initialiserTableauReservations() {
         IdentifiantReservation.setCellValueFactory(new PropertyValueFactory<>("identifiant"));
-        Date_de_debut.setCellValueFactory(new PropertyValueFactory<>("dateDebut"));
-        Date_de_fin.setCellValueFactory(new PropertyValueFactory<>("dateFin"));
+        dateDeDebut.setCellValueFactory(new PropertyValueFactory<>("dateDebut"));
+        dateDeFin.setCellValueFactory(new PropertyValueFactory<>("dateFin"));
         Description.setCellValueFactory(new PropertyValueFactory<>("description"));
         Salle.setCellValueFactory(new PropertyValueFactory<>("salle"));
         Activite.setCellValueFactory(new PropertyValueFactory<>("activite"));
@@ -326,7 +304,7 @@ public class ControleurConsulterDonnees {
 
     /**
      * Gère le clic sur le bouton de partage pour exporter les données.
-     * Affiche une popup pour exporter les données sur le réseau.
+     * Affiche un popup pour exporter les données sur le réseau.
      */
     @FXML
     void handlerPartager() {
@@ -430,78 +408,73 @@ public class ControleurConsulterDonnees {
     }
 
     /**
-     * Affiche le tableau des salles et masque les autres tableaux.
-     * Active également la ligne de sélection correspondante.
+     * Affiche le tableau et la sélection spécifiés, tout en masquant les autres.
+     *
+     * @param tableau La référence au Node représentant le tableau à afficher.
+     * @param selection La référence au Node représentant la sélection à afficher.
+     */
+    @FXML
+    private void afficherTableau(Node tableau, Node selection) {
+        masquerTousLesTableauxEtSelections();
+        tableau.setVisible(true);
+        selection.setVisible(true);
+    }
+
+    /**
+     * Masque tous les tableaux et les sélections dans l'interface utilisateur.
+     * Cette méthode est utilisée pour garantir qu'aucun tableau ou sélection
+     * n'est affiché avant de montrer les éléments spécifiques requis.
+     */
+    private void masquerTousLesTableauxEtSelections() {
+        tableauSalles.setVisible(false);
+        tableauReservations.setVisible(false);
+        tableauActivites.setVisible(false);
+        tableauEmployes.setVisible(false);
+        SelectionSalles.setVisible(false);
+        SelectionActivites.setVisible(false);
+        SelectionEmployes.setVisible(false);
+        SelectionReservations.setVisible(false);
+    }
+
+    /**
+     * Affiche le tableau des salles et la sélection associée dans l'interface utilisateur.
+     *
+     * Cette méthode rend visible le tableau des salles et la sélection des salles,
+     * tout en masquant les autres tableaux et sélections.
      */
     @FXML
     void afficherTableauSalles() {
-        tableauSalles.setVisible(true);
-        tableauReservations.setVisible(false);
-        tableauActivites.setVisible(false);
-        tableauEmployes.setVisible(false);
-
-        SelectionSalles.setVisible(true);
-        SelectionActivites.setVisible(false);
-        SelectionEmployes.setVisible(false);
-        SelectionReservations.setVisible(false);
+        afficherTableau(tableauSalles, SelectionSalles);
     }
 
-    /**
-     * Affiche le tableau des réservations et masque les autres tableaux.
-     * Active également la ligne de sélection correspondante.
-     */
     @FXML
     void afficherTableauReservations() {
-        tableauSalles.setVisible(false);
-        tableauReservations.setVisible(true);
-        tableauActivites.setVisible(false);
-        tableauEmployes.setVisible(false);
-
-        SelectionSalles.setVisible(false);
-        SelectionActivites.setVisible(false);
-        SelectionEmployes.setVisible(false);
-        SelectionReservations.setVisible(true);
+        afficherTableau(tableauReservations, SelectionReservations);
     }
 
-    /**
-     * Affiche le tableau des activités et masque les autres tableaux.
-     * Active également la ligne de sélection correspondante.
-     */
     @FXML
     void afficherTableauActivites() {
-        tableauSalles.setVisible(false);
-        tableauReservations.setVisible(false);
-        tableauActivites.setVisible(true);
-        tableauEmployes.setVisible(false);
-
-        SelectionSalles.setVisible(false);
-        SelectionActivites.setVisible(true);
-        SelectionEmployes.setVisible(false);
-        SelectionReservations.setVisible(false);
+        afficherTableau(tableauActivites, SelectionActivites);
     }
 
-    /**
-     * Affiche le tableau des employés et masque les autres tableaux.
-     * Active également la ligne de sélection correspondante.
-     */
     @FXML
     void afficherTableauEmployes() {
-        tableauSalles.setVisible(false);
-        tableauReservations.setVisible(false);
-        tableauActivites.setVisible(false);
-        tableauEmployes.setVisible(true);
-
-        SelectionSalles.setVisible(false);
-        SelectionActivites.setVisible(false);
-        SelectionEmployes.setVisible(true);
-        SelectionReservations.setVisible(false);
+        afficherTableau(tableauEmployes, SelectionEmployes);
     }
 
     /**
      * Gère le retour au menu principal.
      */
+    @FXML
     public void handlerRetourMenu() {
         Saltistique.changeScene(Scenes.ACCUEIL);
     }
 
+    /**
+     * Gère la génération d'un rapport PDF
+     */
+    @FXML
+    public void clickGenererPDF() {
+        //TODO
+    }
 }
