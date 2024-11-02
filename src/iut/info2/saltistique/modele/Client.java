@@ -19,7 +19,7 @@ public class Client {
     private final int port;
 
     /** Dossier de sauvegarde des fichiers reçus */
-    private final String dossierSauvegarde = "src/ressources/fichiers/reception";
+    private final String dossierSauvegarde = "src/ressources/fichiers";
 
     /** Taille du buffer de lecture (4096 octets) pour améliorer la lisibilité et la flexibilité */
     private static final int BUFFER_SIZE = 4096;

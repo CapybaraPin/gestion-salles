@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.lang.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.shape.*?>
 <?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.Cursor?>
@@ -7,6 +10,7 @@
 <?import javafx.scene.shape.Line?>
 <?import javafx.scene.text.*?>
 <?import java.lang.String?>
+
 <VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="259.0" prefWidth="507.0" stylesheets="@style.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="iut.info2.saltistique.controleur.ControleurExporterReseau">
    <children>
       <GridPane minHeight="33.0" minWidth="507.0" onMouseDragged="#dragged" onMousePressed="#clicked" prefHeight="33.0" prefWidth="507.0">
@@ -68,7 +72,7 @@
                   <Insets left="33.0" />
                </HBox.margin>
             </Label>
-            <TextField fx:id="port" maxHeight="28.0" maxWidth="136.0" minHeight="28.0" minWidth="136.0" prefHeight="28.0" prefWidth="136.0" promptText="Port" styleClass="input-default">
+            <TextField fx:id="port" maxHeight="28.0" maxWidth="136.0" minHeight="28.0" minWidth="136.0" prefHeight="28.0" prefWidth="136.0" promptText="Port" styleClass="input-default" text="12345">
                <HBox.margin>
                   <Insets left="20.0" />
                </HBox.margin>

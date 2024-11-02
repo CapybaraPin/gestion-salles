@@ -21,7 +21,7 @@
 <?import javafx.scene.text.Font?>
 <?import java.lang.String?>
 
-<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="287.0" prefWidth="507.0" stylesheets="@style.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="iut.info2.saltistique.controleur.ControleurImporterReseau">
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="330.0" prefWidth="507.0" stylesheets="@style.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="iut.info2.saltistique.controleur.ControleurImporterReseau">
    <children>
       <GridPane minHeight="33.0" minWidth="507.0" onMouseDragged="#dragged" onMousePressed="#clicked" prefHeight="33.0" prefWidth="507.0">
         <columnConstraints>

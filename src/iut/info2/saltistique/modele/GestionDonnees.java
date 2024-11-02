@@ -66,22 +66,8 @@ public class GestionDonnees implements Serializable {
         lignesIncorrectesReservations = new ArrayList<>();
         lignesIncorrectesSalles = new ArrayList<>();
         lignesIncorrectesUtilisateurs = new ArrayList<>();
-
-        try{
-            this.fichiers = new Fichier[]{
-                    new Fichier("src/ressources/fichiers/activites.csv"),
-                    new Fichier("src/ressources/fichiers/employes.csv"),
-                    new Fichier("src/ressources/fichiers/reservations.csv"),
-                    new Fichier("src/ressources/fichiers/salles.csv")
-            };
-
-            System.out.println("Fichiers bien importés");
-        } catch (Exception e) {
-            System.out.println("Impossible d'importer les fichiers");
-        }
     }
-
-
+    
     /**
      * Importe les données depuis les fichiers spécifiés et les stocke dans les tableaux finaux
      * des employés, salles, activités, et réservations après avoir vérifié leur validité.
@@ -156,6 +142,18 @@ public class GestionDonnees implements Serializable {
 
         Client client = new Client(ip, port);
         client.reception();
+
+        // Appeler importerDonnees avec les fichiers reçus
+        try {
+            importerDonnees(new String[]{
+                    "src/ressources/fichiers/activites.csv",
+                    "src/ressources/fichiers/employes.csv",
+                    "src/ressources/fichiers/reservations.csv",
+                    "src/ressources/fichiers/salles.csv"
+            });
+        } catch (IOException e) {
+            System.err.println("Erreur lors de l'importation des données.");
+        }
     }
 
     /**
@@ -269,8 +267,6 @@ public class GestionDonnees implements Serializable {
      * @throws IOException si une erreur survient lors de la lecture du fichier
      */
     public void ajouterFichier(String[] cheminFichiers) throws IOException {
-        Fichier[] fichiers;
-
         if (cheminFichiers.length != 4) {
             throw new IllegalArgumentException(ERREUR_NB_CHEMINS_FICHIERS);
         }

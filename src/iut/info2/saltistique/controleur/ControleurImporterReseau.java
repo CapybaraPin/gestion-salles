@@ -5,6 +5,7 @@
 package iut.info2.saltistique.controleur;
 
 import iut.info2.saltistique.Saltistique;
+import iut.info2.saltistique.modele.Scenes;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
@@ -61,8 +62,14 @@ public class ControleurImporterReseau {
      */
     @FXML
     void clickImporter() {
-       Saltistique.gestionDonnees.importerDonnees(adresseIp.getText(), Integer.parseInt(port.getText()));
-       progressControl(0.4f);
+        Saltistique.gestionDonnees.importerDonnees(adresseIp.getText(), Integer.parseInt(port.getText()));
+        progressControl(0.4f);
+
+        ControleurConsulterDonnees controleur = Saltistique.getController(Scenes.CONSULTER_DONNEES);
+        controleur.rafraichirTableaux();
+        Saltistique.changeScene(Scenes.CONSULTER_DONNEES);
+
+        fermerFenetre(Saltistique.getController(Scenes.IMPORTATION_RESEAU));
     }
 
     /**
