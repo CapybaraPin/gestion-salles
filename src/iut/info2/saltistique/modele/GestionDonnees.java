@@ -67,7 +67,7 @@ public class GestionDonnees implements Serializable {
         lignesIncorrectesSalles = new ArrayList<>();
         lignesIncorrectesUtilisateurs = new ArrayList<>();
     }
-    
+
     /**
      * Importe les données depuis les fichiers spécifiés et les stocke dans les tableaux finaux
      * des employés, salles, activités, et réservations après avoir vérifié leur validité.

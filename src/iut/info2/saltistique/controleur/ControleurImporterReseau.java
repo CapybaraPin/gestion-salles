@@ -62,6 +62,7 @@ public class ControleurImporterReseau {
      */
     @FXML
     void clickImporter() {
+
         Saltistique.gestionDonnees.importerDonnees(adresseIp.getText(), Integer.parseInt(port.getText()));
         progressControl(0.4f);
 
