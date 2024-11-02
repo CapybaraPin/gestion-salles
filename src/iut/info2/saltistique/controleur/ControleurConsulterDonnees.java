@@ -4,7 +4,6 @@ import iut.info2.saltistique.Saltistique;
 import iut.info2.saltistique.modele.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
@@ -21,11 +20,6 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
-import com.itextpdf.kernel.pdf.PdfWriter;
-import com.itextpdf.kernel.pdf.PdfDocument;
-import com.itextpdf.layout.Document;
-import com.itextpdf.layout.element.Paragraph;
-import com.itextpdf.layout.element.Table;
 
 import javafx.scene.control.TableColumn;
 
@@ -508,119 +502,6 @@ public class ControleurConsulterDonnees {
      */
     public void handlerRetourMenu() {
         Saltistique.changeScene(Scenes.ACCUEIL);
-    }
-
-
-
-    // Dans ta méthode clickGenererPDF
-    public void clickGenererPDF(ActionEvent actionEvent) {
-        String filePath = "rapport.pdf"; // Chemin du fichier PDF
-
-        try {
-            PdfWriter writer = new PdfWriter(filePath);
-            PdfDocument pdfDoc = new PdfDocument(writer);
-            Document document = new Document(pdfDoc);
-
-            if (SelectionSalles.isVisible()) {
-                generateSalleReport(document);
-            } else if (SelectionActivites.isVisible()) {
-                generateActiviteReport(document);
-            } else if (SelectionEmployes.isVisible()) {
-                generateEmployeReport(document);
-            } else if (SelectionReservations.isVisible()) {
-                generateReservationReport(document);
-            }
-
-            document.close();
-            System.out.println("PDF généré : " + filePath);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    private void generateSalleReport(Document document) {
-        Table table = new Table(5); // 5 colonnes pour les salles
-
-        // Ajouter les en-têtes
-        table.addHeaderCell("Identifiant");
-        table.addHeaderCell("Nom");
-        table.addHeaderCell("Capacité");
-        table.addHeaderCell("Vidéo Projecteur");
-        table.addHeaderCell("Type");
-
-        // Ajouter les données
-        for (Salle salle : listeSalles) {
-            table.addCell(salle.getIdentifiant() != null ? salle.getIdentifiant() : "N/A");
-            table.addCell(salle.getNom() != null ? salle.getNom() : "N/A");
-            table.addCell(String.valueOf(salle.getCapacite()));
-            table.addCell(String.valueOf(salle.isVideoProjecteur()));
-            table.addCell(salle.getType() != null ? salle.getType() : "N/A");
-        }
-
-        document.add(new Paragraph("Rapport des Salles"));
-        document.add(table);
-    }
-
-
-    private void generateActiviteReport(Document document) {
-        Table table = new Table(2); // 2 colonnes pour les activités
-
-        // Ajouter les en-têtes
-        table.addHeaderCell("Identifiant");
-        table.addHeaderCell("Nom");
-
-        // Ajouter les données
-        for (Activite activite : listeActivites) {
-            table.addCell(activite.getIdentifiant());
-            table.addCell(activite.getNom());
-        }
-
-        document.add(new Paragraph("Rapport des Activités"));
-        document.add(table);
-    }
-
-    private void generateEmployeReport(Document document) {
-        Table table = new Table(4); // 4 colonnes pour les employés
-
-        // Ajouter les en-têtes
-        table.addHeaderCell("Identifiant");
-        table.addHeaderCell("Nom");
-        table.addHeaderCell("Prénom");
-        table.addHeaderCell("Numéro de Téléphone");
-
-        // Ajouter les données
-        for (Utilisateur employe : listeEmployes) {
-            table.addCell(employe.getIdentifiant());
-            table.addCell(employe.getNom());
-            table.addCell(employe.getPrenom());
-            table.addCell(employe.getNumeroTelephone());
-        }
-
-        document.add(new Paragraph("Rapport des Employés"));
-        document.add(table);
-    }
-
-    private void generateReservationReport(Document document) {
-        Table table = new Table(5); // 5 colonnes pour les réservations
-
-        // Ajouter les en-têtes
-        table.addHeaderCell("Identifiant");
-        table.addHeaderCell("Date de Début");
-        table.addHeaderCell("Date de Fin");
-        table.addHeaderCell("Description");
-        table.addHeaderCell("Salle");
-
-        // Ajouter les données
-        for (Reservation reservation : listeReservations) {
-            table.addCell(reservation.getIdentifiant());
-            table.addCell(reservation.getDateDebut().toString());
-            table.addCell(reservation.getDateFin().toString());
-            table.addCell(reservation.getDescription());
-            table.addCell(reservation.getSalle().getNom());
-        }
-
-        document.add(new Paragraph("Rapport des Réservations"));
-        document.add(table);
     }
 
 }
