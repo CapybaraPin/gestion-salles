@@ -7,7 +7,6 @@
 package iut.info2.saltistique.controleur;
 
 import iut.info2.saltistique.Saltistique;
-import iut.info2.saltistique.modele.GestionDonnees;
 import iut.info2.saltistique.modele.Scenes;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
@@ -156,7 +155,10 @@ public class ControleurAccueil {
 
         try {
             Saltistique.gestionDonnees.importerDonnees(chemins);
+            ControleurConsulterDonnees controleur = Saltistique.getController(Scenes.CONSULTER_DONNEES);
+            controleur.rafraichirTableaux();
             Saltistique.changeScene(Scenes.CONSULTER_DONNEES);
+
 
         } catch (Exception e) {
             System.out.println("Erreur lors de l'importation des fichiers : " + e.getMessage());

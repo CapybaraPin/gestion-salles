@@ -34,4 +34,9 @@ public class Utilisateur implements Serializable {
         return numeroTelephone;
     }
 
+    @Override
+    public String toString() {
+        return identifiant;
+    }
+
 }

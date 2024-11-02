@@ -19,13 +19,25 @@ import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.Map;
+import com.itextpdf.kernel.pdf.PdfWriter;
+import com.itextpdf.kernel.pdf.PdfDocument;
+import com.itextpdf.layout.Document;
+import com.itextpdf.layout.element.Paragraph;
+import com.itextpdf.layout.element.Table;
+
 import javafx.scene.control.TableColumn;
+
+import static iut.info2.saltistique.Saltistique.gestionDonnees;
 
 /**
  * Le contrôleur de la vue permettant de consulter les données.
  * Cette classe gère l'affichage et l'interaction avec les tables de données
  * (réservations, activités, employés, salles) ainsi que le contrôle des boutons
  * et autres éléments interactifs de l'interface.
+ *
+ * @author Jules VIALAS
  */
 public class ControleurConsulterDonnees {
 
@@ -178,55 +190,100 @@ public class ControleurConsulterDonnees {
     /** Colonne pour la disponibilité d'une imprimante. */
     @FXML
     public TableColumn<Salle, Boolean> Imprimante;
+    private ObservableList<Salle> listeSalles;
+    private ObservableList<Activite> listeActivites;
+    private ObservableList<Utilisateur> listeEmployes;
+    private ObservableList<Reservation> listeReservations;
 
     /**
      * Initialise le contrôleur et configure les tableaux.
      */
     public void initialize() {
+        // Initialisez les ObservableLists
+        listeSalles = FXCollections.observableArrayList();
+        listeActivites = FXCollections.observableArrayList();
+        listeEmployes = FXCollections.observableArrayList();
+        listeReservations = FXCollections.observableArrayList();
+
+        // Charger les données dans les listes
+        initialiserTableaux();
+
+        // Configurer les TableView
         initialiserTableauSalles();
         initialiserTableauActivites();
         initialiserTableauEmployes();
         initialiserTableauReservations();
     }
 
+    private void initialiserTableaux() {
+        // Charger les salles
+        HashMap<Integer, Salle> salles = gestionDonnees.getSalles();
+        for (Map.Entry<Integer, Salle> entry : salles.entrySet()) {
+            listeSalles.add(entry.getValue());
+        }
+
+        // Charger les activités
+        HashMap<Integer, Activite> activites = gestionDonnees.getActivites();
+        for (Map.Entry<Integer, Activite> entry : activites.entrySet()) {
+            listeActivites.add(entry.getValue());
+        }
+
+        // Charger les utilisateurs
+        HashMap<Integer, Utilisateur> utilisateurs = gestionDonnees.getUtilisateurs();
+        for (Map.Entry<Integer, Utilisateur> entry : utilisateurs.entrySet()) {
+            listeEmployes.add(entry.getValue());
+        }
+
+        // Charger les réservations
+        HashMap<Integer, Reservation> reservations = gestionDonnees.getReservations();
+        for (Map.Entry<Integer, Reservation> entry : reservations.entrySet()) {
+            listeReservations.add(entry.getValue());
+        }
+    }
+
     /**
-     * Initialise le tableau des activités.
+     * Méthode pour rafraîchir les tableaux après l'importation de nouvelles données.
      */
-    public void initialiserTableauActivites() {
-        IdentifiantActivite.setCellValueFactory(new PropertyValueFactory<>("identifiant"));
-        Nom.setCellValueFactory(new PropertyValueFactory<>("nom"));
+    public void rafraichirTableaux() {
+        // Vider les listes actuelles pour éviter les doublons
+        listeSalles.clear();
+        listeActivites.clear();
+        listeEmployes.clear();
+        listeReservations.clear();
+
+        // Charger les nouvelles données dans les listes à partir de gestionDonnees
+        HashMap<Integer, Salle> salles = gestionDonnees.getSalles();
+        for (Map.Entry<Integer, Salle> entry : salles.entrySet()) {
+            listeSalles.add(entry.getValue());
+        }
+
+        HashMap<Integer, Activite> activites = gestionDonnees.getActivites();
+        for (Map.Entry<Integer, Activite> entry : activites.entrySet()) {
+            listeActivites.add(entry.getValue());
+        }
+
+        HashMap<Integer, Utilisateur> utilisateurs = gestionDonnees.getUtilisateurs();
+        for (Map.Entry<Integer, Utilisateur> entry : utilisateurs.entrySet()) {
+            listeEmployes.add(entry.getValue());
+        }
+
+        HashMap<Integer, Reservation> reservations = gestionDonnees.getReservations();
+        for (Map.Entry<Integer, Reservation> entry : reservations.entrySet()) {
+            listeReservations.add(entry.getValue());
+        }
+
+        // Mettre à jour les TableView avec les listes mises à jour
+        tableauSalles.setItems(listeSalles);
         tableauActivites.setItems(listeActivites);
-    }
-
-    /**
-     * Initialise le tableau des employés.
-     */
-    public void initialiserTableauEmployes() {
-        IdentifiantEmploye.setCellValueFactory(new PropertyValueFactory<>("identifiant"));
-        NomEmploye.setCellValueFactory(new PropertyValueFactory<>("nom"));
-        Prenom.setCellValueFactory(new PropertyValueFactory<>("prenom"));
-        Numero_de_telephone.setCellValueFactory(new PropertyValueFactory<>("numeroTelephone"));
         tableauEmployes.setItems(listeEmployes);
-    }
-
-    /**
-     * Initialise le tableau des réservations.
-     */
-    public void initialiserTableauReservations() {
-        IdentifiantReservation.setCellValueFactory(new PropertyValueFactory<>("identifiant"));
-        Date_de_debut.setCellValueFactory(new PropertyValueFactory<>("dateDebut"));
-        Date_de_fin.setCellValueFactory(new PropertyValueFactory<>("dateFin"));
-        Description.setCellValueFactory(new PropertyValueFactory<>("description"));
-        Salle.setCellValueFactory(new PropertyValueFactory<>("salle"));
-        Activite.setCellValueFactory(new PropertyValueFactory<>("activite"));
-        Utilisateur.setCellValueFactory(new PropertyValueFactory<>("utilisateur"));
         tableauReservations.setItems(listeReservations);
     }
+
 
     /**
      * Initialise le tableau des salles.
      */
-    public void initialiserTableauSalles() {
+    private void initialiserTableauSalles() {
         IdentifiantSalle.setCellValueFactory(new PropertyValueFactory<>("identifiant"));
         NomSalle.setCellValueFactory(new PropertyValueFactory<>("nom"));
         Capacite.setCellValueFactory(new PropertyValueFactory<>("capacite"));
@@ -239,36 +296,40 @@ public class ControleurConsulterDonnees {
         tableauSalles.setItems(listeSalles);
     }
 
-    /** Liste des salles. */
-    private final ObservableList<Salle> listeSalles = FXCollections.observableArrayList(
-            new Salle("1", "bonjour", 1, true, true, true, new GroupeOrdinateurs(1, "coucou", new String[]{})));
+    /**
+     * Initialise le tableau des activités.
+     */
+    private void initialiserTableauActivites() {
+        IdentifiantActivite.setCellValueFactory(new PropertyValueFactory<>("identifiant"));
+        Nom.setCellValueFactory(new PropertyValueFactory<>("nom"));
+        tableauActivites.setItems(listeActivites);
+    }
 
-    /** Liste des activités. */
-    private final ObservableList<Activite> listeActivites = FXCollections.observableArrayList(
-            new Activite("A1", "Yoga"),
-            new Activite("A2", "Piano"),
-            new Activite("A3", "Danse"),
-            new Activite("A4", "Cours de cuisine")
-    );
+    /**
+     * Initialise le tableau des employés.
+     */
+    private void initialiserTableauEmployes() {
+        IdentifiantEmploye.setCellValueFactory(new PropertyValueFactory<>("identifiant"));
+        NomEmploye.setCellValueFactory(new PropertyValueFactory<>("nom"));
+        Prenom.setCellValueFactory(new PropertyValueFactory<>("prenom"));
+        Numero_de_telephone.setCellValueFactory(new PropertyValueFactory<>("numeroTelephone"));
+        tableauEmployes.setItems(listeEmployes);
+    }
 
-    /** Liste des employés. */
-    private final ObservableList<Utilisateur> listeEmployes = FXCollections.observableArrayList(
-            new Utilisateur("E1", "Dupont", "Jean", "0123456789"),
-            new Utilisateur("E2", "Martin", "Sophie", "0987654321"),
-            new Utilisateur("E3", "Durand", "Alice", "0147258369"),
-            new Utilisateur("E4", "Lemoine", "Paul", "0172589634")
-    );
+    /**
+     * Initialise le tableau des réservations.
+     */
+    private void initialiserTableauReservations() {
+        IdentifiantReservation.setCellValueFactory(new PropertyValueFactory<>("identifiant"));
+        Date_de_debut.setCellValueFactory(new PropertyValueFactory<>("dateDebut"));
+        Date_de_fin.setCellValueFactory(new PropertyValueFactory<>("dateFin"));
+        Description.setCellValueFactory(new PropertyValueFactory<>("description"));
+        Salle.setCellValueFactory(new PropertyValueFactory<>("salle"));
+        Activite.setCellValueFactory(new PropertyValueFactory<>("activite"));
+        Utilisateur.setCellValueFactory(new PropertyValueFactory<>("utilisateur"));
+        tableauReservations.setItems(listeReservations);
+    }
 
-    /** Liste des réservations. */
-    private final ObservableList<Reservation> listeReservations = FXCollections.observableArrayList(
-            new Reservation("R1",
-                    LocalDateTime.of(2024, 11, 10, 14, 0),
-                    LocalDateTime.of(2024, 11, 10, 16, 0),
-                    "Réunion projet",
-                    new Salle("1", "Salle A", 30, true, true, true, new GroupeOrdinateurs(1, "Groupe 1", new String[]{})),
-                    new Activite("A1", "Yoga"),
-                    new Utilisateur("E4", "Lemoine", "Paul", "0172589634"))
-    );
     /**
      * Gère le clic sur le bouton de partage pour exporter les données.
      * Affiche une popup pour exporter les données sur le réseau.
@@ -449,18 +510,117 @@ public class ControleurConsulterDonnees {
         Saltistique.changeScene(Scenes.ACCUEIL);
     }
 
-    /**
-     * Gère le click pour générer un rapport pdf
-     */
+
+
+    // Dans ta méthode clickGenererPDF
     public void clickGenererPDF(ActionEvent actionEvent) {
-        if (SelectionSalles.isVisible()) {
-            //TODO récupérer le tableau des salles et afficher dans un pdf
-        } else if (SelectionActivites.isVisible()) {
-            //TODO récupérer le tableau des activites et afficher dans un pdf
-        } else if (SelectionEmployes.isVisible()) {
-            //TODO récupérer le tableau des employes et afficher dans un pdf
-        } else if (SelectionReservations.isVisible()) {
-            //TODO récupérer le tableau des reservations et afficher dans un pdf
+        String filePath = "rapport.pdf"; // Chemin du fichier PDF
+
+        try {
+            PdfWriter writer = new PdfWriter(filePath);
+            PdfDocument pdfDoc = new PdfDocument(writer);
+            Document document = new Document(pdfDoc);
+
+            if (SelectionSalles.isVisible()) {
+                generateSalleReport(document);
+            } else if (SelectionActivites.isVisible()) {
+                generateActiviteReport(document);
+            } else if (SelectionEmployes.isVisible()) {
+                generateEmployeReport(document);
+            } else if (SelectionReservations.isVisible()) {
+                generateReservationReport(document);
+            }
+
+            document.close();
+            System.out.println("PDF généré : " + filePath);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
+
+    private void generateSalleReport(Document document) {
+        Table table = new Table(5); // 5 colonnes pour les salles
+
+        // Ajouter les en-têtes
+        table.addHeaderCell("Identifiant");
+        table.addHeaderCell("Nom");
+        table.addHeaderCell("Capacité");
+        table.addHeaderCell("Vidéo Projecteur");
+        table.addHeaderCell("Type");
+
+        // Ajouter les données
+        for (Salle salle : listeSalles) {
+            table.addCell(salle.getIdentifiant() != null ? salle.getIdentifiant() : "N/A");
+            table.addCell(salle.getNom() != null ? salle.getNom() : "N/A");
+            table.addCell(String.valueOf(salle.getCapacite()));
+            table.addCell(String.valueOf(salle.isVideoProjecteur()));
+            table.addCell(salle.getType() != null ? salle.getType() : "N/A");
+        }
+
+        document.add(new Paragraph("Rapport des Salles"));
+        document.add(table);
+    }
+
+
+    private void generateActiviteReport(Document document) {
+        Table table = new Table(2); // 2 colonnes pour les activités
+
+        // Ajouter les en-têtes
+        table.addHeaderCell("Identifiant");
+        table.addHeaderCell("Nom");
+
+        // Ajouter les données
+        for (Activite activite : listeActivites) {
+            table.addCell(activite.getIdentifiant());
+            table.addCell(activite.getNom());
+        }
+
+        document.add(new Paragraph("Rapport des Activités"));
+        document.add(table);
+    }
+
+    private void generateEmployeReport(Document document) {
+        Table table = new Table(4); // 4 colonnes pour les employés
+
+        // Ajouter les en-têtes
+        table.addHeaderCell("Identifiant");
+        table.addHeaderCell("Nom");
+        table.addHeaderCell("Prénom");
+        table.addHeaderCell("Numéro de Téléphone");
+
+        // Ajouter les données
+        for (Utilisateur employe : listeEmployes) {
+            table.addCell(employe.getIdentifiant());
+            table.addCell(employe.getNom());
+            table.addCell(employe.getPrenom());
+            table.addCell(employe.getNumeroTelephone());
+        }
+
+        document.add(new Paragraph("Rapport des Employés"));
+        document.add(table);
+    }
+
+    private void generateReservationReport(Document document) {
+        Table table = new Table(5); // 5 colonnes pour les réservations
+
+        // Ajouter les en-têtes
+        table.addHeaderCell("Identifiant");
+        table.addHeaderCell("Date de Début");
+        table.addHeaderCell("Date de Fin");
+        table.addHeaderCell("Description");
+        table.addHeaderCell("Salle");
+
+        // Ajouter les données
+        for (Reservation reservation : listeReservations) {
+            table.addCell(reservation.getIdentifiant());
+            table.addCell(reservation.getDateDebut().toString());
+            table.addCell(reservation.getDateFin().toString());
+            table.addCell(reservation.getDescription());
+            table.addCell(reservation.getSalle().getNom());
+        }
+
+        document.add(new Paragraph("Rapport des Réservations"));
+        document.add(table);
+    }
+
 }

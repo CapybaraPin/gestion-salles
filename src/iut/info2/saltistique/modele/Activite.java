@@ -21,4 +21,9 @@ public class Activite implements Serializable {
     public String getNom() {
         return nom;
     }
+
+    @Override
+    public String toString() {
+        return identifiant;
+    }
 }

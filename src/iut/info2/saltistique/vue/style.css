@@ -250,4 +250,9 @@
     -fx-text-fill: #3574F0;
     -fx-font-size: 13;
     -fx-font-family: "Inter 28pt Medium";
+    -fx-alignment: CENTER;
+}
+
+.table-view .table-cell {
+    -fx-alignment: CENTER; /* Alignement pour les cellules de données */
 }

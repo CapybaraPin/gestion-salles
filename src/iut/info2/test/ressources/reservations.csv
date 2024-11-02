@@ -1,22 +1,22 @@
 Ident;salle;employe;activite;date;heuredebut;heurefin;;;;;
-R000001;00000001;E000001;prêt;07/10/2024;17h00;19h00;club gym;Legendre;Noémie;0600000000;reunion
-R000002;00000004;E000001;réunion;07/10/2024;15h00;18h00;réunion avec client;;;;
-R000003;00000004;E000005;réunion;07/10/2024;10h00;11h00;Préparation réunion client;;;;
-R000004;00000004;E000002;réunion;08/10/2024;09h00;11h00;;;;;
-R000005;00000001;E000003;prêt;08/10/2024;17h00;19h00;club gym;Legendre;Noémie;0600000000;AG
+R000001;00000001;E000001;prÃªt;07/10/2024;17h00;19h00;club gym;Legendre;NoÃ©mie;0600000000;reunion
+R000002;00000004;E000001;rÃ©union;07/10/2024;15h00;18h00;rÃ©union avec client;;;;
+R000003;00000004;E000005;rÃ©union;07/10/2024;10h00;11h00;PrÃ©paration rÃ©union client;;;;
+R000004;00000004;E000002;rÃ©union;08/10/2024;09h00;11h00;;;;;
+R000005;00000001;E000003;prÃªt;08/10/2024;17h00;19h00;club gym;Legendre;NoÃ©mie;0600000000;AG
 R000006;00000008;E000007;autre;09/10/2024;09h00;12h00;tests candidats;;;;
-R000007;00000003;E000007;réunion;07/10/2024;15h00;18h00;présentation maquette;;;;
+R000007;00000003;E000007;rÃ©union;07/10/2024;15h00;18h00;prÃ©sentation maquette;;;;
 R000008;00000001;E000003;formation;10/10/2024;08h00;18h00;Bureautique;Leroux;Jacques;0600000001;
 R000009;00000001;E000003;formation;11/10/2024;08h00;18h00;Bureautique;Leroux;Jacques;0600000001;
-R000010;00000003;E000008;réunion;07/10/2024;10h00;12h00;accueil nouveau membre;;;;
+R000010;00000003;E000008;rÃ©union;07/10/2024;10h00;12h00;accueil nouveau membre;;;;
 R000011;00000008;E000001;autre;10/10/2024;09h00;12h00;tests candidats;;;;
-R000012;00000006;E000007;réunion;15/10/2024;09h00;10h00;point avec stagiaire;;;;
-R000013;00000008;E000003;entretien;11/10/2024;08h00;17h00;mise à jour logiciels;;;;
-R000014;00000009;E000007;entretien;11/10/2024;08h00;17h00;mise à jour logiciels;;;;
-R000015;00000006;E000007;réunion;16/10/2024;10h00;11h00;visite tuteur IUT;;;;
-R000016;00000006;E000005;réunion;17/10/2024;14h00;15h30;validation maquette;;;;
-R000017;00000001;E000008;location;18/10/2024;8h00;13h00;Mairie;Marin;Hector;0666666666;réunion
-R000018;00000001;E000005;location;18/10/2024;13h00;19h00;Département;Tournefeuille;Michel;0655555555;réunion
+R000012;00000006;E000007;rÃ©union;15/10/2024;09h00;10h00;point avec stagiaire;;;;
+R000013;00000008;E000003;entretien;11/10/2024;08h00;17h00;mise Ã© jour logiciels;;;;
+R000014;00000009;E000007;entretien;11/10/2024;08h00;17h00;mise Ã© jour logiciels;;;;
+R000015;00000006;E000007;rÃ©union;16/10/2024;10h00;11h00;visite tuteur IUT;;;;
+R000016;00000006;E000005;rÃ©union;17/10/2024;14h00;15h30;validation maquette;;;;
+R000017;00000001;E000008;location;18/10/2024;8h00;13h00;Mairie;Marin;Hector;0666666666;rÃ©union
+R000018;00000001;E000005;location;18/10/2024;13h00;19h00;DÃ©partement;Tournefeuille;Michel;0655555555;rÃ©union
 ;;;;;;;;;;;
 ;;;;;;;;;;;
 ;;;;;;;;;;;

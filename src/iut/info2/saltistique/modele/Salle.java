@@ -49,14 +49,28 @@ public class Salle implements Serializable {
     }
 
     public int getOrdinateurs() {
+        if (ordinateurs == null) {
+            return 0;
+        }
         return ordinateurs.getQuantite();
     }
 
     public String getType() {
+        if (ordinateurs == null) {
+            return null;
+        }
         return ordinateurs.getType();
     }
 
     public String[] getLogiciels() {
+        if (ordinateurs == null) {
+            return null;
+        }
         return ordinateurs.getLogiciels();
+    }
+
+    @Override
+    public String toString() {
+        return identifiant;
     }
 }

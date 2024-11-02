@@ -14,6 +14,7 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
 import java.util.EnumMap;
+import java.util.HashMap;
 import java.io.IOException;
 
 import iut.info2.saltistique.modele.Scenes;
@@ -46,9 +47,10 @@ public class Saltistique extends Application {
     /** Un EnumMap qui stocke les scènes associées à chaque valeur de l'énumération {@link Scenes}. */
     private static EnumMap<Scenes, Scene> scenes = new EnumMap<>(Scenes.class);
 
-    /**
-     * La fenêtre principale (ou scène principale) de l'application JavaFX.
-     */
+    /** Un HashMap qui stocke les contrôleurs associés aux scènes. */
+    private static HashMap<Scenes, Object> controllers = new HashMap<>();
+
+    /** La fenêtre principale (ou scène principale) de l'application JavaFX. */
     private static Stage primaryStage;
 
     private static Stage popUp;
@@ -68,7 +70,7 @@ public class Saltistique extends Application {
     @Override
     public void start(Stage primaryStage) {
         Saltistique.primaryStage = primaryStage;
-        // disable barre de titre
+        // Disable title bar
         primaryStage.initStyle(StageStyle.UNDECORATED);
         primaryStage.setResizable(false);
         primaryStage.setTitle("Gestion de salles");
@@ -78,11 +80,11 @@ public class Saltistique extends Application {
     }
 
     /**
-     * TODO la javadoc
+     * TODO: Implement the closing of pop-ups when the main window closes.
      */
     @Override
     public void stop(){
-        // TODO Implémenter la fermeture des popUp en cas de fermeture de la fenetre principale
+        // TODO: Implement closing of popUps on main window close
     }
 
     /**
@@ -98,6 +100,7 @@ public class Saltistique extends Application {
                 FXMLLoader loader = new FXMLLoader(getClass().getResource(sceneEnum.getChemin()));
                 Scene scene = new Scene(loader.load());
                 scenes.put(sceneEnum, scene);
+                controllers.put(sceneEnum, loader.getController()); // Store the controller
 
             } catch (IOException e) {
                 e.printStackTrace();
@@ -120,15 +123,15 @@ public class Saltistique extends Application {
         if (scene != null) {
             primaryStage.setScene(scene);
             primaryStage.show();
-
         } else {
             System.err.println("Impossible de charger la scène : " + sceneEnum.name());
         }
     }
 
     /**
-     * TODO faire la javadoc
-     * @param sceneEnum
+     * Ouvre une fenêtre pop-up pour la scène spécifiée.
+     *
+     * @param sceneEnum la scène à afficher dans la fenêtre pop-up
      */
     public static void showPopUp(Scenes sceneEnum) {
         Scene scene = scenes.get(sceneEnum);
@@ -138,11 +141,21 @@ public class Saltistique extends Application {
         popUp.setScene(scene);
         popUp.initModality(Modality.APPLICATION_MODAL);
         popUp.showAndWait();
+    }
 
+    /**
+     * Méthode pour obtenir le contrôleur d'une scène.
+     *
+     * @param sceneEnum la scène dont vous souhaitez obtenir le contrôleur
+     * @param <T> le type du contrôleur
+     * @return le contrôleur associé à la scène
+     */
+    public static <T> T getController(Scenes sceneEnum) {
+        return (T) controllers.get(sceneEnum);
     }
 
     public static void showNotification(String title, String message) {
-        //TODO : affichage d'une notification
+        //TODO: Implement notification display
     }
 
     /**
@@ -154,9 +167,7 @@ public class Saltistique extends Application {
      * @param args les arguments de ligne de commande
      */
     public static void main(String[] args) {
-
         gestionDonnees = new GestionDonnees();
-
         launch();
     }
 
