@@ -171,7 +171,6 @@ public class ControleurAccueil {
      */
     @FXML
     void clickImporterFichier(MouseEvent event) {
-        System.out.println("test");
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Sélectionnez les fichiers à importer");
 
@@ -190,6 +189,8 @@ public class ControleurAccueil {
             }
             try {
                 Saltistique.gestionDonnees.importerDonnees(chemins);
+                ControleurConsulterDonnees controleur = Saltistique.getController(Scenes.CONSULTER_DONNEES);
+                controleur.rafraichirTableaux();
                 Saltistique.changeScene(Scenes.CONSULTER_DONNEES);
             } catch (Exception e) {
                 System.out.println("Erreur lors de l'importation des fichiers : " + e.getMessage());

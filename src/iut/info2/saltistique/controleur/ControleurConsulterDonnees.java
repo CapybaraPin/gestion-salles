@@ -218,7 +218,6 @@ public class ControleurConsulterDonnees {
     /**
      * Initialise les listes de salles, d'activités, d'employés et de réservations
      * en les remplissant avec les données fournies par le gestionnaire de données.
-     *
      * Cette méthode parcourt les entrées des collections de données et les ajoute
      * aux listes correspondantes.
      */
@@ -425,6 +424,7 @@ public class ControleurConsulterDonnees {
      * Cette méthode est utilisée pour garantir qu'aucun tableau ou sélection
      * n'est affiché avant de montrer les éléments spécifiques requis.
      */
+    @FXML
     private void masquerTousLesTableauxEtSelections() {
         tableauSalles.setVisible(false);
         tableauReservations.setVisible(false);
@@ -438,7 +438,6 @@ public class ControleurConsulterDonnees {
 
     /**
      * Affiche le tableau des salles et la sélection associée dans l'interface utilisateur.
-     *
      * Cette méthode rend visible le tableau des salles et la sélection des salles,
      * tout en masquant les autres tableaux et sélections.
      */

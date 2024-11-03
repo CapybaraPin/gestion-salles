@@ -97,8 +97,6 @@ public class GestionDonnees implements Serializable {
             throw new IOException(e.getMessage());
         }
 
-        System.out.println("Données importées avec succès.");
-
         // TODO : ne pas ajouter les lignes vide et l'entete dans les talbeauxligne incorrectes
     }
 
@@ -118,7 +116,6 @@ public class GestionDonnees implements Serializable {
             lignesIncorrectesReservations.clear();
             lignesIncorrectesSalles.clear();
             lignesIncorrectesUtilisateurs.clear();
-            System.out.println("Données vidé avec succès");
         } catch (Exception e) {
             System.err.println("Impossible de vider les données");
         }

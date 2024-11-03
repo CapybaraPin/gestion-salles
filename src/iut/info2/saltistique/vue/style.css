@@ -237,7 +237,6 @@
 
 .table-view {
     -fx-background-color: transparent;
-    -fx-border-color: transparent;
 }
 
 .table-view .column-header-background{
@@ -254,5 +253,5 @@
 }
 
 .table-view .table-cell {
-    -fx-alignment: CENTER; /* Alignement pour les cellules de données */
+    -fx-alignment: CENTER;
 }
