@@ -70,7 +70,9 @@ public class ControleurImporterReseau {
         controleur.rafraichirTableaux();
         Saltistique.changeScene(Scenes.CONSULTER_DONNEES);
 
-        fermerFenetre(Saltistique.getController(Scenes.IMPORTATION_RESEAU));
+        Stage stage = (Stage) adresseIp.getScene().getWindow();
+        stage.close();
+
     }
 
     /**
