@@ -197,10 +197,10 @@ public class GestionDonnees implements Serializable {
         }
 
         String regex = switch (typeFichier) {
-            case "employes" -> Regex.EMPLOYES.getRegex(";");
-            case "salles" -> Regex.SALLES.getRegex(";");
-            case "activites" -> Regex.ACTIVITES.getRegex(";");
-            case "reservations" -> Regex.RESERVATIONS.getRegex(";");
+            case "employes" -> Regex.EMPLOYES.getRegex(DELIMITEUR);
+            case "salles" -> Regex.SALLES.getRegex(DELIMITEUR);
+            case "activites" -> Regex.ACTIVITES.getRegex(DELIMITEUR);
+            case "reservations" -> Regex.RESERVATIONS.getRegex(DELIMITEUR);
             default -> throw new IllegalArgumentException("Type de fichier inconnu : " + typeFichier);
         };
 
@@ -263,7 +263,7 @@ public class GestionDonnees implements Serializable {
      * @throws IllegalArgumentException si le fichier n'est pas reconnu
      * @throws IOException si une erreur survient lors de la lecture du fichier
      */
-    public void ajouterFichier(String[] cheminFichiers) throws IOException {
+    public void ajouterFichier(String[] cheminFichiers) throws IOException { // TODO : renommer la méthode ajouterFichiers
         if (cheminFichiers.length != 4) {
             throw new IllegalArgumentException(ERREUR_NB_CHEMINS_FICHIERS);
         }
@@ -550,6 +550,7 @@ public class GestionDonnees implements Serializable {
         return location;
     }
 
+    /** TODO : la javadoc */
     private Reservation creerFormation(String ligne) {
         String[] attributs;
         Reservation reservation;

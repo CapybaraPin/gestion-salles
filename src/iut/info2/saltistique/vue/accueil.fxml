@@ -1,13 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import java.net.*?>
-<?import javafx.geometry.*?>
-<?import javafx.scene.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.image.*?>
-<?import javafx.scene.layout.*?>
-<?import javafx.scene.text.*?>
 <?import java.lang.String?>
 <?import java.net.URL?>
 <?import javafx.geometry.Insets?>
@@ -24,7 +16,7 @@
 <?import javafx.scene.text.Text?>
 <?import javafx.scene.text.TextFlow?>
 
-<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="768.0" prefWidth="1366.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="iut.info2.saltistique.controleur.ControleurAccueil">
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="768.0" prefWidth="1366.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="iut.info2.saltistique.controleur.ControleurAccueil">
    <children>
       <HBox fx:id="topBar" onMouseDragged="#dragged" onMousePressed="#clicked" prefHeight="40.0" prefWidth="1366.0" styleClass="navbar-background">
          <children>
@@ -186,10 +178,13 @@
                                           <Insets right="5.0" />
                                        </HBox.margin>
                                     </ImageView>
-                                    <Text strokeType="OUTSIDE" strokeWidth="0.0" styleClass="typo-default" text="Menu principal" />
+                                    <Text strokeType="OUTSIDE" strokeWidth="0.0" styleClass="typo-default" text="Menu principal">
+                                       <HBox.margin>
+                                          <Insets />
+                                       </HBox.margin></Text>
                                  </children>
                                  <VBox.margin>
-                                    <Insets />
+                                    <Insets bottom="5.0" />
                                  </VBox.margin>
                                  <padding>
                                     <Insets left="10.0" right="10.0" />
@@ -200,7 +195,7 @@
                               </HBox>
                               <Separator prefWidth="200.0" styleClass="menu-sepator">
                                  <VBox.margin>
-                                    <Insets bottom="5.0" top="5.0" />
+                                    <Insets />
                                  </VBox.margin>
                               </Separator>
                               <HBox alignment="CENTER_LEFT" onMouseClicked="#clickDechargerDonnees" prefHeight="6.0" prefWidth="268.0" styleClass="btn-menu">
@@ -213,23 +208,10 @@
                                           <Insets right="5.0" />
                                        </HBox.margin>
                                     </ImageView>
-                                    <Text strokeType="OUTSIDE" strokeWidth="0.0" styleClass="typo-default" text="Décharger les données" />
-                                 </children>
-                                 <padding>
-                                    <Insets left="10.0" right="10.0" />
-                                 </padding>
-                              </HBox>
-                              <HBox alignment="CENTER_LEFT" onMouseClicked="#handlerPartager" prefHeight="6.0" prefWidth="268.0" styleClass="btn-menu">
-                                 <children>
-                                    <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true" scaleX="0.9" scaleY="0.9">
-                                       <image>
-                                          <Image url="@send.png" />
-                                       </image>
+                                    <Text strokeType="OUTSIDE" strokeWidth="0.0" styleClass="typo-default" text="Décharger les données">
                                        <HBox.margin>
-                                          <Insets right="5.0" />
-                                       </HBox.margin>
-                                    </ImageView>
-                                    <Text strokeType="OUTSIDE" strokeWidth="0.0" styleClass="typo-default" text="Partager les données" />
+                                          <Insets />
+                                       </HBox.margin></Text>
                                  </children>
                                  <padding>
                                     <Insets left="10.0" right="10.0" />
@@ -265,10 +247,7 @@
                               </Separator>
                               <HBox alignment="CENTER_LEFT" onMouseClicked="#fermerFenetre" prefHeight="6.0" prefWidth="268.0" styleClass="btn-menu">
                                  <children>
-                                    <ImageView fitHeight="20.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true" scaleX="0.8" scaleY="0.8">
-                                       <image>
-                                          <Image url="@quit.png" />
-                                       </image>
+                                    <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true" scaleX="0.8" scaleY="0.8" visible="false">
                                        <HBox.margin>
                                           <Insets right="5.0" />
                                        </HBox.margin>
@@ -279,7 +258,7 @@
                                     <Insets left="10.0" right="10.0" />
                                  </padding>
                                  <VBox.margin>
-                                    <Insets top="3.0" />
+                                    <Insets top="5.0" />
                                  </VBox.margin>
                               </HBox>
                            </children>
