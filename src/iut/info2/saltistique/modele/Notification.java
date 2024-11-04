@@ -3,6 +3,10 @@ package iut.info2.saltistique.modele;
 import iut.info2.saltistique.Saltistique;
 import iut.info2.saltistique.controleur.ControleurAccueil;
 import iut.info2.saltistique.controleur.ControleurConsulterDonnees;
+import javafx.animation.FadeTransition;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
+import javafx.util.Duration;
 
 public class Notification extends Exception {
 
@@ -27,7 +31,7 @@ public class Notification extends Exception {
     }
 
     /**
-     * Affiche la notification dans l'interface.
+     * Affiche la notification dans l'interface pendant 8 secondes avec un effet de fondu à la fermeture.
      */
     public void afficher() {
 
@@ -47,8 +51,36 @@ public class Notification extends Exception {
                         controleurConsulterDonnees.notificationFrame.setVisible(true);
                         break;
                 }
+
+                Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(5), event -> {
+
+                    // Applique un effet de fondu de fermeture
+                    FadeTransition fadeOut = new FadeTransition(Duration.seconds(0.5));
+                    fadeOut.setFromValue(1.0);
+                    fadeOut.setToValue(0.0);
+
+                    if (scene == Scenes.ACCUEIL) {
+                        fadeOut.setNode(controleurAccueil.notificationFrame);
+                    } else if (scene == Scenes.CONSULTER_DONNEES) {
+                        fadeOut.setNode(controleurConsulterDonnees.notificationFrame);
+                    }
+
+                    fadeOut.setOnFinished(e -> {
+                        if (scene == Scenes.ACCUEIL) {
+                            controleurAccueil.notificationFrame.setVisible(false);
+                            controleurAccueil.notificationFrame.setOpacity(1.0);
+                        } else if (scene == Scenes.CONSULTER_DONNEES) {
+                            controleurConsulterDonnees.notificationFrame.setVisible(false);
+                            controleurConsulterDonnees.notificationFrame.setOpacity(1.0);
+                        }
+                    });
+
+                    fadeOut.play();
+                }));
+
+                timeline.setCycleCount(1);
+                timeline.play();
             }
         }
-
     }
 }
