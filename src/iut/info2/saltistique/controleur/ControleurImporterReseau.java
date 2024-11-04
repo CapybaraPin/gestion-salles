@@ -62,19 +62,21 @@ public class ControleurImporterReseau {
      */
     @FXML
     void clickImporter() {
+
+        progressControl();
+
         try {
             Saltistique.gestionDonnees.importerDonnees(adresseIp.getText(), Integer.parseInt(port.getText()));
         } catch (Exception e) {
             return;
         }
-        progressControl(0.4f);
 
-        ControleurConsulterDonnees controleur = Saltistique.getController(Scenes.CONSULTER_DONNEES);
-        controleur.rafraichirTableaux();
-        Saltistique.changeScene(Scenes.CONSULTER_DONNEES);
+//        ControleurConsulterDonnees controleur = Saltistique.getController(Scenes.CONSULTER_DONNEES);
+//        controleur.rafraichirTableaux();
+//        Saltistique.changeScene(Scenes.CONSULTER_DONNEES);
 
-        Stage stage = (Stage) adresseIp.getScene().getWindow();
-        stage.close();
+//        Stage stage = (Stage) adresseIp.getScene().getWindow();
+//        stage.close();
 
 
     }
@@ -84,10 +86,11 @@ public class ControleurImporterReseau {
      * sinon la valeur est définie sur la progressBar
      */
     @FXML
-    void progressControl(float valeur) {
+    void progressControl() {
+        System.out.println("Initialisation de la progress bar");
         progressVbox.setVisible(true);
-        progressBar.setProgress(valeur);
-        progressLabel.setText("Importation des données en cours : " + valeur + "%");
+        progressBar.setProgress(0);
+        progressLabel.setText("Importation des données en cours : 0%");
 
     }
 
