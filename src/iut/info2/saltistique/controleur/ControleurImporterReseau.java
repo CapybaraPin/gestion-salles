@@ -62,8 +62,11 @@ public class ControleurImporterReseau {
      */
     @FXML
     void clickImporter() {
-
-        Saltistique.gestionDonnees.importerDonnees(adresseIp.getText(), Integer.parseInt(port.getText()));
+        try {
+            Saltistique.gestionDonnees.importerDonnees(adresseIp.getText(), Integer.parseInt(port.getText()));
+        } catch (Exception e) {
+            return;
+        }
         progressControl(0.4f);
 
         ControleurConsulterDonnees controleur = Saltistique.getController(Scenes.CONSULTER_DONNEES);
@@ -72,6 +75,7 @@ public class ControleurImporterReseau {
 
         Stage stage = (Stage) adresseIp.getScene().getWindow();
         stage.close();
+
 
     }
 

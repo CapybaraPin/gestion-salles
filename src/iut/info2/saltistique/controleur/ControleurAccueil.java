@@ -13,8 +13,11 @@ import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.input.DragEvent;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
+import javafx.scene.text.Text;
+import javafx.scene.text.TextFlow;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
@@ -47,6 +50,18 @@ public class ControleurAccueil {
     @FXML
     private Pane icoMaximize;
 
+    @FXML
+    public VBox notificationFrame;
+
+    @FXML
+    public Text notificationTitre;
+
+    @FXML
+    public Text notificationDescription;
+
+    @FXML
+    public Button notificationBouton;
+
     /** Position de la souris en abscisse */
     double xOffset = 0;
 
@@ -57,14 +72,11 @@ public class ControleurAccueil {
     @FXML
     void initialize() {
         setHoverEffect();
-    }
 
-    /**
-     * Affchage d'une notification
-     */
-    static void afficherNotification(String titre, String description){
-
-       // TODO : Comment faire ?
+        notificationBouton.setOnAction(event -> {
+            notificationFrame.setVisible(false);
+            notificationFrame.setMouseTransparent(true);
+        });
     }
 
     /**

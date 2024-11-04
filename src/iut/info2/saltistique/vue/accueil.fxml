@@ -295,11 +295,11 @@
                   </VBox>
                </children>
             </HBox>
-            <HBox alignment="TOP_RIGHT" maxHeight="1.0" maxWidth="1.0" minHeight="1.0" minWidth="1330.0" mouseTransparent="true" prefHeight="1.0" prefWidth="1.0">
+            <HBox alignment="TOP_RIGHT" maxHeight="1.0" maxWidth="1.0" minHeight="1.0" minWidth="1330.0" prefHeight="1.0" prefWidth="1.0">
                <children>
-                  <VBox mouseTransparent="true" prefHeight="725.0" prefWidth="338.0">
+                  <VBox fx:id="notificationFrame" mouseTransparent="true" prefHeight="725.0" prefWidth="338.0" visible="false">
                      <children>
-                        <HBox fx:id="notifFrame" minWidth="362.0" prefHeight="100.0" prefWidth="200.0" styleClass="notification" visible="false">
+                        <HBox minWidth="362.0" prefHeight="100.0" prefWidth="200.0" styleClass="notification">
                            <children>
                               <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
@@ -312,7 +312,7 @@
                               <Text strokeType="OUTSIDE" strokeWidth="0.0" />
                               <VBox maxWidth="5.0" minWidth="310.0" prefHeight="200.0" prefWidth="5.0">
                                  <children>
-                                    <Text fill="#f7f8fa" strokeType="OUTSIDE" strokeWidth="0.0" text="Titre">
+                                    <Text fx:id="notificationTitre" fill="#f7f8fa" strokeType="OUTSIDE" strokeWidth="0.0" text="Titre">
                                        <VBox.margin>
                                           <Insets top="10.0" />
                                        </VBox.margin>
@@ -323,7 +323,7 @@
                                     </Text>
                                     <TextFlow prefHeight="200.0" prefWidth="200.0">
                                        <children>
-                                          <Text fill="#f7f8fa" strokeType="OUTSIDE" strokeWidth="0.0" text="Description">
+                                          <Text fx:id="notificationDescription" fill="#f7f8fa" strokeType="OUTSIDE" strokeWidth="0.0" text="Description">
                                              <styleClass>
                                                 <String fx:value="notification-text-color" />
                                                 <String fx:value="typo-default" />
@@ -334,7 +334,7 @@
                                           <Insets bottom="7.0" top="5.0" />
                                        </VBox.margin>
                                     </TextFlow>
-                                    <Button mnemonicParsing="false" prefHeight="24.0" prefWidth="61.0" styleClass="btn-text-light" text="Valider">
+                                    <Button fx:id="notificationBouton" mnemonicParsing="false" prefHeight="26.0" prefWidth="75.0" styleClass="btn-text-light" text="D'accord">
                                        <VBox.margin>
                                           <Insets />
                                        </VBox.margin>

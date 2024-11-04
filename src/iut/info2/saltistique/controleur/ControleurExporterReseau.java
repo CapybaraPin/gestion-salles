@@ -5,6 +5,7 @@
 package iut.info2.saltistique.controleur;
 
 import iut.info2.saltistique.Saltistique;
+import iut.info2.saltistique.modele.Scenes;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
@@ -76,6 +77,7 @@ public class ControleurExporterReseau {
             btnStartStop.setText("Arrêter le serveur");
         }
     }
+
 
     /**
      * Ferme la fenêtre actuelle.

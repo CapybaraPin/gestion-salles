@@ -30,9 +30,17 @@ public class Client {
      * @param host Adresse IP du serveur.
      * @param port Port du serveur.
      */
-    public Client(String host, int port) {
+    public Client(String host, int port) throws Notification {
         this.host = host;
         this.port = port;
+
+        // Vérification des données
+        if (host == null || host.isEmpty()) {
+            throw new Notification("Adresse IP Invalide", "L'adresse IP du serveur ne peut pas être vide.");
+        }
+        if (port < 1024 || port > 65535) {
+            throw new Notification("Port Invalide", "Le numéro de port doit être compris entre 1024 et 65535.");
+        }
     }
 
     /**

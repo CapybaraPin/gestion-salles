@@ -1,17 +1,9 @@
 package iut.info2.saltistique.modele;
 
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.image.ImageView;
-import javafx.scene.layout.HBox;
+import iut.info2.saltistique.Saltistique;
+import iut.info2.saltistique.controleur.ControleurAccueil;
 
-public class Notification {
-
-    // Éléments d'interface partagés pour afficher une notification
-    private static HBox notificationFrame;
-    private static Label notificationTitre;
-    private static Label notificationDescription;
-    private static Button notificationBtn;
+public class Notification extends Exception {
 
     // Champs d'instance pour les informations de notification
     private String titre;
@@ -27,44 +19,24 @@ public class Notification {
         this.titre = titre;
         this.description = description;
 
-        System.out.println(this.titre + " " + this.description);
-    }
-
-    /**
-     * Initialiser les éléments d'interface pour afficher les notifications.
-     * Appelée depuis le contrôleur.
-     *
-     * @param frame Le conteneur principal de la notification
-     * @param titre Le label pour le titre de la notification
-     * @param description Le label pour la description de la notification
-     * @param btn Le bouton de la notification
-     */
-    public void setNotificationElements(HBox frame, Label titre, Label description, Button btn) {
-        notificationFrame = frame;
-        notificationTitre = titre;
-        notificationDescription = description;
-        notificationBtn = btn;
+        afficher();
     }
 
     /**
      * Affiche la notification dans l'interface.
      */
     public void afficher() {
-        if (notificationFrame != null && notificationTitre != null && notificationDescription != null) {
-            // Définir le titre et la description de la notification
-            notificationTitre.setText(titre);
-            notificationDescription.setText(description);
+        ControleurAccueil controleurAccueil = Saltistique.getController(Scenes.ACCUEIL);
 
-            // Afficher le cadre de notification
-            notificationFrame.setVisible(true);
+        controleurAccueil.notificationFrame.setMouseTransparent(false);
 
-            // Configurer le bouton de fermeture
-            if (notificationBtn != null) {
-                notificationBtn.setOnAction(e -> notificationFrame.setVisible(false));
-                notificationBtn.setVisible(true);
-            }
-        } else {
-            System.err.println("Les éléments de l'interface pour la notification ne sont pas configurés.");
-        }
+        // Définir le titre et la description de la notification
+        controleurAccueil.notificationTitre.setText(titre);
+        controleurAccueil.notificationDescription.setText(description);
+
+        // Afficher le cadre de notification
+        controleurAccueil.notificationFrame.setVisible(true);
+
+
     }
 }

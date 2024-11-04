@@ -32,7 +32,7 @@ public class GestionDonnees implements Serializable {
 
     /** Message d'erreur affiché lorsque le nombre de fichiers fournis est incorrect. */
     private static final String ERREUR_NB_CHEMINS_FICHIERS =
-            "Erreur : Le nombre de fichiers à fournir n'est pas respecté";
+            "Le nombre de fichiers à fournir n'est pas respecté";
 
     private Fichier[] fichiers;
 
@@ -73,19 +73,19 @@ public class GestionDonnees implements Serializable {
      * des employés, salles, activités, et réservations après avoir vérifié leur validité.
      * @param cheminFichiers Un tableau de chaînes de caractères représentant les chemins vers les fichiers à importer.
      */
-    public void importerDonnees(String[] cheminFichiers) throws IOException {
+    public void importerDonnees(String[] cheminFichiers) throws IOException, Notification {
         viderDonnees();
 
         try {
             ajouterFichier(cheminFichiers);
         } catch (IllegalArgumentException e) {
-            throw new IllegalArgumentException(e.getMessage());
+            throw new Notification("Erreur lors de l'importation", e.getMessage());
         } catch (IOException e) {
             throw new IOException(e.getMessage());
         }
 
         if (fichierActivites == null || fichierReservations == null || fichierSalles == null || fichierUtilisateurs == null) {
-            throw new IllegalArgumentException("Les fichiers n'ont pas été correctement importés.");
+            throw new Notification("Erreur lors de l'importation", "Les fichiers n'ont pas été correctement importés.");
         }
 
         try {
@@ -127,7 +127,7 @@ public class GestionDonnees implements Serializable {
      * @param ip l'adresse IP du serveur
      * @param port le port à utiliser pour l'importation
      */
-    public void importerDonnees(String ip, int port) {
+    public void importerDonnees(String ip, int port) throws Notification {
 
         File dossierSauvegarde = new File("src/ressources/fichiers/reception");
 
