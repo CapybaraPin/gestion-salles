@@ -154,10 +154,6 @@ public class Saltistique extends Application {
         return (T) controllers.get(sceneEnum);
     }
 
-    public static void showNotification(String title, String message) {
-        //TODO: Implement notification display
-    }
-
     /**
      * Méthode principale pour lancer l'application.
      *
