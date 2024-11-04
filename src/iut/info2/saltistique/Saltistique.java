@@ -45,7 +45,7 @@ import iut.info2.saltistique.modele.Scenes;
 public class Saltistique extends Application {
 
     /** Un EnumMap qui stocke les scènes associées à chaque valeur de l'énumération {@link Scenes}. */
-    private static EnumMap<Scenes, Scene> scenes = new EnumMap<>(Scenes.class);
+    public static EnumMap<Scenes, Scene> scenes = new EnumMap<>(Scenes.class);
 
     /** Un HashMap qui stocke les contrôleurs associés aux scènes. */
     private static HashMap<Scenes, Object> controllers = new HashMap<>();
