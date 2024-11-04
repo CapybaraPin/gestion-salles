@@ -10,7 +10,7 @@ import java.net.Socket;
  * La classe Client permet de se connecter à un serveur pour recevoir et sauvegarder
  * plusieurs fichiers CSV. Chaque fichier est sauvegardé dans un répertoire spécifié.
  */
-public class Client {
+public class Client implements Runnable{
 
     /** Adresse IP du serveur */
     private final String host;
@@ -47,27 +47,7 @@ public class Client {
      * Se connecte au serveur et reçoit les fichiers un par un.
      */
     public void reception() {
-        try {
-            Socket socket = new Socket(host, port);
 
-            System.out.println("Connecté au serveur sur " + host + ":" + port);
-
-            try{
-                BufferedInputStream bis = new BufferedInputStream(socket.getInputStream());
-                DataInputStream dis = new DataInputStream(bis);
-
-                int nbFichiers = dis.readInt();
-                System.out.println("Nombre de fichiers à recevoir : " + nbFichiers);
-
-                for (int i = 0; i < nbFichiers; i++) {
-                    recevoirFichier(dis);
-                }
-            } catch (IOException e) {
-                System.err.println("Erreur de lecture du fichier : " + e.getMessage());
-            }
-        } catch (IOException e) {
-            System.err.println("Erreur de connexion au serveur : " + e.getMessage());
-        }
     }
 
     /**
@@ -118,5 +98,38 @@ public class Client {
             totalRead += bytesRead;
         }
         bos.flush();
+    }
+
+    @Override
+    public void run() {
+        try {
+            Socket socket = new Socket(host, port);
+
+            System.out.println("Connecté au serveur sur " + host + ":" + port);
+
+            try{
+                BufferedInputStream bis = new BufferedInputStream(socket.getInputStream());
+                DataInputStream dis = new DataInputStream(bis);
+
+                int nbFichiers = dis.readInt();
+                System.out.println("Nombre de fichiers à recevoir : " + nbFichiers);
+
+                for (int i = 0; i < nbFichiers; i++) {
+                    recevoirFichier(dis);
+
+                    ControleurImporterReseau controleurImporterReseau = Saltistique.getController(Scenes.IMPORTATION_RESEAU);
+                    controleurImporterReseau.onProgressUpdate((double) (i+1)/nbFichiers);
+
+                    Thread.sleep(1000);
+                }
+            } catch (IOException e) {
+                System.err.println("Erreur de lecture du fichier : " + e.getMessage());
+
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        } catch (IOException e) {
+            System.err.println("Erreur de connexion au serveur : " + e.getMessage());
+        }
     }
 }

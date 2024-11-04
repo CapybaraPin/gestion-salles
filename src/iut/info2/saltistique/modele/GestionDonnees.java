@@ -138,7 +138,8 @@ public class GestionDonnees implements Serializable {
         }
 
         Client client = new Client(ip, port);
-        client.reception();
+        Thread clientThread = new Thread(client);
+        clientThread.start();
 
         // Appeler importerDonnees avec les fichiers reçus
         try {

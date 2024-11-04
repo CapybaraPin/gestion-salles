@@ -60,7 +60,7 @@
       </HBox>
       <HBox alignment="CENTER_LEFT">
          <children>
-            <TextField fx:id="adresseIp" maxHeight="28.0" maxWidth="136.0" minHeight="28.0" minWidth="136.0" prefHeight="28.0" prefWidth="136.0" promptText="Adresse IP" styleClass="input-default">
+            <TextField fx:id="adresseIp" maxHeight="28.0" maxWidth="136.0" minHeight="28.0" minWidth="136.0" prefHeight="28.0" prefWidth="136.0" promptText="Adresse IP" styleClass="input-default" text="127.0.0.1">
                <HBox.margin>
                   <Insets left="25.0" />
                </HBox.margin>
@@ -77,7 +77,7 @@
       </HBox>
       <HBox alignment="CENTER_LEFT">
          <children>
-            <TextField fx:id="port" maxHeight="28.0" maxWidth="136.0" minHeight="28.0" minWidth="136.0" prefHeight="28.0" prefWidth="136.0" promptText="Port" styleClass="input-default">
+            <TextField fx:id="port" maxHeight="28.0" maxWidth="136.0" minHeight="28.0" minWidth="136.0" prefHeight="28.0" prefWidth="136.0" promptText="Port" styleClass="input-default" text="12345">
                <HBox.margin>
                   <Insets left="25.0" />
                </HBox.margin>
