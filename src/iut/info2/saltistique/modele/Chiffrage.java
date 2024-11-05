@@ -33,8 +33,8 @@ public class Chiffrage {
 
 
     // Paramètres pour l'algorithme de Diffie-Hellman
-    public static final int P = 8269;
-    public static final int G = 4537;
+    public static final int P = 8291;
+    public static final int G = 4148;
     private static final int PUISSANCE_MINI = 5000 ;
     private static final int PUISSANCE_MAXI = 9999 ;
 
