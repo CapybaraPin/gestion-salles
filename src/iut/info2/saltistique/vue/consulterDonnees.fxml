@@ -329,12 +329,12 @@
             </HBox>
             <HBox alignment="TOP_RIGHT" maxHeight="1.0" maxWidth="1.0" minHeight="1.0" minWidth="1330.0" mouseTransparent="true" prefHeight="1.0" prefWidth="1.0">
                <children>
-                  <VBox mouseTransparent="true" prefHeight="725.0" prefWidth="338.0">
+                  <VBox fx:id="notificationFrame" mouseTransparent="true" prefHeight="725.0" prefWidth="338.0" visible="false">
                      <HBox.margin>
                         <Insets />
                      </HBox.margin>
                      <children>
-                        <HBox fx:id="notifFrame" minWidth="362.0" prefHeight="100.0" prefWidth="200.0" styleClass="notification" visible="false">
+                        <HBox fx:id="notifFrame" minWidth="362.0" prefHeight="100.0" prefWidth="200.0" styleClass="notification">
                            <VBox.margin>
                               <Insets top="30.0" />
                            </VBox.margin>
@@ -353,7 +353,7 @@
                                     <Insets left="7.0" />
                                  </HBox.margin>
                                  <children>
-                                    <Text fill="#f7f8fa" strokeType="OUTSIDE" strokeWidth="0.0" text="Titre">
+                                    <Text fx:id="notificationTitre" fill="#f7f8fa" strokeType="OUTSIDE" strokeWidth="0.0" text="Titre">
                                        <VBox.margin>
                                           <Insets top="10.0" />
                                        </VBox.margin>
@@ -367,7 +367,7 @@
                                           <Insets bottom="7.0" top="5.0" />
                                        </VBox.margin>
                                        <children>
-                                          <Text fill="#f7f8fa" strokeType="OUTSIDE" strokeWidth="0.0" text="Description">
+                                          <Text fx:id="notificationDescription" fill="#f7f8fa" strokeType="OUTSIDE" strokeWidth="0.0" text="Description">
                                              <styleClass>
                                                 <String fx:value="notification-text-color" />
                                                 <String fx:value="typo-default" />
@@ -375,7 +375,7 @@
                                           </Text>
                                        </children>
                                     </TextFlow>
-                                    <Button mnemonicParsing="false" prefHeight="24.0" prefWidth="61.0" styleClass="btn-text-light" text="Valider">
+                                    <Button fx:id="notificationBouton" mnemonicParsing="false" prefHeight="26.0" prefWidth="76.0" styleClass="btn-text-light" text="D'accord">
                                        <VBox.margin>
                                           <Insets />
                                        </VBox.margin>

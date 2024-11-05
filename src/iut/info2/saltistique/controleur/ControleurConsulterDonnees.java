@@ -20,6 +20,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.shape.Line;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import java.awt.*;
 import java.io.File;
@@ -188,6 +189,18 @@ public class ControleurConsulterDonnees {
     @FXML
     public TableColumn<Salle, Boolean> Imprimante;
 
+    @FXML
+    public VBox notificationFrame;
+
+    @FXML
+    public Text notificationTitre;
+
+    @FXML
+    public Text notificationDescription;
+
+    @FXML
+    public Button notificationBouton;
+
     /**
      * Listes observables contenant les objets de chaques types.
      * Ces listes sont utilisées pour afficher et gérer les types de données disponibles
@@ -213,6 +226,11 @@ public class ControleurConsulterDonnees {
         initialiserTableauActivites();
         initialiserTableauEmployes();
         initialiserTableauReservations();
+
+        notificationBouton.setOnAction(event -> {
+            notificationFrame.setVisible(false);
+            notificationFrame.setMouseTransparent(true);
+        });
     }
 
     /**

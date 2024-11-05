@@ -1,21 +1,21 @@
 package iut.info2.saltistique.modele;
 
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.image.ImageView;
-import javafx.scene.layout.HBox;
+import iut.info2.saltistique.Saltistique;
+import iut.info2.saltistique.controleur.ControleurAccueil;
+import iut.info2.saltistique.controleur.ControleurConsulterDonnees;
+import javafx.animation.FadeTransition;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
+import javafx.util.Duration;
 
-public class Notification {
-
-    // Éléments d'interface partagés pour afficher une notification
-    private static HBox notificationFrame;
-    private static Label notificationTitre;
-    private static Label notificationDescription;
-    private static Button notificationBtn;
+public class Notification extends Exception {
 
     // Champs d'instance pour les informations de notification
     private String titre;
     private String description;
+
+    ControleurAccueil controleurAccueil = Saltistique.getController(Scenes.ACCUEIL);
+    ControleurConsulterDonnees controleurConsulterDonnees = Saltistique.getController(Scenes.CONSULTER_DONNEES);
 
     /**
      * Constructeur de Notification
@@ -27,44 +27,60 @@ public class Notification {
         this.titre = titre;
         this.description = description;
 
-        System.out.println(this.titre + " " + this.description);
+        afficher();
     }
 
     /**
-     * Initialiser les éléments d'interface pour afficher les notifications.
-     * Appelée depuis le contrôleur.
-     *
-     * @param frame Le conteneur principal de la notification
-     * @param titre Le label pour le titre de la notification
-     * @param description Le label pour la description de la notification
-     * @param btn Le bouton de la notification
-     */
-    public void setNotificationElements(HBox frame, Label titre, Label description, Button btn) {
-        notificationFrame = frame;
-        notificationTitre = titre;
-        notificationDescription = description;
-        notificationBtn = btn;
-    }
-
-    /**
-     * Affiche la notification dans l'interface.
+     * Affiche la notification dans l'interface pendant 8 secondes avec un effet de fondu à la fermeture.
      */
     public void afficher() {
-        if (notificationFrame != null && notificationTitre != null && notificationDescription != null) {
-            // Définir le titre et la description de la notification
-            notificationTitre.setText(titre);
-            notificationDescription.setText(description);
 
-            // Afficher le cadre de notification
-            notificationFrame.setVisible(true);
+        for(Scenes scene : Saltistique.scenes.keySet()) {
+            if (Saltistique.getPrimaryStage().getScene() == Saltistique.scenes.get(scene)) {
+                switch (scene) {
+                    case ACCUEIL:
+                        controleurAccueil.notificationFrame.setMouseTransparent(false);
+                        controleurAccueil.notificationTitre.setText(titre);
+                        controleurAccueil.notificationDescription.setText(description);
+                        controleurAccueil.notificationFrame.setVisible(true);
+                        break;
+                    case CONSULTER_DONNEES:
+                        controleurConsulterDonnees.notificationFrame.setMouseTransparent(false);
+                        controleurConsulterDonnees.notificationTitre.setText(titre);
+                        controleurConsulterDonnees.notificationDescription.setText(description);
+                        controleurConsulterDonnees.notificationFrame.setVisible(true);
+                        break;
+                }
 
-            // Configurer le bouton de fermeture
-            if (notificationBtn != null) {
-                notificationBtn.setOnAction(e -> notificationFrame.setVisible(false));
-                notificationBtn.setVisible(true);
+                Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(5), event -> {
+
+                    // Applique un effet de fondu de fermeture
+                    FadeTransition fadeOut = new FadeTransition(Duration.seconds(0.5));
+                    fadeOut.setFromValue(1.0);
+                    fadeOut.setToValue(0.0);
+
+                    if (scene == Scenes.ACCUEIL) {
+                        fadeOut.setNode(controleurAccueil.notificationFrame);
+                    } else if (scene == Scenes.CONSULTER_DONNEES) {
+                        fadeOut.setNode(controleurConsulterDonnees.notificationFrame);
+                    }
+
+                    fadeOut.setOnFinished(e -> {
+                        if (scene == Scenes.ACCUEIL) {
+                            controleurAccueil.notificationFrame.setVisible(false);
+                            controleurAccueil.notificationFrame.setOpacity(1.0);
+                        } else if (scene == Scenes.CONSULTER_DONNEES) {
+                            controleurConsulterDonnees.notificationFrame.setVisible(false);
+                            controleurConsulterDonnees.notificationFrame.setOpacity(1.0);
+                        }
+                    });
+
+                    fadeOut.play();
+                }));
+
+                timeline.setCycleCount(1);
+                timeline.play();
             }
-        } else {
-            System.err.println("Les éléments de l'interface pour la notification ne sont pas configurés.");
         }
     }
 }
