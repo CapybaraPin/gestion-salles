@@ -5,7 +5,6 @@ package iut.info2.test.saltistique;
  * IUT de Rodez, info1 2022-2023, aucun copyright ni copyleft
  */
 
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -15,11 +14,12 @@ import iut.info2.saltistique.modele.Chiffrage;
 class TestChiffrage {
 
     /**
-     * Test for Diffie-Hellman key generation, Vigenère key creation, and encryption/decryption.
+     * Test de la génération de clé Diffie-Hellman, de la création de clé Vigenère,
+     * ainsi que du chiffrement et déchiffrement d'un message.
      */
     @Test
     void testDiffieHellmanToVigenereChiffrement() {
-        // Step 1: Simulate Diffie-Hellman key exchange
+        // Étape 1 : Simuler l'échange de clés Diffie-Hellman
         int puissanceA = Chiffrage.genererPuissance();
         int puissanceB = Chiffrage.genererPuissance();
 
@@ -29,20 +29,21 @@ class TestChiffrage {
         Chiffrage.setGab(Chiffrage.exposantModulo(partieB, puissanceA, Chiffrage.P));
         String cleSecrete = Chiffrage.cleDepuisDiffie();
 
-        // Step 2: Use the Diffie-Hellman key to generate a Vigenère key
+        // Étape 2 : Utiliser la clé Diffie-Hellman pour générer une clé Vigenère
         String cleVigenere = Chiffrage.generationCle();
 
-        // Step 3: Encrypt and decrypt a test message
+        // Étape 3 : Chiffrer et déchiffrer un message de test
         String messageOriginal = "Bonjour tout le monde!";
         String messageChiffre = Chiffrage.chiffrement(messageOriginal, cleVigenere);
         String messageDechiffre = Chiffrage.dechiffrement(messageChiffre, cleVigenere);
 
-        // Assert the decrypted message matches the original
+        // Vérifier que le message déchiffré correspond au message original
         assertEquals(messageOriginal, messageDechiffre, "Le message déchiffré devrait être identique au message original.");
     }
 
     /**
-     * Test for consistent Vigenère key generation within expected length range.
+     * Test de la génération de clés Vigenère pour s'assurer qu'elles respectent
+     * la plage de longueur attendue.
      */
     @Test
     void testGenerationCle() {
@@ -53,23 +54,25 @@ class TestChiffrage {
     }
 
     /**
-     * Test for specific encryption and decryption process.
+     * Test du processus de chiffrement et déchiffrement spécifique
+     * pour s'assurer qu'ils fonctionnent correctement ensemble.
      */
     @Test
     void testChiffrementDechiffrement() {
         String cle = "SimpleKey";
         String message = "TestMessage";
 
-        // Encrypt and then decrypt the message
+        // Chiffrer puis déchiffrer le message
         String messageChiffre = Chiffrage.chiffrement(message, cle);
         String messageDechiffre = Chiffrage.dechiffrement(messageChiffre, cle);
 
-        // Validate that decrypting the encrypted message returns the original
+        // Vérifier que le message déchiffré correspond au message original
         assertEquals(message, messageDechiffre, "Le message déchiffré devrait correspondre au message original.");
     }
 
     /**
-     * Test for Diffie-Hellman exponentiation function.
+     * Test de la fonction d'exponentiation modulo utilisée dans l'algorithme
+     * Diffie-Hellman pour valider le comportement correct de cette fonction.
      */
     @Test
     void testExposantModulo() {
@@ -79,7 +82,8 @@ class TestChiffrage {
     }
 
     /**
-     * Test for power generation within the specified Diffie-Hellman range.
+     * Test de la génération de puissance pour s'assurer que les valeurs générées
+     * se situent dans la plage spécifiée pour l'échange de clés Diffie-Hellman.
      */
     @Test
     void testGenererPuissance() {
@@ -89,4 +93,3 @@ class TestChiffrage {
         }
     }
 }
-
