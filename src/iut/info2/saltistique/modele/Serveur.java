@@ -78,6 +78,14 @@ public class Serveur implements Runnable {
             // Envoie le nombre total de fichiers à envoyer
             dos.writeInt(fichiersCSV.length);
 
+            // Envoie de la taille totale des fichiers
+            long tailleTotale = 0;
+            for (Fichier fichier : fichiersCSV) {
+                tailleTotale += fichier.getFichierExploite().length();
+            }
+
+            dos.writeLong(tailleTotale);
+
             // Envoie chaque fichier individuellement
             for (Fichier fichier : fichiersCSV) {
                 envoyerFichier(dos, fichier);

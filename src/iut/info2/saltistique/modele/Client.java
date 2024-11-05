@@ -24,6 +24,10 @@ public class Client implements Runnable{
     /** Taille du buffer de lecture (4096 octets) pour améliorer la lisibilité et la flexibilité */
     private static final int BUFFER_SIZE = 4096;
 
+    private double progression;
+
+    private long tailleTotale;
+
     /**
      * Constructeur du Client.
      *
@@ -41,13 +45,6 @@ public class Client implements Runnable{
         if (port < 1024 || port > 65535) {
             throw new Notification("Port Invalide", "Le numéro de port doit être compris entre 1024 et 65535.");
         }
-    }
-
-    /**
-     * Se connecte au serveur et reçoit les fichiers un par un.
-     */
-    public void reception() {
-
     }
 
     /**
@@ -72,6 +69,7 @@ public class Client implements Runnable{
         } catch (IOException e) {
             System.err.println("Erreur lors de la réception du fichier " + nomFichier + " : " + e.getMessage());
         }
+
     }
 
     /**
@@ -96,6 +94,12 @@ public class Client implements Runnable{
 
             bos.write(buffer, 0, bytesRead);
             totalRead += bytesRead;
+
+            this.progression += bytesRead;
+
+            ControleurImporterReseau controleurImporterReseau = Saltistique.getController(Scenes.IMPORTATION_RESEAU);
+            controleurImporterReseau.onProgressUpdate(this.progression / this.tailleTotale);
+
         }
         bos.flush();
     }
@@ -112,13 +116,15 @@ public class Client implements Runnable{
                 DataInputStream dis = new DataInputStream(bis);
 
                 int nbFichiers = dis.readInt();
+                this.tailleTotale = dis.readLong();
+
                 System.out.println("Nombre de fichiers à recevoir : " + nbFichiers);
+                System.out.println("Taille totale des fichiers à recevoir : " + tailleTotale);
 
                 for (int i = 0; i < nbFichiers; i++) {
                     recevoirFichier(dis);
 
-                    ControleurImporterReseau controleurImporterReseau = Saltistique.getController(Scenes.IMPORTATION_RESEAU);
-                    controleurImporterReseau.onProgressUpdate((double) (i+1)/nbFichiers);
+                    //System.out.println("Ratio : " + this.progression/ tailleTotale);
 
                     Thread.sleep(1000);
                 }
