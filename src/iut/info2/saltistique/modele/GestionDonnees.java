@@ -8,6 +8,7 @@ package iut.info2.saltistique.modele;
 import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.ArrayList;
@@ -75,12 +76,7 @@ public class GestionDonnees implements Serializable {
      */
     public void importerDonnees(String[] cheminFichiers) throws IOException {
         viderDonnees();
-
         ajouterFichier(cheminFichiers);
-
-        if (fichierActivites == null || fichierReservations == null || fichierSalles == null || fichierUtilisateurs == null) {
-            throw new IllegalArgumentException("Les fichiers fournis ne sont pas valides");
-        }
 
         ajouterDonnees(fichierActivites.contenuFichier(), this::ajouterActivite);
         ajouterDonnees(fichierSalles.contenuFichier(), this::ajouterSalle);
@@ -107,6 +103,10 @@ public class GestionDonnees implements Serializable {
             lignesIncorrectesReservations.clear();
             lignesIncorrectesSalles.clear();
             lignesIncorrectesUtilisateurs.clear();
+            fichierActivites = null;
+            fichierUtilisateurs = null;
+            fichierSalles = null;
+            fichierReservations = null;
         } catch (Exception e) {
             System.err.println("Impossible de vider les données");
         }
@@ -272,6 +272,11 @@ public class GestionDonnees implements Serializable {
      * @throws IOException si une erreur survient lors de la lecture du fichier
      */
     public void ajouterFichier(String[] cheminFichiers) throws IOException { // TODO : renommer la méthode ajouterFichiers
+        String erreurSalles;
+        String erreurActivites;
+        String erreurReservations;
+        String erreurUtilisateurs;
+
         if (cheminFichiers.length != 4) {
             throw new IllegalArgumentException(ERREUR_NB_CHEMINS_FICHIERS);
         }
@@ -284,15 +289,43 @@ public class GestionDonnees implements Serializable {
         for (int i = 0; i < 4; i++) {
             switch (fichiers[i].contenuFichier()[0].split(DELIMITEUR).length) {
                 case 4:
+                    if (fichierUtilisateurs != null) {
+                        erreurUtilisateurs = "Vous avez fourni plusieurs fichiers d'utilisateurs : "
+                                + fichiers[i].getFichierExploite().getName() + " et "
+                                + fichierUtilisateurs.getFichierExploite().getName();
+                        viderDonnees();
+                        throw new IllegalArgumentException(erreurUtilisateurs);
+                    }
                     fichierUtilisateurs = fichiers[i];
                     break;
                 case 9:
+                    if (fichierSalles != null) {
+                        erreurSalles = "Vous avez fourni plusieurs fichiers de salles : "
+                                + fichiers[i].getFichierExploite().getName() + " et "
+                                + fichierSalles.getFichierExploite().getName();
+                        viderDonnees();
+                        throw new IllegalArgumentException(erreurSalles);
+                    }
                     fichierSalles = fichiers[i];
                     break;
                 case 2:
+                    if (fichierActivites != null) {
+                        erreurActivites = "Vous avez fourni plusieurs fichiers d'activités : "
+                                + fichiers[i].getFichierExploite().getName() + " et "
+                                + fichierActivites.getFichierExploite().getName();
+                        viderDonnees();
+                        throw new IllegalArgumentException(erreurActivites);
+                    }
                     fichierActivites = fichiers[i];
                     break;
                 case 7:
+                    if (fichierReservations != null) {
+                        erreurReservations = "Vous avez fourni plusieurs fichiers de réservations : "
+                                + fichiers[i].getFichierExploite().getName() + " et "
+                                + fichierReservations.getFichierExploite().getName();
+                        viderDonnees();
+                        throw new IllegalArgumentException(erreurReservations);
+                    }
                     fichierReservations = fichiers[i];
                     break;
                 default:

@@ -2,7 +2,7 @@
  * ControleurConsulterDonnees.java 02/11/2024
  * IUT de RODEZ, tous les droits sont réservés
  *
- * @author Jules VIALAS
+ * @author Jules VIALAS & Tom GUTIERREZ
  */
 
 package iut.info2.saltistique.controleur;
@@ -252,6 +252,7 @@ public class ControleurDonneesIncorrectes {
         Saltistique.changeScene(Scenes.CONSULTER_DONNEES);
         ControleurConsulterDonnees controleur = Saltistique.getController(Scenes.CONSULTER_DONNEES);
         controleur.rafraichirTableaux();
+        new Notification("Données importées", "Les données ont été importées avec succès.");
     }
 
     /**
@@ -260,6 +261,24 @@ public class ControleurDonneesIncorrectes {
     @FXML
     private void chargerSceneAccueil() {
         Saltistique.changeScene(Scenes.ACCUEIL);
+    }
+
+
+    /**
+     * Gère le clic sur le bouton de chargement des données.
+     * Vide les données du modèle et change de scène pour l'accueil.
+     * Affiche une notification pour informer l'utilisateur du succès de l'opération.
+     */
+    @FXML
+    void clickDechargerDonnees() {
+        if (menuContainer.isVisible()) {
+            burgerClicked();
+        }
+
+        gestionDonnees.viderDonnees();
+        Saltistique.changeScene(Scenes.ACCUEIL);
+
+        new Notification("Données déchargées", "Les données ont été déchargées avec succès.");
     }
 
     /**
@@ -407,16 +426,31 @@ public class ControleurDonneesIncorrectes {
         afficherTableau(tableauSalles, SelectionSalles);
     }
 
+    /**
+     * Affiche le tableau des réservations et la sélection associée dans l'interface utilisateur.
+     * Cette méthode rend visible le tableau des réservations et la sélection des réservations,
+     * tout en masquant les autres tableaux et sélections.
+     */
     @FXML
     void afficherTableauReservations() {
         afficherTableau(tableauReservations, SelectionReservations);
     }
 
+    /**
+     * Affiche le tableau des activités et la sélection associée dans l'interface utilisateur.
+     * Cette méthode rend visible le tableau des activités et la sélection des activités,
+     * tout en masquant les autres tableaux et sélections.
+     */
     @FXML
     void afficherTableauActivites() {
         afficherTableau(tableauActivites, SelectionActivites);
     }
 
+    /**
+     * Affiche le tableau des employés et la sélection associée dans l'interface utilisateur.
+     * Cette méthode rend visible le tableau des employés et la sélection des employés,
+     * tout en masquant les autres tableaux et sélections.
+     */
     @FXML
     void afficherTableauEmployes() {
         afficherTableau(tableauEmployes, SelectionEmployes);
@@ -427,7 +461,10 @@ public class ControleurDonneesIncorrectes {
      */
     @FXML
     public void handlerRetourMenu() {
-        Saltistique.changeScene(Scenes.ACCUEIL);
+        if (menuContainer.isVisible()) {
+            burgerClicked();
+        }
+        chargerSceneConsulterDonnees();
     }
 
     /**

@@ -3,6 +3,7 @@ package iut.info2.saltistique.modele;
 import iut.info2.saltistique.Saltistique;
 import iut.info2.saltistique.controleur.ControleurAccueil;
 import iut.info2.saltistique.controleur.ControleurConsulterDonnees;
+import iut.info2.saltistique.controleur.ControleurDonneesIncorrectes;
 import javafx.animation.FadeTransition;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
@@ -20,6 +21,7 @@ public class Notification {
 
     ControleurAccueil controleurAccueil = Saltistique.getController(Scenes.ACCUEIL);
     ControleurConsulterDonnees controleurConsulterDonnees = Saltistique.getController(Scenes.CONSULTER_DONNEES);
+    ControleurDonneesIncorrectes controleurDonneesIncorrectes = Saltistique.getController(Scenes.CONSULTER_DONNEES_INCORRECTES);
 
     /**
      * Constructeur de Notification
@@ -54,6 +56,12 @@ public class Notification {
                         controleurConsulterDonnees.notificationDescription.setText(description);
                         controleurConsulterDonnees.notificationFrame.setVisible(true);
                         break;
+                    case CONSULTER_DONNEES_INCORRECTES:
+                        controleurDonneesIncorrectes.notificationFrame.setMouseTransparent(false);
+                        controleurDonneesIncorrectes.notificationTitre.setText(titre);
+                        controleurDonneesIncorrectes.notificationDescription.setText(description);
+                        controleurDonneesIncorrectes.notificationFrame.setVisible(true);
+                        break;
                 }
 
                 Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(5), event -> {
@@ -67,6 +75,8 @@ public class Notification {
                         fadeOut.setNode(controleurAccueil.notificationFrame);
                     } else if (scene == Scenes.CONSULTER_DONNEES) {
                         fadeOut.setNode(controleurConsulterDonnees.notificationFrame);
+                    } else if (scene == Scenes.CONSULTER_DONNEES_INCORRECTES) {
+                        fadeOut.setNode(controleurDonneesIncorrectes.notificationFrame);
                     }
 
                     fadeOut.setOnFinished(e -> {
@@ -76,6 +86,9 @@ public class Notification {
                         } else if (scene == Scenes.CONSULTER_DONNEES) {
                             controleurConsulterDonnees.notificationFrame.setVisible(false);
                             controleurConsulterDonnees.notificationFrame.setOpacity(1.0);
+                        } else if (scene == Scenes.CONSULTER_DONNEES_INCORRECTES) {
+                            controleurDonneesIncorrectes.notificationFrame.setVisible(false);
+                            controleurDonneesIncorrectes.notificationFrame.setOpacity(1.0);
                         }
                     });
 

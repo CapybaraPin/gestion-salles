@@ -6,7 +6,7 @@
  */
 package iut.info2.saltistique.controleur;
 
-import iut.info2.saltistique.Saltistique;
+    import iut.info2.saltistique.Saltistique;
 import iut.info2.saltistique.modele.Notification;
 import iut.info2.saltistique.modele.Scenes;
 import javafx.fxml.FXML;
@@ -225,10 +225,14 @@ public class ControleurAccueil {
             Saltistique.changeScene(Scenes.CONSULTER_DONNEES_INCORRECTES);
             ControleurDonneesIncorrectes controleur = Saltistique.getController(Scenes.CONSULTER_DONNEES_INCORRECTES); // TODO : Réfléchir à une classe controlleur héritée par exemple ControleurConsultation, ou une classe statique pour éviter de répéter le code
             controleur.rafraichirTableaux();
+
+            new Notification("Importation réussie avec des lignes incorrectes", "Certaines lignes n'ont pas été importées correctement. Consultez les données incorrectes pour plus d'informations.");
         } else {
             Saltistique.changeScene(Scenes.CONSULTER_DONNEES);
             ControleurConsulterDonnees controleur = Saltistique.getController(Scenes.CONSULTER_DONNEES);
             controleur.rafraichirTableaux();
+
+            new Notification("Importation réussie", "Les données ont été importées avec succès.");
         }
     }
 

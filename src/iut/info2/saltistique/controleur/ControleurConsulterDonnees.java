@@ -464,10 +464,20 @@ public class ControleurConsulterDonnees {
         afficherTableau(tableauSalles, SelectionSalles);
     }
 
+    /**
+     * Gère le clic sur le bouton de chargement des données.
+     * Vide les données du modèle et change de scène pour l'accueil.
+     * Affiche une notification pour informer l'utilisateur du succès de l'opération.
+     */
     @FXML
-        void clickDechargerDonnees() {
+    void clickDechargerDonnees() {
+        if (menuContainer.isVisible()) {
+            burgerClicked();
+        }
+
         gestionDonnees.viderDonnees();
         Saltistique.changeScene(Scenes.ACCUEIL);
+
         new Notification("Données déchargées", "Les données ont été déchargées avec succès.");
     }
 
@@ -491,7 +501,9 @@ public class ControleurConsulterDonnees {
      */
     @FXML
     public void handlerRetourMenu() {
-        Saltistique.changeScene(Scenes.ACCUEIL);
+        if (menuContainer.isVisible()) {
+            burgerClicked();
+        }
     }
 
     /**

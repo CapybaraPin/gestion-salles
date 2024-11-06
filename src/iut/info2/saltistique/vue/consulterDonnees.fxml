@@ -347,7 +347,7 @@
                   </VBox>
                </children>
             </HBox>
-            <HBox alignment="TOP_RIGHT" maxHeight="1.0" maxWidth="1.0" minHeight="1.0" minWidth="1330.0" mouseTransparent="true" prefHeight="1.0" prefWidth="1.0">
+            <HBox alignment="TOP_RIGHT" maxHeight="1.0" maxWidth="1.0" minHeight="1.0" minWidth="1330.0" prefHeight="1.0" prefWidth="1.0">
                <children>
                   <VBox fx:id="notificationFrame" mouseTransparent="true" prefHeight="725.0" prefWidth="338.0" visible="false">
                      <HBox.margin>
