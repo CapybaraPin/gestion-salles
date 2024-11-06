@@ -43,7 +43,7 @@ class TestServeur {
         this.serveur = new Serveur(PORT, fichiers);
         try {
             this.client = new Client(HOST, PORT);
-        } catch (Notification e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }

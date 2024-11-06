@@ -73,33 +73,24 @@ public class GestionDonnees implements Serializable {
      * des employés, salles, activités, et réservations après avoir vérifié leur validité.
      * @param cheminFichiers Un tableau de chaînes de caractères représentant les chemins vers les fichiers à importer.
      */
-    public void importerDonnees(String[] cheminFichiers) throws IOException, Notification {
+    public void importerDonnees(String[] cheminFichiers) throws IOException {
         viderDonnees();
 
-        try {
-            ajouterFichier(cheminFichiers);
-        } catch (IllegalArgumentException e) {
-            throw new Notification("Erreur lors de l'importation", e.getMessage());
-        } catch (IOException e) {
-            throw new IOException(e.getMessage());
-        }
+        ajouterFichier(cheminFichiers);
 
         if (fichierActivites == null || fichierReservations == null || fichierSalles == null || fichierUtilisateurs == null) {
-            throw new Notification("Erreur lors de l'importation", "Les fichiers n'ont pas été correctement importés.");
+            throw new IllegalArgumentException("Les fichiers fournis ne sont pas valides");
         }
 
-        try {
-            ajouterDonnees(fichierActivites.contenuFichier(), this::ajouterActivite);
-            ajouterDonnees(fichierSalles.contenuFichier(), this::ajouterSalle);
-            ajouterDonnees(fichierUtilisateurs.contenuFichier(), this::ajouterUtilisateur);
-            ajouterDonnees(fichierReservations.contenuFichier(), this::ajouterReservation);
-        } catch (IOException e) {
-            throw new IOException(e.getMessage());
-        }
+        ajouterDonnees(fichierActivites.contenuFichier(), this::ajouterActivite);
+        ajouterDonnees(fichierSalles.contenuFichier(), this::ajouterSalle);
+        ajouterDonnees(fichierUtilisateurs.contenuFichier(), this::ajouterUtilisateur);
+        ajouterDonnees(fichierReservations.contenuFichier(), this::ajouterReservation);
 
         // TODO : ne pas ajouter les lignes vide et l'entete dans les talbeauxligne incorrectes
     }
 
+    /** TODO : la javadoc */
     private void ajouterDonnees(String[] contenuFichier, Consumer<String> ajouterLigne) throws IOException {
         for (String ligne : contenuFichier) {
             ajouterLigne.accept(ligne);
@@ -127,7 +118,7 @@ public class GestionDonnees implements Serializable {
      * @param ip l'adresse IP du serveur
      * @param port le port à utiliser pour l'importation
      */
-    public void importerDonnees(String ip, int port) throws Notification {
+    public void importerDonnees(String ip, int port) {
 
         File dossierSauvegarde = new File("src/ressources/fichiers/reception");
 
@@ -180,6 +171,22 @@ public class GestionDonnees implements Serializable {
 
     public HashMap<Integer, Reservation> getReservations() {
         return this.reservations;
+    }
+
+    public ArrayList<String[]> getLignesIncorrectesActivites() {
+        return this.lignesIncorrectesActivites;
+    }
+
+    public ArrayList<String[]> getLignesIncorrectesReservations() {
+        return this.lignesIncorrectesReservations;
+    }
+
+    public ArrayList<String[]> getLignesIncorrectesSalles() {
+        return this.lignesIncorrectesSalles;
+    }
+
+    public ArrayList<String[]> getLignesIncorrectesUtilisateurs() {
+        return this.lignesIncorrectesUtilisateurs;
     }
 
     /**
@@ -290,7 +297,7 @@ public class GestionDonnees implements Serializable {
                     break;
                 default:
                     fichierActivites = fichierReservations = fichierSalles = fichierUtilisateurs = null; // Remise à zéro
-                    throw new IllegalArgumentException("Fichier non reconnu");
+                    throw new IllegalArgumentException("\"" + fichiers[i].getFichierExploite().getName() + "\" non reconnu");
             }
         }
     }

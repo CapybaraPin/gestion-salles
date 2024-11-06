@@ -8,7 +8,11 @@ import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.util.Duration;
 
-public class Notification extends Exception {
+// TODO : rendre la classe Notification générique pour éviter la duplication de code
+// TODO : faire en sorte de séparer le titre et la description en fonction de l'exception
+//        exemple : "Erreur de connexion : Impossible de se connecter au serveur."
+//                : {"Erreur de connexion", "Impossible de se connecter au serveur."}
+public class Notification {
 
     // Champs d'instance pour les informations de notification
     private String titre;
