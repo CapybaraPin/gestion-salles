@@ -1,14 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import java.net.*?>
-<?import javafx.geometry.*?>
-<?import javafx.scene.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.image.*?>
-<?import javafx.scene.layout.*?>
-<?import javafx.scene.shape.*?>
-<?import javafx.scene.text.*?>
 <?import java.lang.String?>
 <?import java.net.URL?>
 <?import javafx.geometry.Insets?>
@@ -28,7 +19,7 @@
 <?import javafx.scene.text.Text?>
 <?import javafx.scene.text.TextFlow?>
 
-<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="768.0" prefWidth="1366.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="iut.info2.saltistique.controleur.ControleurConsulterDonnees">
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="768.0" prefWidth="1366.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="iut.info2.saltistique.controleur.ControleurConsulterDonnees">
    <styleClass>
       <String fx:value="background-radiant" />
       <String fx:value="border" />
@@ -277,13 +268,42 @@
                                           <Insets right="5.0" />
                                        </HBox.margin>
                                        <image>
-                                          <Image url="@notice.png" />
+                                          <Image url="@send.png" />
                                        </image>
                                     </ImageView>
-                                    <Text strokeType="OUTSIDE" strokeWidth="0.0" styleClass="typo-default" text="Partager les données" />
+                                    <Text strokeType="OUTSIDE" strokeWidth="0.0" styleClass="typo-default" text="Partager les données">
+                                       <HBox.margin>
+                                          <Insets />
+                                       </HBox.margin></Text>
                                  </children>
+                                 <VBox.margin>
+                                    <Insets bottom="5.0" />
+                                 </VBox.margin>
                               </HBox>
-                              <Separator prefWidth="200.0" styleClass="menu-sepator" />
+                              <HBox alignment="CENTER_LEFT" onMouseClicked="#clickDechargerDonnees" prefHeight="6.0" prefWidth="268.0" styleClass="btn-menu">
+                                 <children>
+                                    <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true" scaleX="0.9" scaleY="0.9">
+                                       <image>
+                                          <Image url="@unload.png" />
+                                       </image>
+                                       <HBox.margin>
+                                          <Insets right="5.0" />
+                                       </HBox.margin>
+                                    </ImageView>
+                                    <Text strokeType="OUTSIDE" strokeWidth="0.0" styleClass="typo-default" text="Décharger les données">
+                                       <HBox.margin>
+                                          <Insets />
+                                       </HBox.margin>
+                                    </Text>
+                                 </children>
+                                 <padding>
+                                    <Insets left="10.0" right="10.0" />
+                                 </padding>
+                              </HBox>
+                              <Separator prefWidth="200.0" styleClass="menu-sepator">
+                                 <VBox.margin>
+                                    <Insets bottom="5.0" top="5.0" />
+                                 </VBox.margin></Separator>
                               <HBox alignment="CENTER_LEFT" onMouseClicked="#handlerAide" prefHeight="6.0" prefWidth="268.0" styleClass="btn-menu">
                                  <padding>
                                     <Insets left="10.0" right="10.0" />

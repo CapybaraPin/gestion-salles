@@ -465,6 +465,13 @@ public class ControleurConsulterDonnees {
     }
 
     @FXML
+        void clickDechargerDonnees() {
+        gestionDonnees.viderDonnees();
+        Saltistique.changeScene(Scenes.ACCUEIL);
+        new Notification("Données déchargées", "Les données ont été déchargées avec succès.");
+    }
+
+    @FXML
     void afficherTableauReservations() {
         afficherTableau(tableauReservations, SelectionReservations);
     }
