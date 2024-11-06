@@ -88,8 +88,8 @@ public class GestionDonnees implements Serializable {
 
     /** TODO : la javadoc */
     private void ajouterDonnees(String[] contenuFichier, Consumer<String> ajouterLigne) throws IOException {
-        for (String ligne : contenuFichier) {
-            ajouterLigne.accept(ligne);
+        for (int i = 1; i < contenuFichier.length; i++) {
+            ajouterLigne.accept(contenuFichier[i]);
         }
     }
 
@@ -348,17 +348,20 @@ public class GestionDonnees implements Serializable {
         String messageErreur;
 
         messageErreur = null;
+        attributs = ligne.split(DELIMITEUR, -1);
+        identifiant = extraireNombre(attributs[0]);
         if (estLigneComplete(ligne, DELIMITEUR, "activites")) {
-            attributs = ligne.split(DELIMITEUR, -1);
-            identifiant = extraireNombre(attributs[0]);
-
             if (!activites.containsKey(identifiant)) {
                 activites.put(identifiant, creerActivite(ligne));
             } else {
                 messageErreur = "Identifiant déjà utilisé";
             }
         } else {
-            messageErreur = "Ligne incorrecte";
+            for (int indiceAttribut = 0; indiceAttribut < attributs.length && messageErreur == null; indiceAttribut++) {
+                if (!attributs[indiceAttribut].isEmpty()) {
+                    messageErreur = "Ligne incorrecte";
+                }
+            }
         }
 
         if (messageErreur != null) {
@@ -398,16 +401,22 @@ public class GestionDonnees implements Serializable {
         String messageErreur;
 
         messageErreur = null;
+        attributs = ligne.split(DELIMITEUR, -1);
+        identifiant = extraireNombre(attributs[0]);
         if (estLigneComplete(ligne, DELIMITEUR, "salles")) {
-            attributs = ligne.split(DELIMITEUR, -1);
-            identifiant = extraireNombre(attributs[0]);
             if(!salles.containsKey(identifiant)){ // Vérifie que la salle n'existe pas déjà
                 salles.put(identifiant, creerSalle(ligne));
             } else {
                 messageErreur = "Identifiant déjà utilisé";
             }
-        } else {
-            messageErreur = "Ligne incorrecte";
+        }  else {
+            for (int indiceAttribut = 0; indiceAttribut < attributs.length && messageErreur == null; indiceAttribut++) {
+                // Vérifie qu'au moins un attribut n'est pas vide pour déterminer si la ligne est incorrecte
+                // si tous les attributs sont vides, la ligne est ignorée
+                if (!attributs[indiceAttribut].isEmpty()) {
+                    messageErreur = "Ligne incorrecte";
+                }
+            }
         }
 
         if (messageErreur != null) {
@@ -471,9 +480,9 @@ public class GestionDonnees implements Serializable {
         String messageErreur;
 
         messageErreur = null;
+        attributs = ligne.split(DELIMITEUR, -1);
+        identifiant = extraireNombre(attributs[0]);
         if (estLigneComplete(ligne, DELIMITEUR, "reservations")) {
-            attributs = ligne.split(DELIMITEUR, -1);
-            identifiant = extraireNombre(attributs[0]);
             if (!reservations.containsKey(identifiant)) {  // Vérifie que la réservation n'existe pas déjà
                 reservation = switch (attributs[3]) {
                     case "formation" -> creerFormation(ligne);
@@ -488,8 +497,14 @@ public class GestionDonnees implements Serializable {
             } else {
                 messageErreur = "Identifiant déjà utilisé";
             }
-        } else {
-            messageErreur = "Ligne incorrecte";
+        }  else {
+            for (int indiceAttribut = 0; indiceAttribut < attributs.length && messageErreur == null; indiceAttribut++) {
+                // Vérifie qu'au moins un attribut n'est pas vide pour déterminer si la ligne est incorrecte
+                // si tous les attributs sont vides, la ligne est ignorée
+                if (!attributs[indiceAttribut].isEmpty()) {
+                    messageErreur = "Ligne incorrecte";
+                }
+            }
         }
 
         if (messageErreur != null) {
@@ -636,17 +651,23 @@ public class GestionDonnees implements Serializable {
         String messageErreur;
 
         messageErreur = null;
+        attributs = ligne.split(DELIMITEUR, -1);
+        identifiant = extraireNombre(attributs[0]);
         if (estLigneComplete(ligne, DELIMITEUR, "employes")) {
-            attributs = ligne.split(DELIMITEUR, -1);
-            identifiant = extraireNombre(attributs[0]);
             if (!utilisateurs.containsKey(identifiant)) {  // Vérifie que l'utilisateur n'existe pas déjà
                 utilisateur = creerUtilisateur(ligne);
                 utilisateurs.put(identifiant, utilisateur);
             } else {
                 messageErreur = "Identifiant déjà utilisé";
             }
-        } else {
-            messageErreur = "Ligne incorrecte";
+        }  else {
+            for (int indiceAttribut = 0; indiceAttribut < attributs.length && messageErreur == null; indiceAttribut++) {
+                // Vérifie qu'au moins un attribut n'est pas vide pour déterminer si la ligne est incorrecte
+                // si tous les attributs sont vides, la ligne est ignorée
+                if (!attributs[indiceAttribut].isEmpty()) {
+                    messageErreur = "Ligne incorrecte";
+                }
+            }
         }
 
         if (messageErreur != null) {
@@ -684,9 +705,16 @@ public class GestionDonnees implements Serializable {
      * @return l'identifiant sous forme d'entier
      */
     public static int extraireNombre(String identifiantComplet) {
-        String identifiant = identifiantComplet.replaceAll("[^0-9]", "");
+        int nb;
+        String nbStr;
 
-        return Integer.parseInt(identifiant);
+        nbStr = identifiantComplet.replaceAll("[^0-9]", "");
+        nb = -1;
+        if (!nbStr.isEmpty()) {
+            nb = Integer.parseInt(nbStr);
+        }
+
+        return nb;
     }
 
 }
