@@ -5,9 +5,6 @@
 
 package iut.info2.saltistique.modele;
 
-import iut.info2.saltistique.Saltistique;
-import iut.info2.saltistique.controleur.ControleurImporterReseau;
-
 import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
@@ -77,36 +74,22 @@ public class GestionDonnees implements Serializable {
      * des employés, salles, activités, et réservations après avoir vérifié leur validité.
      * @param cheminFichiers Un tableau de chaînes de caractères représentant les chemins vers les fichiers à importer.
      */
-    public void importerDonnees(String[] cheminFichiers) throws IOException, Notification {
+    public void importerDonnees(String[] cheminFichiers) throws IOException {
         viderDonnees();
+        ajouterFichier(cheminFichiers);
 
-        try {
-            ajouterFichier(cheminFichiers);
-        } catch (IllegalArgumentException e) {
-            throw new Notification("Erreur lors de l'importation", e.getMessage());
-        } catch (IOException e) {
-            throw new IOException(e.getMessage());
-        }
-
-        if (fichierActivites == null || fichierReservations == null || fichierSalles == null || fichierUtilisateurs == null) {
-            throw new Notification("Erreur lors de l'importation", "Les fichiers n'ont pas été correctement importés.");
-        }
-
-        try {
-            ajouterDonnees(fichierActivites.contenuFichier(), this::ajouterActivite);
-            ajouterDonnees(fichierSalles.contenuFichier(), this::ajouterSalle);
-            ajouterDonnees(fichierUtilisateurs.contenuFichier(), this::ajouterUtilisateur);
-            ajouterDonnees(fichierReservations.contenuFichier(), this::ajouterReservation);
-        } catch (IOException e) {
-            throw new IOException(e.getMessage());
-        }
+        ajouterDonnees(fichierActivites.contenuFichier(), this::ajouterActivite);
+        ajouterDonnees(fichierSalles.contenuFichier(), this::ajouterSalle);
+        ajouterDonnees(fichierUtilisateurs.contenuFichier(), this::ajouterUtilisateur);
+        ajouterDonnees(fichierReservations.contenuFichier(), this::ajouterReservation);
 
         // TODO : ne pas ajouter les lignes vide et l'entete dans les talbeauxligne incorrectes
     }
 
+    /** TODO : la javadoc */
     private void ajouterDonnees(String[] contenuFichier, Consumer<String> ajouterLigne) throws IOException {
-        for (String ligne : contenuFichier) {
-            ajouterLigne.accept(ligne);
+        for (int i = 1; i < contenuFichier.length; i++) {
+            ajouterLigne.accept(contenuFichier[i]);
         }
     }
 
@@ -120,6 +103,10 @@ public class GestionDonnees implements Serializable {
             lignesIncorrectesReservations.clear();
             lignesIncorrectesSalles.clear();
             lignesIncorrectesUtilisateurs.clear();
+            fichierActivites = null;
+            fichierUtilisateurs = null;
+            fichierSalles = null;
+            fichierReservations = null;
         } catch (Exception e) {
             System.err.println("Impossible de vider les données");
         }
@@ -131,7 +118,7 @@ public class GestionDonnees implements Serializable {
      * @param ip l'adresse IP du serveur
      * @param port le port à utiliser pour l'importation
      */
-    public void importerDonnees(String ip, int port) throws Notification {
+    public void importerDonnees(String ip, int port) {
 
         File dossierSauvegarde = new File("src/ressources/fichiers/reception");
 
@@ -184,6 +171,22 @@ public class GestionDonnees implements Serializable {
 
     public HashMap<Integer, Reservation> getReservations() {
         return this.reservations;
+    }
+
+    public ArrayList<String[]> getLignesIncorrectesActivites() {
+        return this.lignesIncorrectesActivites;
+    }
+
+    public ArrayList<String[]> getLignesIncorrectesReservations() {
+        return this.lignesIncorrectesReservations;
+    }
+
+    public ArrayList<String[]> getLignesIncorrectesSalles() {
+        return this.lignesIncorrectesSalles;
+    }
+
+    public ArrayList<String[]> getLignesIncorrectesUtilisateurs() {
+        return this.lignesIncorrectesUtilisateurs;
     }
 
     /**
@@ -269,6 +272,11 @@ public class GestionDonnees implements Serializable {
      * @throws IOException si une erreur survient lors de la lecture du fichier
      */
     public void ajouterFichier(String[] cheminFichiers) throws IOException { // TODO : renommer la méthode ajouterFichiers
+        String erreurSalles;
+        String erreurActivites;
+        String erreurReservations;
+        String erreurUtilisateurs;
+
         if (cheminFichiers.length != 4) {
             throw new IllegalArgumentException(ERREUR_NB_CHEMINS_FICHIERS);
         }
@@ -281,20 +289,48 @@ public class GestionDonnees implements Serializable {
         for (int i = 0; i < 4; i++) {
             switch (fichiers[i].contenuFichier()[0].split(DELIMITEUR).length) {
                 case 4:
+                    if (fichierUtilisateurs != null) {
+                        erreurUtilisateurs = "Vous avez fourni plusieurs fichiers d'utilisateurs : "
+                                + fichiers[i].getFichierExploite().getName() + " et "
+                                + fichierUtilisateurs.getFichierExploite().getName();
+                        viderDonnees();
+                        throw new IllegalArgumentException(erreurUtilisateurs);
+                    }
                     fichierUtilisateurs = fichiers[i];
                     break;
                 case 9:
+                    if (fichierSalles != null) {
+                        erreurSalles = "Vous avez fourni plusieurs fichiers de salles : "
+                                + fichiers[i].getFichierExploite().getName() + " et "
+                                + fichierSalles.getFichierExploite().getName();
+                        viderDonnees();
+                        throw new IllegalArgumentException(erreurSalles);
+                    }
                     fichierSalles = fichiers[i];
                     break;
                 case 2:
+                    if (fichierActivites != null) {
+                        erreurActivites = "Vous avez fourni plusieurs fichiers d'activités : "
+                                + fichiers[i].getFichierExploite().getName() + " et "
+                                + fichierActivites.getFichierExploite().getName();
+                        viderDonnees();
+                        throw new IllegalArgumentException(erreurActivites);
+                    }
                     fichierActivites = fichiers[i];
                     break;
                 case 7:
+                    if (fichierReservations != null) {
+                        erreurReservations = "Vous avez fourni plusieurs fichiers de réservations : "
+                                + fichiers[i].getFichierExploite().getName() + " et "
+                                + fichierReservations.getFichierExploite().getName();
+                        viderDonnees();
+                        throw new IllegalArgumentException(erreurReservations);
+                    }
                     fichierReservations = fichiers[i];
                     break;
                 default:
                     fichierActivites = fichierReservations = fichierSalles = fichierUtilisateurs = null; // Remise à zéro
-                    throw new IllegalArgumentException("Fichier non reconnu");
+                    throw new IllegalArgumentException("\"" + fichiers[i].getFichierExploite().getName() + "\" non reconnu");
             }
         }
     }
@@ -312,17 +348,20 @@ public class GestionDonnees implements Serializable {
         String messageErreur;
 
         messageErreur = null;
+        attributs = ligne.split(DELIMITEUR, -1);
+        identifiant = extraireNombre(attributs[0]);
         if (estLigneComplete(ligne, DELIMITEUR, "activites")) {
-            attributs = ligne.split(DELIMITEUR, -1);
-            identifiant = extraireNombre(attributs[0]);
-
             if (!activites.containsKey(identifiant)) {
                 activites.put(identifiant, creerActivite(ligne));
             } else {
                 messageErreur = "Identifiant déjà utilisé";
             }
         } else {
-            messageErreur = "Ligne incorrecte";
+            for (int indiceAttribut = 0; indiceAttribut < attributs.length && messageErreur == null; indiceAttribut++) {
+                if (!attributs[indiceAttribut].isEmpty()) {
+                    messageErreur = "Ligne incorrecte";
+                }
+            }
         }
 
         if (messageErreur != null) {
@@ -362,16 +401,22 @@ public class GestionDonnees implements Serializable {
         String messageErreur;
 
         messageErreur = null;
+        attributs = ligne.split(DELIMITEUR, -1);
+        identifiant = extraireNombre(attributs[0]);
         if (estLigneComplete(ligne, DELIMITEUR, "salles")) {
-            attributs = ligne.split(DELIMITEUR, -1);
-            identifiant = extraireNombre(attributs[0]);
             if(!salles.containsKey(identifiant)){ // Vérifie que la salle n'existe pas déjà
                 salles.put(identifiant, creerSalle(ligne));
             } else {
                 messageErreur = "Identifiant déjà utilisé";
             }
-        } else {
-            messageErreur = "Ligne incorrecte";
+        }  else {
+            for (int indiceAttribut = 0; indiceAttribut < attributs.length && messageErreur == null; indiceAttribut++) {
+                // Vérifie qu'au moins un attribut n'est pas vide pour déterminer si la ligne est incorrecte
+                // si tous les attributs sont vides, la ligne est ignorée
+                if (!attributs[indiceAttribut].isEmpty()) {
+                    messageErreur = "Ligne incorrecte";
+                }
+            }
         }
 
         if (messageErreur != null) {
@@ -435,9 +480,9 @@ public class GestionDonnees implements Serializable {
         String messageErreur;
 
         messageErreur = null;
+        attributs = ligne.split(DELIMITEUR, -1);
+        identifiant = extraireNombre(attributs[0]);
         if (estLigneComplete(ligne, DELIMITEUR, "reservations")) {
-            attributs = ligne.split(DELIMITEUR, -1);
-            identifiant = extraireNombre(attributs[0]);
             if (!reservations.containsKey(identifiant)) {  // Vérifie que la réservation n'existe pas déjà
                 reservation = switch (attributs[3]) {
                     case "formation" -> creerFormation(ligne);
@@ -452,8 +497,14 @@ public class GestionDonnees implements Serializable {
             } else {
                 messageErreur = "Identifiant déjà utilisé";
             }
-        } else {
-            messageErreur = "Ligne incorrecte";
+        }  else {
+            for (int indiceAttribut = 0; indiceAttribut < attributs.length && messageErreur == null; indiceAttribut++) {
+                // Vérifie qu'au moins un attribut n'est pas vide pour déterminer si la ligne est incorrecte
+                // si tous les attributs sont vides, la ligne est ignorée
+                if (!attributs[indiceAttribut].isEmpty()) {
+                    messageErreur = "Ligne incorrecte";
+                }
+            }
         }
 
         if (messageErreur != null) {
@@ -600,17 +651,23 @@ public class GestionDonnees implements Serializable {
         String messageErreur;
 
         messageErreur = null;
+        attributs = ligne.split(DELIMITEUR, -1);
+        identifiant = extraireNombre(attributs[0]);
         if (estLigneComplete(ligne, DELIMITEUR, "employes")) {
-            attributs = ligne.split(DELIMITEUR, -1);
-            identifiant = extraireNombre(attributs[0]);
             if (!utilisateurs.containsKey(identifiant)) {  // Vérifie que l'utilisateur n'existe pas déjà
                 utilisateur = creerUtilisateur(ligne);
                 utilisateurs.put(identifiant, utilisateur);
             } else {
                 messageErreur = "Identifiant déjà utilisé";
             }
-        } else {
-            messageErreur = "Ligne incorrecte";
+        }  else {
+            for (int indiceAttribut = 0; indiceAttribut < attributs.length && messageErreur == null; indiceAttribut++) {
+                // Vérifie qu'au moins un attribut n'est pas vide pour déterminer si la ligne est incorrecte
+                // si tous les attributs sont vides, la ligne est ignorée
+                if (!attributs[indiceAttribut].isEmpty()) {
+                    messageErreur = "Ligne incorrecte";
+                }
+            }
         }
 
         if (messageErreur != null) {
@@ -648,9 +705,16 @@ public class GestionDonnees implements Serializable {
      * @return l'identifiant sous forme d'entier
      */
     public static int extraireNombre(String identifiantComplet) {
-        String identifiant = identifiantComplet.replaceAll("[^0-9]", "");
+        int nb;
+        String nbStr;
 
-        return Integer.parseInt(identifiant);
+        nbStr = identifiantComplet.replaceAll("[^0-9]", "");
+        nb = -1;
+        if (!nbStr.isEmpty()) {
+            nb = Integer.parseInt(nbStr);
+        }
+
+        return nb;
     }
 
 }
