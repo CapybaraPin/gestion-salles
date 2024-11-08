@@ -67,18 +67,24 @@ public class ControleurImporterReseau {
 
         try {
             Saltistique.gestionDonnees.importerDonnees(adresseIp.getText(), Integer.parseInt(port.getText()));
+            //finImportation();
         } catch (Exception e) {
             return;
         }
 
-//        ControleurConsulterDonnees controleur = Saltistique.getController(Scenes.CONSULTER_DONNEES);
-//        controleur.rafraichirTableaux();
-//        Saltistique.changeScene(Scenes.CONSULTER_DONNEES);
 
-//        Stage stage = (Stage) adresseIp.getScene().getWindow();
-//        stage.close();
+    }
 
+    public void finImportation(){
+        System.out.println("Fermeture de la fenêtre");
+        javafx.application.Platform.runLater(() -> {
+            ControleurConsulterDonnees controleur = Saltistique.getController(Scenes.CONSULTER_DONNEES);
+            controleur.rafraichirTableaux();
+            Saltistique.changeScene(Scenes.CONSULTER_DONNEES);
 
+            Stage stage = (Stage) adresseIp.getScene().getWindow();
+            stage.close();
+        });
     }
 
     /**
