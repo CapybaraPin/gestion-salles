@@ -198,29 +198,6 @@
                                     <Insets />
                                  </VBox.margin>
                               </Separator>
-                              <HBox alignment="CENTER_LEFT" onMouseClicked="#clickDechargerDonnees" prefHeight="6.0" prefWidth="268.0" styleClass="btn-menu">
-                                 <children>
-                                    <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true" scaleX="0.9" scaleY="0.9">
-                                       <image>
-                                          <Image url="@unload.png" />
-                                       </image>
-                                       <HBox.margin>
-                                          <Insets right="5.0" />
-                                       </HBox.margin>
-                                    </ImageView>
-                                    <Text strokeType="OUTSIDE" strokeWidth="0.0" styleClass="typo-default" text="Décharger les données">
-                                       <HBox.margin>
-                                          <Insets />
-                                       </HBox.margin></Text>
-                                 </children>
-                                 <padding>
-                                    <Insets left="10.0" right="10.0" />
-                                 </padding>
-                                 <VBox.margin>
-                                    <Insets bottom="5.0" top="5.0" />
-                                 </VBox.margin>
-                              </HBox>
-                              <Separator prefWidth="200.0" styleClass="menu-sepator" />
                               <HBox alignment="CENTER_LEFT" onMouseClicked="#handlerAide" prefHeight="6.0" prefWidth="268.0" styleClass="btn-menu">
                                  <children>
                                     <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true" scaleX="0.9" scaleY="0.9">

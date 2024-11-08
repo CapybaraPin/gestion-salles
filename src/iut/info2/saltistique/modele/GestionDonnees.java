@@ -11,6 +11,7 @@ import iut.info2.saltistique.controleur.ControleurImporterReseau;
 import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.ArrayList;
@@ -83,7 +84,7 @@ public class GestionDonnees implements Serializable {
             ajouterFichier(cheminFichiers);
         } catch (IllegalArgumentException e) {
             throw new Notification("Erreur lors de l'importation", e.getMessage());
-            } catch (IOException e) {
+        } catch (IOException e) {
             throw new IOException(e.getMessage());
         }
 
@@ -132,11 +133,9 @@ public class GestionDonnees implements Serializable {
      */
     public void importerDonnees(String ip, int port) throws Notification {
 
-        File dossierSauvegarde = new File("src/ressources/fichiers");
+        File dossierSauvegarde = new File("src/ressources/fichiers/reception");
 
         File[] fichiersExistants = dossierSauvegarde.listFiles();
-        String[] cheminFichiers = new String[4];
-
         if (fichiersExistants != null && fichiersExistants.length > 0) {
             // Le dossier n'est pas vide
             System.err.println("Le dossier de sauvegarde n'est pas vide. Déchargez les données...");
@@ -146,17 +145,14 @@ public class GestionDonnees implements Serializable {
         Thread clientThread = new Thread(client);
         clientThread.start();
 
-        for (int i = 0; i < 4; i++) {
-            if (fichiersExistants[0] != null) {
-                cheminFichiers[i] = fichiersExistants[0].getAbsolutePath();
-            } else {
-                throw new IllegalArgumentException("La liste des fichiers importés n'est pas complète.");
-            }
-        }
-
         // Appeler importerDonnees avec les fichiers reçus
         try {
-            importerDonnees(cheminFichiers);
+            importerDonnees(new String[]{
+                    "src/ressources/fichiers/activites.csv",
+                    "src/ressources/fichiers/employes.csv",
+                    "src/ressources/fichiers/reservations.csv",
+                    "src/ressources/fichiers/salles.csv"
+            });
         } catch (IOException e) {
             System.err.println("Erreur lors de l'importation des données.");
         }

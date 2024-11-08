@@ -2,7 +2,7 @@
  * ControleurConsulterDonnees.java 02/11/2024
  * IUT de RODEZ, tous les droits sont réservés
  *
- * @author Jules VIALAS
+ * @author Jules VIALAS & Tom GUTIERREZ
  */
 
 package iut.info2.saltistique.controleur;
@@ -14,20 +14,20 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
+import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
-import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.shape.Line;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
-import java.awt.*;
+
+import java.awt.Desktop;
 import java.io.File;
 import java.io.IOException;
-import java.time.LocalDateTime;
-import java.util.Map;
-import javafx.scene.control.TableColumn;
+
 import static iut.info2.saltistique.Saltistique.gestionDonnees;
 
 /**
@@ -37,7 +37,7 @@ import static iut.info2.saltistique.Saltistique.gestionDonnees;
  * et autres éléments interactifs de l'interface.
  *
  */
-public class ControleurConsulterDonnees {
+public class ControleurDonneesIncorrectes {
 
     /** Bouton pour afficher les employés. */
     @FXML
@@ -71,58 +71,6 @@ public class ControleurConsulterDonnees {
     @FXML
     public Line SelectionReservations;
 
-    /** Colonne pour l'identifiant de l'employé. */
-    @FXML
-    public TableColumn<Utilisateur, String> IdentifiantEmploye;
-
-    /** Colonne pour le nom de l'employé. */
-    @FXML
-    public TableColumn<Utilisateur, String> NomEmploye;
-
-    /** Colonne pour le prénom de l'employé. */
-    @FXML
-    public TableColumn<Utilisateur, String> Prenom;
-
-    /** Colonne pour le numéro de téléphone de l'employé. */
-    @FXML
-    public TableColumn<Utilisateur, String> numeroDeTelephone;
-
-    /** Colonne pour l'identifiant de l'activité. */
-    @FXML
-    public TableColumn<Activite, String> IdentifiantActivite;
-
-    /** Colonne pour le nom de l'activité. */
-    @FXML
-    public TableColumn<Activite, String> Nom;
-
-    /** Colonne pour l'identifiant de la réservation. */
-    @FXML
-    public TableColumn<Reservation, String> IdentifiantReservation;
-
-    /** Colonne pour la date de début de la réservation. */
-    @FXML
-    public TableColumn<Reservation, LocalDateTime> dateDeDebut;
-
-    /** Colonne pour la date de fin de la réservation. */
-    @FXML
-    public TableColumn<Reservation, LocalDateTime> dateDeFin;
-
-    /** Colonne pour la description de la réservation. */
-    @FXML
-    public TableColumn<Reservation, String> Description;
-
-    /** Colonne pour la salle associée à la réservation. */
-    @FXML
-    public TableColumn<Reservation, Salle> Salle;
-
-    /** Colonne pour l'activité associée à la réservation. */
-    @FXML
-    public TableColumn<Reservation, Activite> Activite;
-
-    /** Colonne pour l'utilisateur associé à la réservation. */
-    @FXML
-    public TableColumn<Reservation, Utilisateur> Utilisateur;
-
     /** Position horizontale de la souris pour le déplacement de la fenêtre. */
     double xOffset = 0;
 
@@ -137,58 +85,6 @@ public class ControleurConsulterDonnees {
     @FXML
     private Pane layerMenu;
 
-    /** TableView pour les réservations. */
-    @FXML
-    public TableView<Reservation> tableauReservations;
-
-    /** TableView pour les employés. */
-    @FXML
-    public TableView<Utilisateur> tableauEmployes;
-
-    /** TableView pour les activités. */
-    @FXML
-    public TableView<Activite> tableauActivites;
-
-    /** TableView pour les salles. */
-    @FXML
-    public TableView<Salle> tableauSalles;
-
-    /** Colonne pour l'identifiant de la salle. */
-    @FXML
-    public TableColumn<Salle, String> IdentifiantSalle;
-
-    /** Colonne pour le nom de la salle. */
-    @FXML
-    public TableColumn<Salle, String> NomSalle;
-
-    /** Colonne pour la capacité de la salle. */
-    @FXML
-    public TableColumn<Salle, Integer> Capacite;
-
-    /** Colonne pour la disponibilité d'une vidéo projecteur. */
-    @FXML
-    public TableColumn<Salle, Boolean> VideoProjecteur;
-
-    /** Colonne pour la disponibilité d'un écran XXL. */
-    @FXML
-    public TableColumn<Salle, Boolean> EcranXXL;
-
-    /** Colonne pour les ordinateurs disponibles dans la salle. */
-    @FXML
-    public TableColumn<Salle, String> Ordinateurs;
-
-    /** Colonne pour le type de la salle. */
-    @FXML
-    public TableColumn<Salle, String> Type;
-
-    /** Colonne pour les logiciels disponibles dans la salle. */
-    @FXML
-    public TableColumn<Salle, String> Logiciels;
-
-    /** Colonne pour la disponibilité d'une imprimante. */
-    @FXML
-    public TableColumn<Salle, Boolean> Imprimante;
-
     @FXML
     public VBox notificationFrame;
 
@@ -201,6 +97,55 @@ public class ControleurConsulterDonnees {
     @FXML
     public Button notificationBouton;
 
+    /** Tableau des salles. */
+    @FXML
+    private TableView<String[]> tableauSalles;
+
+    /** Tableau des activités. */
+    @FXML
+    private TableView<String[]> tableauActivites;
+
+    /** Tableau des employés. */
+    @FXML
+    private TableView<String[]> tableauEmployes;
+
+    /** Tableau des réservations. */
+    @FXML
+    private TableView<String[]> tableauReservations;
+
+    /** Colonne de la ligne de la salle. */
+    @FXML
+    private TableColumn<String[], String> LigneSalles;
+
+    /** Colonne de l'erreur de la ligne Salle. */
+    @FXML
+    private TableColumn<String[], String> ErreurSalles;
+
+    /** Colonne de la ligne de l'activité. */
+    @FXML
+    private TableColumn<String[], String> LigneActivites;
+
+    /** Colonne de l'erreur de la ligne Activité. */
+    @FXML
+    private TableColumn<String[], String> ErreurActivites;
+
+    /** Colonne de la ligne de l'employé. */
+    @FXML
+    private TableColumn<String[], String> LigneEmployes;
+
+    /** Colonne de l'erreur de la ligne Employé. */
+    @FXML
+    private TableColumn<String[], String> ErreurEmployes;
+
+    /** Colonne de la ligne de la réservation. */
+    @FXML
+    private TableColumn<String[], String> LigneReservations;
+
+    /** Colonne de l'erreur de la ligne Réservation. */
+    @FXML
+    private TableColumn<String[], String> ErreurReservations;
+
+
     /**
      * Listes observables contenant les objets de chaques types.
      * Ces listes sont utilisées pour afficher et gérer les types de données disponibles
@@ -208,10 +153,10 @@ public class ControleurConsulterDonnees {
      * de l'interface utilisateur, tels que des tableaux ou des listes.
      *
      */
-    private ObservableList<Salle> listeSalles;
-    private ObservableList<Activite> listeActivites;
-    private ObservableList<Utilisateur> listeEmployes;
-    private ObservableList<Reservation> listeReservations;
+    private ObservableList<String[]> listeSalles;
+    private ObservableList<String[]> listeActivites;
+    private ObservableList<String[]> listeEmployes;
+    private ObservableList<String[]> listeReservations;
 
     /**
      * Initialise le contrôleur et configure les tableaux.
@@ -227,7 +172,7 @@ public class ControleurConsulterDonnees {
         initialiserTableauEmployes();
         initialiserTableauReservations();
 
-        notificationBouton.setOnAction(event -> {
+        notificationBouton.setOnAction(event -> { // TODO : enlever ce code
             notificationFrame.setVisible(false);
             notificationFrame.setMouseTransparent(true);
         });
@@ -235,23 +180,17 @@ public class ControleurConsulterDonnees {
 
     /**
      * Initialise les listes de salles, d'activités, d'employés et de réservations
+     * incorrectes *
+     * Ces listes sont initialisées en tant que listes observables et sont utilisées
      * en les remplissant avec les données fournies par le gestionnaire de données.
      * Cette méthode parcourt les entrées des collections de données et les ajoute
      * aux listes correspondantes.
      */
     private void initialiserTableaux() {
-        for (Map.Entry<Integer, Salle> entry : gestionDonnees.getSalles().entrySet()) {
-            listeSalles.add(entry.getValue());
-        }
-        for (Map.Entry<Integer, Activite> entry : gestionDonnees.getActivites().entrySet()) {
-            listeActivites.add(entry.getValue());
-        }
-        for (Map.Entry<Integer, Utilisateur> entry : gestionDonnees.getUtilisateurs().entrySet()) {
-            listeEmployes.add(entry.getValue());
-        }
-        for (Map.Entry<Integer, Reservation> entry : gestionDonnees.getReservations().entrySet()) {
-            listeReservations.add(entry.getValue());
-        }
+        listeSalles.addAll(gestionDonnees.getLignesIncorrectesSalles());
+        listeActivites.addAll(gestionDonnees.getLignesIncorrectesActivites());
+        listeEmployes.addAll(gestionDonnees.getLignesIncorrectesUtilisateurs());
+        listeReservations.addAll(gestionDonnees.getLignesIncorrectesReservations());
     }
 
     /**
@@ -273,15 +212,8 @@ public class ControleurConsulterDonnees {
      * Initialise le tableau des salles.
      */
     private void initialiserTableauSalles() {
-        IdentifiantSalle.setCellValueFactory(new PropertyValueFactory<>("identifiant"));
-        NomSalle.setCellValueFactory(new PropertyValueFactory<>("nom"));
-        Capacite.setCellValueFactory(new PropertyValueFactory<>("capacite"));
-        VideoProjecteur.setCellValueFactory(new PropertyValueFactory<>("videoProjecteur"));
-        EcranXXL.setCellValueFactory(new PropertyValueFactory<>("ecranXXL"));
-        Ordinateurs.setCellValueFactory(new PropertyValueFactory<>("ordinateurs"));
-        Type.setCellValueFactory(new PropertyValueFactory<>("type"));
-        Logiciels.setCellValueFactory(new PropertyValueFactory<>("logiciels"));
-        Imprimante.setCellValueFactory(new PropertyValueFactory<>("imprimante"));
+        LigneSalles.setCellValueFactory(data -> new SimpleStringProperty(data.getValue()[0]));
+        ErreurSalles.setCellValueFactory(data -> new SimpleStringProperty(data.getValue()[1]));
         tableauSalles.setItems(listeSalles);
     }
 
@@ -289,8 +221,8 @@ public class ControleurConsulterDonnees {
      * Initialise le tableau des activités.
      */
     private void initialiserTableauActivites() {
-        IdentifiantActivite.setCellValueFactory(new PropertyValueFactory<>("identifiant"));
-        Nom.setCellValueFactory(new PropertyValueFactory<>("nom"));
+        LigneActivites.setCellValueFactory(data -> new SimpleStringProperty(data.getValue()[0]));
+        ErreurActivites.setCellValueFactory(data -> new SimpleStringProperty(data.getValue()[1]));
         tableauActivites.setItems(listeActivites);
     }
 
@@ -298,10 +230,8 @@ public class ControleurConsulterDonnees {
      * Initialise le tableau des employés.
      */
     private void initialiserTableauEmployes() {
-        IdentifiantEmploye.setCellValueFactory(new PropertyValueFactory<>("identifiant"));
-        NomEmploye.setCellValueFactory(new PropertyValueFactory<>("nom"));
-        Prenom.setCellValueFactory(new PropertyValueFactory<>("prenom"));
-        numeroDeTelephone.setCellValueFactory(new PropertyValueFactory<>("numeroTelephone"));
+        LigneEmployes.setCellValueFactory(data -> new SimpleStringProperty(data.getValue()[0]));
+        ErreurEmployes.setCellValueFactory(data -> new SimpleStringProperty(data.getValue()[1]));
         tableauEmployes.setItems(listeEmployes);
     }
 
@@ -309,14 +239,46 @@ public class ControleurConsulterDonnees {
      * Initialise le tableau des réservations.
      */
     private void initialiserTableauReservations() {
-        IdentifiantReservation.setCellValueFactory(new PropertyValueFactory<>("identifiant"));
-        dateDeDebut.setCellValueFactory(new PropertyValueFactory<>("dateDebut"));
-        dateDeFin.setCellValueFactory(new PropertyValueFactory<>("dateFin"));
-        Description.setCellValueFactory(new PropertyValueFactory<>("description"));
-        Salle.setCellValueFactory(new PropertyValueFactory<>("salle"));
-        Activite.setCellValueFactory(new PropertyValueFactory<>("activite"));
-        Utilisateur.setCellValueFactory(new PropertyValueFactory<>("utilisateur"));
+        LigneReservations.setCellValueFactory(data -> new SimpleStringProperty(data.getValue()[0]));
+        ErreurReservations.setCellValueFactory(data -> new SimpleStringProperty(data.getValue()[1]));
         tableauReservations.setItems(listeReservations);
+    }
+
+    /**
+     * Gère le clic sur le bouton de consultation des données.
+     */
+    @FXML
+    private void chargerSceneConsulterDonnees() {
+        Saltistique.changeScene(Scenes.CONSULTER_DONNEES);
+        ControleurConsulterDonnees controleur = Saltistique.getController(Scenes.CONSULTER_DONNEES);
+        controleur.rafraichirTableaux();
+        new Notification("Données importées", "Les données ont été importées avec succès.");
+    }
+
+    /**
+     * Gère le clic sur le bouton de réimportation des données.
+     */
+    @FXML
+    private void chargerSceneAccueil() {
+        Saltistique.changeScene(Scenes.ACCUEIL);
+    }
+
+
+    /**
+     * Gère le clic sur le bouton de chargement des données.
+     * Vide les données du modèle et change de scène pour l'accueil.
+     * Affiche une notification pour informer l'utilisateur du succès de l'opération.
+     */
+    @FXML
+    void clickDechargerDonnees() {
+        if (menuContainer.isVisible()) {
+            burgerClicked();
+        }
+
+        gestionDonnees.viderDonnees();
+        Saltistique.changeScene(Scenes.ACCUEIL);
+
+        new Notification("Données déchargées", "Les données ont été déchargées avec succès.");
     }
 
     /**
@@ -465,32 +427,30 @@ public class ControleurConsulterDonnees {
     }
 
     /**
-     * Gère le clic sur le bouton de chargement des données.
-     * Vide les données du modèle et change de scène pour l'accueil.
-     * Affiche une notification pour informer l'utilisateur du succès de l'opération.
+     * Affiche le tableau des réservations et la sélection associée dans l'interface utilisateur.
+     * Cette méthode rend visible le tableau des réservations et la sélection des réservations,
+     * tout en masquant les autres tableaux et sélections.
      */
-    @FXML
-    void clickDechargerDonnees() {
-        if (menuContainer.isVisible()) {
-            burgerClicked();
-        }
-
-        gestionDonnees.viderDonnees();
-        Saltistique.changeScene(Scenes.ACCUEIL);
-
-        new Notification("Données déchargées", "Les données ont été déchargées avec succès.");
-    }
-
     @FXML
     void afficherTableauReservations() {
         afficherTableau(tableauReservations, SelectionReservations);
     }
 
+    /**
+     * Affiche le tableau des activités et la sélection associée dans l'interface utilisateur.
+     * Cette méthode rend visible le tableau des activités et la sélection des activités,
+     * tout en masquant les autres tableaux et sélections.
+     */
     @FXML
     void afficherTableauActivites() {
         afficherTableau(tableauActivites, SelectionActivites);
     }
 
+    /**
+     * Affiche le tableau des employés et la sélection associée dans l'interface utilisateur.
+     * Cette méthode rend visible le tableau des employés et la sélection des employés,
+     * tout en masquant les autres tableaux et sélections.
+     */
     @FXML
     void afficherTableauEmployes() {
         afficherTableau(tableauEmployes, SelectionEmployes);
@@ -504,6 +464,7 @@ public class ControleurConsulterDonnees {
         if (menuContainer.isVisible()) {
             burgerClicked();
         }
+        chargerSceneConsulterDonnees();
     }
 
     /**
