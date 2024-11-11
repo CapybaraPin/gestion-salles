@@ -157,9 +157,8 @@ public class GestionDonnees implements Serializable {
 
     /**
      * TODO : javadoc
-     * @throws Notification
      */
-    public void finInmportationReseau() throws Notification {
+    public void finInmportationReseau() {
         javafx.application.Platform.runLater(() -> {
             ControleurImporterReseau controleurImporterReseau = Saltistique.getController(Scenes.IMPORTATION_RESEAU);
             controleurImporterReseau.fermetureFenetre();
@@ -175,7 +174,7 @@ public class GestionDonnees implements Serializable {
                 controleur.rafraichirTableaux();
                 Saltistique.changeScene(Scenes.CONSULTER_DONNEES);
                 System.out.println("Fichier importer");
-            } catch (IOException | Notification e) {
+            } catch (IOException e) {
                 System.err.println("Erreur lors de l'importation des données.");
             }
         });
