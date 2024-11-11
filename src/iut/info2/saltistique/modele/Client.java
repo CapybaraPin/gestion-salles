@@ -128,6 +128,12 @@ public class Client implements Runnable{
 
                     Thread.sleep(1000);
                 }
+                try {
+                    Saltistique.gestionDonnees.finInmportationReseau();
+                } catch (Notification e) {
+                    throw new RuntimeException(e);
+                } 
+
             } catch (IOException e) {
                 System.err.println("Erreur de lecture du fichier : " + e.getMessage());
 

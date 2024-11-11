@@ -5,6 +5,10 @@
 
 package iut.info2.saltistique.modele;
 
+import iut.info2.saltistique.Saltistique;
+import iut.info2.saltistique.controleur.ControleurConsulterDonnees;
+import iut.info2.saltistique.controleur.ControleurImporterReseau;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
@@ -131,7 +135,13 @@ public class GestionDonnees implements Serializable {
         Client client = new Client(ip, port);
         Thread clientThread = new Thread(client);
         clientThread.start();
-
+        /*try {
+            clientThread.join();
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+        ControleurImporterReseau controleurImporterReseau = Saltistique.getController(Scenes.IMPORTATION_RESEAU);
+        controleurImporterReseau.fermetureFenetre();
         // Appeler importerDonnees avec les fichiers reçus
         try {
             importerDonnees(new String[]{
@@ -142,7 +152,33 @@ public class GestionDonnees implements Serializable {
             });
         } catch (IOException e) {
             System.err.println("Erreur lors de l'importation des données.");
-        }
+        }*/
+    }
+
+    /**
+     * TODO : javadoc
+     * @throws Notification
+     */
+    public void finInmportationReseau() throws Notification {
+        javafx.application.Platform.runLater(() -> {
+            ControleurImporterReseau controleurImporterReseau = Saltistique.getController(Scenes.IMPORTATION_RESEAU);
+            controleurImporterReseau.fermetureFenetre();
+            // Appeler importerDonnees avec les fichiers reçus
+            try {
+                importerDonnees(new String[]{
+                        "src/ressources/fichiers/activites.csv",
+                        "src/ressources/fichiers/employes.csv",
+                        "src/ressources/fichiers/reservations.csv",
+                        "src/ressources/fichiers/salles.csv"
+                });
+                ControleurConsulterDonnees controleur = Saltistique.getController(Scenes.CONSULTER_DONNEES);
+                controleur.rafraichirTableaux();
+                Saltistique.changeScene(Scenes.CONSULTER_DONNEES);
+                System.out.println("Fichier importer");
+            } catch (IOException | Notification e) {
+                System.err.println("Erreur lors de l'importation des données.");
+            }
+        });
     }
 
     /**

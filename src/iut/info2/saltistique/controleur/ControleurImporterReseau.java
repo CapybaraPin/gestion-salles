@@ -105,7 +105,13 @@ public class ControleurImporterReseau {
         javafx.application.Platform.runLater(() -> {
             progressBar.setProgress(progress);
             progressLabel.setText("Progression : " + (int) (progress * 100) + "%");
+            System.out.println("Mise a jour");
         });
+    }
+
+    public void fermetureFenetre() {
+        Stage stage = (Stage) adresseIp.getScene().getWindow();
+        stage.close();
     }
 
     /**
