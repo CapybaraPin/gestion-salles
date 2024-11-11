@@ -189,6 +189,22 @@ public class GestionDonnees implements Serializable {
         return this.lignesIncorrectesUtilisateurs;
     }
 
+    public Fichier getFichierActivites() {
+        return this.fichierActivites;
+    }
+
+    public Fichier getFichierReservations() {
+        return this.fichierReservations;
+    }
+
+    public Fichier getFichierSalles() {
+        return this.fichierSalles;
+    }
+
+    public Fichier getFichierUtilisateurs() {
+        return this.fichierUtilisateurs;
+    }
+
     /**
      * Vérifie si une ligne donnée est complète selon le type de fichier spécifié.
      * Si le type de fichier est "reservations", la méthode vérifie également que la date de début est antérieure à la date de fin.
@@ -290,7 +306,7 @@ public class GestionDonnees implements Serializable {
             switch (fichiers[i].contenuFichier()[0].split(DELIMITEUR).length) {
                 case 4:
                     if (fichierUtilisateurs != null) {
-                        erreurUtilisateurs = "Vous avez fourni plusieurs fichiers d'utilisateurs : "
+                        erreurUtilisateurs = "Vous avez fourni plusieurs fichiers d'employés : "
                                 + fichiers[i].getFichierExploite().getName() + " et "
                                 + fichierUtilisateurs.getFichierExploite().getName();
                         viderDonnees();
