@@ -97,8 +97,13 @@ public class GestionDonnees implements Serializable {
         }
     }
 
+    /**
+     * Vide les données stockées dans les tableaux des employés, salles, activités, et réservations.
+     * Vide également les tableaux des lignes incorrectes pour les employés, salles, activités, et réservations.
+     * Remet à null les fichiers importés. // TODO : vérifier si les fichiers se ferment bien
+     */
     public void viderDonnees() {
-        try{
+        try {
             activites.clear();
             reservations.clear();
             salles.clear();
@@ -327,6 +332,10 @@ public class GestionDonnees implements Serializable {
         String erreurActivites;
         String erreurReservations;
         String erreurUtilisateurs;
+
+        if (cheminFichiers == null) {
+            throw new IllegalArgumentException("Les chemins des fichiers ne peuvent pas être nuls.");
+        }
 
         if (cheminFichiers.length != 4) {
             throw new IllegalArgumentException(ERREUR_NB_CHEMINS_FICHIERS);
