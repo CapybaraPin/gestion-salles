@@ -241,6 +241,11 @@ public class ControleurConsulterDonnees {
      */
     private void initialiserTableaux() {
         for (Map.Entry<Integer, Salle> entry : gestionDonnees.getSalles().entrySet()) {
+            if (entry.getValue().isEcranXXL()) {
+                //TODO remplacer true par vrai
+            } else {
+                //TODO remplacer false par faux
+            }
             listeSalles.add(entry.getValue());
         }
         for (Map.Entry<Integer, Activite> entry : gestionDonnees.getActivites().entrySet()) {

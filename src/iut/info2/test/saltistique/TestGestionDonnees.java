@@ -381,6 +381,15 @@ class TestGestionDonnees {
             String messageAttendu = "Erreur lors de l'ouverture du fichier : " + REPERTOIRE_CAS_EXCEPTION_IO + "/fichier_inexistant.csv";
             assertEquals(messageAttendu, e.getMessage(), "Message d'erreur incorrect");
         }
+
+        // cas 10 : fichier vide
+        gestion = new GestionDonnees();
+        try {
+            gestion.ajouterFichier(null);
+            fail("Exception attendue pour testAjouterFichier cas fichier vide");
+        } catch (Exception e) {
+            assertEquals("Les chemins des fichiers ne peuvent pas être nuls.", e.getMessage(), "Message d'erreur incorrect");
+        }
     }
 
     @Test
