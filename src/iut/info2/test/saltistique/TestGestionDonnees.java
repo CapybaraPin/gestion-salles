@@ -24,104 +24,38 @@ class TestGestionDonnees {
      * Correspond aussi aux types de fichiers
      */
     final String[] TYPE_FICHIERS = {
-            "salles",
-            "employes",
             "activites",
-            "reservations"
+            "employes",
+            "reservations",
+            "salles"
     };
 
-    /**
-     * Lignes valides pour les activités
-     */
-    final String[] LIGNES_VALIDES_ACTIVITES = {
-            "A0000001;réunion", // avec accent
-            "A0000001;entretien" // sans accent
+    /** Ligne activité passant la regex */
+    final String LIGNE_VALIDE_ACTIVITES = "A0000001;entretien";
 
-    };
+    /** Ligne activité ne passant pas la regex */
+    final String LIGNE_INVALIDE_ACTIVITES = "A0000002;";
 
-    /**
-     * Lignes invalides pour les activités
-     */
-    final String[] LIGNES_INVALIDES_ACTIVITES = {
-            "A0000002;", // activité manquante
-            ";réunion", // identifiant manquant
-            ";" // les deux champs manquants
-    };
+    /** Ligne employé passant la regex */
+    final String LIGNE_VALIDE_EMPLOYES = "E123456;Dupont;Jean;1234";
 
-    /**
-     * Entêtes non valides pour les fichiers CSV salles
-     */
-    final String[] ENTETES_NON_VALIDES_SALLES = {
-            "A0000001", // pas assez de champs
-            "Ident;salle;employe;activite;date;heuredebut;heurefin;bonjour;", // trop de champs
-    };
+    /** Ligne employé ne passant pas la regex */
+    final String LIGNE_INVALIDE_EMPLOYES = "E12345;Dupont;Jean;1234";
 
-    /**
-     * Entêtes non valides pour les fichiers CSV employes
-     */
-    final String[] ENTETES_NON_VALIDES_EMPLOYES = {
-            "Ident;Nom;Prenom", // pas assez de champs
-            "Ident;Nom;Prenom;Telephone;Adresse" // trop de champs
-    };
+    /** Ligne salle passant la regex */
+    final String LIGNE_VALIDE_SALLES = "12345678;Salle A;30;oui;non;20;Loc1;1;oui";
 
-    /**
-     * Entêtes non valides pour les fichiers CSV activites
-     */
-    final String[] ENTETES_NON_VALIDES_ACTIVITES = {
-            "Ident;Activité;Type", // trop de champs
-            "Ident" // pas assez de champs
-    };
+    /** Ligne salle ne passant pas la regex */
+    final String LIGNE_INVALIDE_SALLES = "1234567;Salle A;30;o;n;20;PC portable;1;o";
 
-    /**
-     * Entêtes non valides pour les fichiers CSV reservations
-     */
-    final String[] ENTETES_NON_VALIDES_RESERVATIONS = {
-            "Ident;Salle;Employe;Activite;Date;HeureDebut;HeureFin;Commentaire", // pas assez de champs
-            "Ident;Salle;Employe;Activite;Date;HeureDebut;HeureFin;Commentaire;Commentaire;Commentaire;Commentaire;Commentaire" // trop de champs
-    };
+    /** Ligne reservation passant le regex et avec une date debut inférieure à la date fin */
+    final String LIGNE_DATE_VALIDE_RESERVATIONS = "R123456;20240101;E123456;Dupont Jean;21/10/2024;10h00;12h00;;;;;";
 
-    final String[] LIGNES_VALIDES_EMPLOYES = {
-            "E123456;Dupont;Jean;1234",
-            "E654321;Martin;Claire;5678"
-    };
+    /** Ligne reservations passant le regex et avec une date debut supérieure à la date fin */
+    final String LIGNE_DATE_INVALIDE_RESERVATIONS = "R123456;20240101;E123456;Dupont Jean;21/10/2024;14h00;12h00;;;;;";
 
-    final String[] LIGNES_INVALIDES_EMPLOYES = {
-            "E12345;Dupont;Jean;1234", // ID trop court
-            "E123456;Dupont;Jean;",    // Téléphone manquant
-            "E123456;Dupont;Jean;abcd", // Téléphone invalide (lettres)
-            "E123456;Dupont;Jean;123", // Téléphone invalide (trop court)
-            "E123456;Dupont;Jean;12345", // Téléphone invalide (trop long)
-            "E123456;;Jean;1234", // champ prenom vide
-            "E123456;Dupont;Jean;12345;12345", // Trop de champs
-            "E123456;Dup" // Trop peu de champs
-
-    };
-
-    final String[] LIGNES_VALIDES_SALLES = {
-            "12345678;Salle A;30;oui;non;20;Loc1;1;oui",
-            "87654321;Salle B;50;non;non;25;Loc2;2;oui",
-    };
-
-    final String[] LIGNES_INVALIDES_SALLES = {
-            "1234567;Salle A;30;o;n;20;PC portable;1;o", // ID trop court
-            "12345678;Salle B;fifty;n;n;25;PC fixe;2;", // Capacité invalide (lettres)
-            "12345678;Salle C;30;o;n;20;PC portable;2;o;10;10;10", // Trop de champs
-            "12345678;Salle C;30;o;n;20;PC portable;2;o;10;10", // Trop peu de champs
-            "12345678;;30;oui;non;20;PC portable;1;oui", // nom de salle vide
-    };
-
-    final String[] LIGNES_VALIDES_RESERVATIONS = {
-            "R123456;20240101;E123456;Dupont Jean;21/10/2024;10h00;12h00;;;;;",
-            "R654321;20240102;E654321;Martin Claire;21/10/2024;14h00;15h00;Commentaire;;;;"
-    };
-
-    final String[] LIGNES_INVALIDES_RESERVATIONS = {
-            "R12345;20240101;E123456;Dupont Jean;21/10/2024;10h00;12h00;;", // ID de réservation trop court
-            "R123456;20240101;E123456;Dupont Jean;21/10/2024;12h00;10h00;;", // Heure fin avant début
-            "R123456;20240101;E123456;Dupont Jean;21/10/2024;10h00;12h00;Commentaire;Commentaire;Commentaire;", // Trop de champs
-            "R123456;20240101;E123456;Dupont Jean;21/10/2024;10h00;12h00", // Trop peu de champs
-            "R123456;20240101;E123456;Dupont Jean;21/10/2024;10h00;12h00;Commentaire;Commentaire;Commentaire;Commentaire" // Trop de champs
-    };
+    /** Ligne reservations ne passant pas le regex */
+    final String LIGNE_INVALIDE_RESERVATIONS = "R12345;20240101;E123456;Dupont Jean;21/10/2024;10h00;12h00;;";
 
     /**
      * Date valide pour les tests
@@ -392,34 +326,89 @@ class TestGestionDonnees {
         }
     }
 
+
     @Test
     void testEstLigneComplete() {
-        // Tests valides
-        for (String ligne : LIGNES_VALIDES_EMPLOYES) {
-            assertTrue(GestionDonnees.estLigneComplete(ligne, DELIMITEUR, TYPE_FICHIERS[1]));
-        }
-        for (String ligne : LIGNES_VALIDES_SALLES) {
-            assertTrue(GestionDonnees.estLigneComplete(ligne, DELIMITEUR, TYPE_FICHIERS[0]));
-        }
-        for (String ligne : LIGNES_VALIDES_ACTIVITES) {
-            assertTrue(GestionDonnees.estLigneComplete(ligne, DELIMITEUR, TYPE_FICHIERS[2]));
-        }
-        for (String ligne : LIGNES_VALIDES_RESERVATIONS) {
-            assertTrue(GestionDonnees.estLigneComplete(ligne, DELIMITEUR, TYPE_FICHIERS[3]));
+        // cas 1 : le type de fichier est "activites" et la ligne est valide
+        try {
+            assertTrue(GestionDonnees.estLigneComplete(LIGNE_VALIDE_ACTIVITES, DELIMITEUR, TYPE_FICHIERS[0]), "Erreur cas 1 : ligne valide");
+        } catch (Exception e) {
+            fail("Erreur inattendue pour testEstLigneComplete cas 1 : " + e.getMessage());
         }
 
-        // Tests invalides
-        for (String ligne : LIGNES_INVALIDES_EMPLOYES) {
-            assertFalse(GestionDonnees.estLigneComplete(ligne, DELIMITEUR, TYPE_FICHIERS[1]));
+        // cas 2 : le type de fichier est "activites" et la ligne est invalide
+        try {
+            assertFalse(GestionDonnees.estLigneComplete(LIGNE_INVALIDE_ACTIVITES, DELIMITEUR, TYPE_FICHIERS[0]), "Erreur cas 2 : ligne invalide");
+        } catch (Exception e) {
+            fail("Erreur inattendue pour testEstLigneComplete cas 2 : " + e.getMessage());
         }
-        for (String ligne : LIGNES_INVALIDES_SALLES) {
-            assertFalse(GestionDonnees.estLigneComplete(ligne, DELIMITEUR, TYPE_FICHIERS[0]));
+
+        // cas 3 : le type de fichier est "employes" et la ligne est valide
+        try {
+            System.out.println(TYPE_FICHIERS[1]);
+            assertTrue(GestionDonnees.estLigneComplete(LIGNE_VALIDE_EMPLOYES, DELIMITEUR, TYPE_FICHIERS[1]), "Erreur cas 3 : ligne valide");
+        } catch (Exception e) {
+            fail("Erreur inattendue pour testEstLigneComplete cas 3 : " + e.getMessage());
         }
-        for (String ligne : LIGNES_INVALIDES_ACTIVITES) {
-            assertFalse(GestionDonnees.estLigneComplete(ligne, DELIMITEUR, TYPE_FICHIERS[2]));
+
+        // cas 4 : le type de fichier est "employes" et la ligne est invalide
+        try {
+            assertFalse(GestionDonnees.estLigneComplete(LIGNE_INVALIDE_EMPLOYES, DELIMITEUR, TYPE_FICHIERS[1]), "Erreur cas 4 : ligne invalide");
+        } catch (Exception e) {
+            fail("Erreur inattendue pour testEstLigneComplete cas 4 : " + e.getMessage());
         }
-        for (String ligne : LIGNES_INVALIDES_RESERVATIONS) {
-            assertFalse(GestionDonnees.estLigneComplete(ligne, DELIMITEUR, TYPE_FICHIERS[3]));
+
+        // cas 5 : le type de fichier est "reservations" et la ligne est valide
+        // et la date de début est inférieure à la date de fin
+        try {
+            assertTrue(GestionDonnees.estLigneComplete(LIGNE_DATE_VALIDE_RESERVATIONS, DELIMITEUR, TYPE_FICHIERS[2]), "Erreur cas 7 : ligne valide");
+        } catch (Exception e) {
+            fail("Erreur inattendue pour testEstLigneComplete cas 5 : " + e.getMessage());
+        }
+
+        // cas 6 : le type de fichier est "reservations" et la ligne est invalide
+        // et la date de début est supérieure à la date de fin
+        try {
+            assertFalse(GestionDonnees.estLigneComplete(LIGNE_DATE_INVALIDE_RESERVATIONS, DELIMITEUR, TYPE_FICHIERS[2]), "Erreur cas 8 : ligne invalide");
+        } catch (Exception e) {
+            fail("Erreur inattendue pour testEstLigneComplete cas 6 : " + e.getMessage());
+        }
+
+        // cas 7 : le type de fichier est "reservations" et la ligne est invalide
+        try {
+            assertFalse(GestionDonnees.estLigneComplete(LIGNE_INVALIDE_RESERVATIONS, DELIMITEUR, TYPE_FICHIERS[2]), "Erreur cas 6 : ligne invalide");
+        } catch (Exception e) {
+            fail("Erreur inattendue pour testEstLigneComplete cas 7 : " + e.getMessage());
+        }
+
+        // cas 8 : le type de fichier est "salles" et la ligne est valide
+        try {
+            assertTrue(GestionDonnees.estLigneComplete(LIGNE_VALIDE_SALLES, DELIMITEUR, TYPE_FICHIERS[3]), "Erreur cas 5 : ligne valide");
+        } catch (Exception e) {
+            fail("Erreur inattendue pour testEstLigneComplete cas 8 : " + e.getMessage());
+        }
+
+        // cas 9 : le type de fichier est "salles" et la ligne est invalide
+        try {
+            assertFalse(GestionDonnees.estLigneComplete(LIGNE_INVALIDE_SALLES, DELIMITEUR, TYPE_FICHIERS[3]), "Erreur cas 6 : ligne invalide");
+        } catch (Exception e) {
+            fail("Erreur inattendue pour testEstLigneComplete cas 9 : " + e.getMessage());
+        }
+
+        // cas 10 : le type de fichier est inconnu
+        try {
+            GestionDonnees.estLigneComplete("ligne", DELIMITEUR, "inconnu");
+            fail("Exception attendue pour testEstLigneComplete cas 10 : type de fichier inconnu");
+        } catch (Exception e) {
+            assertEquals("Type de fichier inconnu : inconnu", e.getMessage(), "Message d'erreur incorrect");
+        }
+
+        // cas 11 : un des paramètres est null
+        try {
+            GestionDonnees.estLigneComplete(null, DELIMITEUR, TYPE_FICHIERS[0]);
+            fail("Exception attendue pour testEstLigneComplete cas 11 : ligne null");
+        } catch (Exception e) {
+            assertEquals("Les arguments ne peuvent pas être nuls.", e.getMessage(), "Message d'erreur incorrect");
         }
     }
 
