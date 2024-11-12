@@ -28,7 +28,6 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.Map;
 import javafx.scene.control.TableColumn;
-import static iut.info2.saltistique.Saltistique.gestionDonnees;
 
 /**
  * Le contrôleur de la vue permettant de consulter les données.
@@ -188,16 +187,16 @@ public class ControleurConsulterDonnees {
     /** Colonne pour la disponibilité d'une imprimante. */
     @FXML
     public TableColumn<Salle, Boolean> Imprimante;
-
+    /** PopUp de notification */
     @FXML
     public VBox notificationFrame;
-
+    /** Titre de la notification */
     @FXML
     public Text notificationTitre;
-
+    /** Description de la notification */
     @FXML
     public Text notificationDescription;
-
+    /** Bouton de confirmation de la PopUp */
     @FXML
     public Button notificationBouton;
 
@@ -240,7 +239,7 @@ public class ControleurConsulterDonnees {
      * aux listes correspondantes.
      */
     private void initialiserTableaux() {
-        for (Map.Entry<Integer, Salle> entry : gestionDonnees.getSalles().entrySet()) {
+        for (Map.Entry<Integer, Salle> entry : Saltistique.gestionDonnees.getSalles().entrySet()) {
             if (entry.getValue().isEcranXXL()) {
                 //TODO remplacer true par vrai
             } else {
@@ -248,13 +247,13 @@ public class ControleurConsulterDonnees {
             }
             listeSalles.add(entry.getValue());
         }
-        for (Map.Entry<Integer, Activite> entry : gestionDonnees.getActivites().entrySet()) {
+        for (Map.Entry<Integer, Activite> entry : Saltistique.gestionDonnees.getActivites().entrySet()) {
             listeActivites.add(entry.getValue());
         }
-        for (Map.Entry<Integer, Utilisateur> entry : gestionDonnees.getUtilisateurs().entrySet()) {
+        for (Map.Entry<Integer, Utilisateur> entry : Saltistique.gestionDonnees.getUtilisateurs().entrySet()) {
             listeEmployes.add(entry.getValue());
         }
-        for (Map.Entry<Integer, Reservation> entry : gestionDonnees.getReservations().entrySet()) {
+        for (Map.Entry<Integer, Reservation> entry : Saltistique.gestionDonnees.getReservations().entrySet()) {
             listeReservations.add(entry.getValue());
         }
     }
@@ -480,7 +479,7 @@ public class ControleurConsulterDonnees {
             burgerClicked();
         }
 
-        gestionDonnees.viderDonnees();
+        Saltistique.gestionDonnees.viderDonnees();
         Saltistique.changeScene(Scenes.ACCUEIL);
 
         new Notification("Données déchargées", "Les données ont été déchargées avec succès.");
