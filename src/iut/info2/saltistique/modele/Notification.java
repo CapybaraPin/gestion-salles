@@ -39,7 +39,7 @@ public class Notification {
     /**
      * Affiche la notification dans l'interface pendant 8 secondes avec un effet de fondu à la fermeture.
      */
-    public void afficher() {
+    private void afficher() {
 
         for(Scenes scene : Saltistique.scenes.keySet()) {
             if (Saltistique.getPrimaryStage().getScene() == Saltistique.scenes.get(scene)) {

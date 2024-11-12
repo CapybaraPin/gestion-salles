@@ -22,7 +22,7 @@ public class Client implements Runnable{
     private final String dossierSauvegarde = "src/ressources/fichiers";
 
     /** Taille du buffer de lecture (4096 octets) pour améliorer la lisibilité et la flexibilité */
-    private static final int BUFFER_SIZE = 4096;
+    private static final int BUFFER_SIZE = 1024;
 
     private double progression;
 
@@ -109,7 +109,10 @@ public class Client implements Runnable{
         try {
             Socket socket = new Socket(host, port);
 
+
             System.out.println("Connecté au serveur sur " + host + ":" + port);
+
+            new Notification("Importation des données", "Importation via " + host + ":" + port);
 
             try{
                 BufferedInputStream bis = new BufferedInputStream(socket.getInputStream());
@@ -124,8 +127,6 @@ public class Client implements Runnable{
                 for (int i = 0; i < nbFichiers; i++) {
                     recevoirFichier(dis);
 
-                    //System.out.println("Ratio : " + this.progression/ tailleTotale);
-
                     Thread.sleep(1000);
                 }
 
@@ -133,13 +134,13 @@ public class Client implements Runnable{
                 Saltistique.gestionDonnees.finInmportationReseau();
 
             } catch (IOException e) {
-                System.err.println("Erreur de lecture du fichier : " + e.getMessage());
+                new Notification("Erreur de lecture du fichier", "Accès au fichiers distants impossible.");
 
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
         } catch (IOException e) {
-            System.err.println("Erreur de connexion au serveur : " + e.getMessage());
+            new Notification("Erreur de connexion au serveur", "Impossible de se connecter au serveur.");
         }
     }
 }

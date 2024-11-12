@@ -39,6 +39,9 @@ public class GestionDonnees implements Serializable {
     private static final String ERREUR_NB_CHEMINS_FICHIERS =
             "Le nombre de fichiers à fournir n'est pas respecté";
 
+    /** Dossier des sources des fichiers */
+    private static final String DOSSIER_SOURCES = "src/ressources/fichiers";
+
     private Fichier[] fichiers;
 
     private HashMap<Integer, Salle> salles;
@@ -112,7 +115,7 @@ public class GestionDonnees implements Serializable {
             fichierSalles = null;
             fichierReservations = null;
         } catch (Exception e) {
-            System.err.println("Impossible de vider les données");
+            new Notification("Impossible de vider les données", "Erreur lors de la suppression des données.");
         }
     }
 
@@ -124,35 +127,17 @@ public class GestionDonnees implements Serializable {
      */
     public void importerDonnees(String ip, int port) {
 
-        File dossierSauvegarde = new File("src/ressources/fichiers/reception");
+        File dossierSauvegarde = new File(DOSSIER_SOURCES);
 
         File[] fichiersExistants = dossierSauvegarde.listFiles();
         if (fichiersExistants != null && fichiersExistants.length > 0) {
             // Le dossier n'est pas vide
-            System.err.println("Le dossier de sauvegarde n'est pas vide. Déchargez les données...");
+            new Notification("Avertissement Importation", "Le dossier de sauvegarde n'est pas vide. Déchargez les données...");
         }
 
         Client client = new Client(ip, port);
         Thread clientThread = new Thread(client);
         clientThread.start();
-        /*try {
-            clientThread.join();
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
-        ControleurImporterReseau controleurImporterReseau = Saltistique.getController(Scenes.IMPORTATION_RESEAU);
-        controleurImporterReseau.fermetureFenetre();
-        // Appeler importerDonnees avec les fichiers reçus
-        try {
-            importerDonnees(new String[]{
-                    "src/ressources/fichiers/activites.csv",
-                    "src/ressources/fichiers/employes.csv",
-                    "src/ressources/fichiers/reservations.csv",
-                    "src/ressources/fichiers/salles.csv"
-            });
-        } catch (IOException e) {
-            System.err.println("Erreur lors de l'importation des données.");
-        }*/
     }
 
     /**
@@ -163,19 +148,27 @@ public class GestionDonnees implements Serializable {
             ControleurImporterReseau controleurImporterReseau = Saltistique.getController(Scenes.IMPORTATION_RESEAU);
             controleurImporterReseau.fermetureFenetre();
             // Appeler importerDonnees avec les fichiers reçus
-            try {
-                importerDonnees(new String[]{
-                        "src/ressources/fichiers/activites.csv",
-                        "src/ressources/fichiers/employes.csv",
-                        "src/ressources/fichiers/reservations.csv",
-                        "src/ressources/fichiers/salles.csv"
-                });
-                ControleurConsulterDonnees controleur = Saltistique.getController(Scenes.CONSULTER_DONNEES);
-                controleur.rafraichirTableaux();
-                Saltistique.changeScene(Scenes.CONSULTER_DONNEES);
-                System.out.println("Fichier importer");
-            } catch (IOException e) {
-                System.err.println("Erreur lors de l'importation des données.");
+
+            File dossierSauvegarde = new File(DOSSIER_SOURCES);
+            File[] fichiersExistants = dossierSauvegarde.listFiles();
+
+            if (fichiersExistants != null && fichiersExistants.length > 0) {
+                String[] cheminFichiers = new String[4];
+                for (int i = 0; i < 4; i++) {
+                    cheminFichiers[i] = fichiersExistants[i].getAbsolutePath();
+                }
+                try {
+                    importerDonnees(cheminFichiers);
+                    ControleurConsulterDonnees controleur = Saltistique.getController(Scenes.CONSULTER_DONNEES);
+                    controleur.rafraichirTableaux();
+                    Saltistique.changeScene(Scenes.CONSULTER_DONNEES);
+
+                    new Notification("Importation réussie", "Les données ont été importées avec succès.");
+                } catch (IOException e) {
+                    new Notification("Erreur d'importation", "Erreur lors de l'importation des données.");
+                }
+            } else {
+                new Notification("Erreur d'importation", "Erreur lors de la réception des fichiers.");
             }
         });
     }
