@@ -20,7 +20,7 @@ public class Serveur implements Runnable {
     private final Fichier[] fichiersCSV;
 
     /** Taille du buffer pour la lecture et l'envoi de fichiers (4096 octets) */
-    private static final int BUFFER_SIZE = 4096;
+    private static final int BUFFER_SIZE = 1024;
 
     /**
      * Constructeur de la classe Serveur.
@@ -47,7 +47,7 @@ public class Serveur implements Runnable {
     public void run() {
         try {
             serverSocket = new ServerSocket(port);
-            System.out.println("Serveur démarré sur le port : " + port);
+            new Notification("Exportation des données", "Serveur démarré sur le port : " + port);
 
             while (!serverSocket.isClosed()) {
                 try{
@@ -56,11 +56,11 @@ public class Serveur implements Runnable {
 
                     envoyerFichiers(clientSocket);
                 } catch (IOException e) {
-                    System.err.println("Erreur lors de la connexion avec un client : " + e.getMessage());
+                    new Notification("Exportation des données", "Erreur lors de la connexion avec un client.");
                 }
             }
         } catch (IOException e) {
-            System.err.println("Erreur lors du démarrage du serveur : " + e.getMessage());
+            new Notification("Exportation des données", "Erreur lors du démarrage du serveur.");
         }
     }
 
@@ -133,7 +133,7 @@ public class Serveur implements Runnable {
                 serverSocket.close();
                 System.out.println("Serveur arrêté");
             } catch (IOException e) {
-                System.err.println("Erreur lors de la fermeture du serveur : " + e.getMessage());
+                new Notification("Erreur serveur", "Erreur lors de la fermeture du serveur.");
             }
         }
     }

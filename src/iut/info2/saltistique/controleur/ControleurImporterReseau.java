@@ -63,22 +63,26 @@ public class ControleurImporterReseau {
     @FXML
     void clickImporter() {
 
-        progressControl();
-
         try {
             Saltistique.gestionDonnees.importerDonnees(adresseIp.getText(), Integer.parseInt(port.getText()));
+            //finImportation();
         } catch (Exception e) {
             return;
         }
 
-//        ControleurConsulterDonnees controleur = Saltistique.getController(Scenes.CONSULTER_DONNEES);
-//        controleur.rafraichirTableaux();
-//        Saltistique.changeScene(Scenes.CONSULTER_DONNEES);
 
-//        Stage stage = (Stage) adresseIp.getScene().getWindow();
-//        stage.close();
+    }
 
+    public void finImportation(){
+        System.out.println("Fermeture de la fenêtre");
+        javafx.application.Platform.runLater(() -> {
+            ControleurConsulterDonnees controleur = Saltistique.getController(Scenes.CONSULTER_DONNEES);
+            controleur.rafraichirTableaux();
+            Saltistique.changeScene(Scenes.CONSULTER_DONNEES);
 
+            Stage stage = (Stage) adresseIp.getScene().getWindow();
+            stage.close();
+        });
     }
 
     /**
@@ -91,15 +95,23 @@ public class ControleurImporterReseau {
         progressVbox.setVisible(true);
         progressBar.setProgress(0);
         progressLabel.setText("Importation des données en cours : 0%");
-
     }
 
     public void onProgressUpdate(double progress) {
         // Met à jour l'interface graphique dans le thread JavaFX
         javafx.application.Platform.runLater(() -> {
+            if(!progressVbox.isVisible()) {
+                progressVbox.setVisible(true);
+                progressBar.setProgress(0);
+            }
             progressBar.setProgress(progress);
             progressLabel.setText("Progression : " + (int) (progress * 100) + "%");
         });
+    }
+
+    public void fermetureFenetre() {
+        Stage stage = (Stage) adresseIp.getScene().getWindow();
+        stage.close();
     }
 
     /**

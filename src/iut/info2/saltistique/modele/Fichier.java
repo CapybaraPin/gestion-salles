@@ -61,7 +61,7 @@ public class Fichier {
      * @throws IllegalArgumentException si le chemin du fichier est vide ou si l'extension du fichier n'est pas valide.
      * @throws FileNotFoundException si le fichier spécifié n'existe pas.
      */
-    public Fichier(String cheminFichier){
+    public Fichier(String cheminFichier) throws IOException {
         if (cheminFichier == null || cheminFichier.isEmpty()) {
             throw new IllegalArgumentException(ERREUR_FORMAT_PARAMETRE);
         }
@@ -72,7 +72,7 @@ public class Fichier {
             throw new IllegalArgumentException(ERREUR_EXTENSION_FICHIER);
         }
 
-        /*if (!fichierExploite.exists()) {
+        if (!fichierExploite.exists()) {
             throw new FileNotFoundException(ERREUR_OUVERTURE_FICHIER + cheminFichier);
         }
 
@@ -81,7 +81,7 @@ public class Fichier {
             tamponFichier = new BufferedReader(lecteurFichier);
         } catch (IOException e) {
             throw new IOException(ERREUR_OUVERTURE_FICHIER + cheminFichier, e);
-        }*/
+        }
     }
 
 

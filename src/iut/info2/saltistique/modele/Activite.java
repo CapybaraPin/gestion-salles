@@ -24,6 +24,6 @@ public class Activite implements Serializable {
 
     @Override
     public String toString() {
-        return identifiant;
+        return nom;
     }
 }

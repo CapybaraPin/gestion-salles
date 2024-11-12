@@ -19,7 +19,7 @@
 <?import javafx.scene.text.Text?>
 <?import javafx.scene.text.TextFlow?>
 
-<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="768.0" prefWidth="1366.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="iut.info2.saltistique.controleur.ControleurConsulterDonnees">
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="768.0" prefWidth="1366.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="iut.info2.saltistique.controleur.ControleurDonneesIncorrectes">
    <styleClass>
       <String fx:value="background-radiant" />
       <String fx:value="border" />
@@ -58,7 +58,7 @@
                         <Image url="@../../../../ressources/icons/arrow.png" />
                      </image>
                   </ImageView>
-                  <Text strokeType="OUTSIDE" strokeWidth="0.0" styleClass="typo-default" text="Consultation des données">
+                  <Text strokeType="OUTSIDE" strokeWidth="0.0" styleClass="typo-default" text="Consultation des données incorrectes">
                      <font>
                         <Font size="13.0" />
                      </font>
@@ -140,31 +140,24 @@
                         <Line fx:id="SelectionReservations" endX="93.0" stroke="#3574f0" strokeLineCap="ROUND" strokeWidth="2.0" visible="false" />
                      </children>
                   </HBox>
-                  <HBox alignment="TOP_RIGHT" prefHeight="28.0" prefWidth="182.0">
-                     <children>
-                        <Button maxHeight="28.0" maxWidth="186.0" minHeight="28.0" minWidth="73.0" mnemonicParsing="false" onAction="#clickGenererPDF" prefHeight="28.0" prefWidth="186.0" styleClass="btn-primary" text="Génération d'un rapport PDF" textFill="WHITE">
-                           <font>
-                              <Font size="13.0" />
-                           </font>
-                        </Button>
-                     </children>
+                  <HBox alignment="CENTER_LEFT" prefHeight="28.0" prefWidth="182.0">
                      <padding>
                         <Insets right="30.0" top="30.0" />
                      </padding>
+                     <children>
+                        <Text strokeType="OUTSIDE" strokeWidth="0.0" styleClass="typo-h2" text="Lignes ignorées :">
+                           <HBox.margin>
+                              <Insets left="50.0" />
+                           </HBox.margin>
+                        </Text>
+                     </children>
                   </HBox>
-                  <StackPane prefHeight="485.0" prefWidth="1274.0">
+                  <StackPane prefHeight="485.0" prefWidth="1272.0">
                      <children>
                         <TableView fx:id="tableauSalles" prefHeight="480.0" prefWidth="1174.0">
                            <columns>
-                              <TableColumn fx:id="IdentifiantSalle" prefWidth="75" text="Identifiant" />
-                              <TableColumn fx:id="NomSalle" prefWidth="75" text="Nom" />
-                              <TableColumn fx:id="Capacite" prefWidth="75" text="Capacité" />
-                              <TableColumn fx:id="VideoProjecteur" prefWidth="75" text="Vidéo Projecteur" />
-                              <TableColumn fx:id="EcranXXL" prefWidth="75" text="Écran XXL" />
-                              <TableColumn fx:id="Ordinateurs" prefWidth="75" text="Ordinateurs" />
-                              <TableColumn fx:id="Type" prefWidth="75" text="Type" />
-                              <TableColumn fx:id="Logiciels" prefWidth="75" text="Logiciels" />
-                              <TableColumn fx:id="Imprimante" prefWidth="75" text="Imprimante" />
+                              <TableColumn fx:id="LigneSalles" prefWidth="858.0" text="Ligne" />
+                              <TableColumn fx:id="ErreurSalles" prefWidth="312.0" text="Erreur" />
                            </columns>
                            <columnResizePolicy>
                               <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
@@ -172,10 +165,8 @@
                         </TableView>
                         <TableView fx:id="tableauEmployes" prefHeight="200.0" prefWidth="0.0" visible="false">
                            <columns>
-                              <TableColumn fx:id="IdentifiantEmploye" prefWidth="75.0" text="Identifiant" />
-                              <TableColumn fx:id="NomEmploye" prefWidth="75.0" text="Nom" />
-                              <TableColumn fx:id="Prenom" prefWidth="75.0" text="Prenom" />
-                              <TableColumn fx:id="numeroDeTelephone" prefWidth="75.0" text="Numero de telephone" />
+                              <TableColumn fx:id="LigneEmployes" prefWidth="858.0" text="Ligne" />
+                              <TableColumn fx:id="ErreurEmployes" prefWidth="312.0" text="Erreur" />
                            </columns>
                            <columnResizePolicy>
                               <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
@@ -183,8 +174,8 @@
                         </TableView>
                         <TableView fx:id="tableauActivites" prefHeight="200.0" prefWidth="0.0" visible="false">
                            <columns>
-                              <TableColumn fx:id="IdentifiantActivite" prefWidth="75.0" text="Identifiant" />
-                              <TableColumn fx:id="Nom" prefWidth="75.0" text="Nom" />
+                              <TableColumn fx:id="LigneActivites" prefWidth="858.0" text="Ligne" />
+                              <TableColumn fx:id="ErreurActivites" prefWidth="312.0" text="Erreur" />
                            </columns>
                            <columnResizePolicy>
                               <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
@@ -192,13 +183,8 @@
                         </TableView>
                         <TableView fx:id="tableauReservations" prefHeight="200.0" prefWidth="0.0" visible="false">
                            <columns>
-                              <TableColumn fx:id="IdentifiantReservation" prefWidth="75.0" text="Identifiant" />
-                              <TableColumn fx:id="dateDeDebut" prefWidth="75.0" text="Date de debut" />
-                              <TableColumn fx:id="dateDeFin" prefWidth="75.0" text="date de fin" />
-                              <TableColumn fx:id="Description" prefWidth="75.0" text="description" />
-                              <TableColumn fx:id="Salle" prefWidth="75.0" text="Salle" />
-                              <TableColumn fx:id="Activite" prefWidth="75.0" text="Activite" />
-                              <TableColumn fx:id="Utilisateur" prefWidth="75.0" text="Utilisateur" />
+                              <TableColumn fx:id="LigneReservations" prefWidth="858.0" text="Ligne" />
+                              <TableColumn fx:id="ErreurReservations" prefWidth="312.0" text="Erreur" />
                            </columns>
                            <columnResizePolicy>
                               <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
@@ -209,9 +195,22 @@
                         <Insets />
                      </VBox.margin>
                      <padding>
-                        <Insets left="50.0" right="50.0" top="50.0" />
+                        <Insets left="50.0" right="50.0" top="20.0" />
                      </padding>
                   </StackPane>
+                  <HBox alignment="CENTER_RIGHT" prefHeight="100.0" prefWidth="200.0">
+                     <children>
+                        <Button mnemonicParsing="false" onAction="#chargerSceneAccueil" styleClass="btn-secondary" text="Réimporter">
+                           <HBox.margin>
+                              <Insets right="10.0" />
+                           </HBox.margin>
+                        </Button>
+                        <Button mnemonicParsing="false" onAction="#chargerSceneConsulterDonnees" styleClass="btn-primary" text="Continuer" />
+                     </children>
+                     <padding>
+                        <Insets right="30.0" />
+                     </padding>
+                  </HBox>
                </children>
             </VBox>
             <Pane fx:id="layerMenu" mouseTransparent="true" onMouseClicked="#burgerClicked" prefHeight="200.0" prefWidth="200.0" />
@@ -231,7 +230,7 @@
                               <String fx:value="shadow" />
                            </styleClass>
                            <children>
-                              <HBox alignment="CENTER_LEFT" onMouseClicked="#burgerClicked" prefHeight="6.0" prefWidth="268.0" styleClass="btn-menu">
+                              <HBox alignment="CENTER_LEFT" onMouseClicked="#handlerRetourMenu" prefHeight="6.0" prefWidth="268.0" styleClass="btn-menu">
                                  <VBox.margin>
                                     <Insets />
                                  </VBox.margin>
@@ -250,7 +249,7 @@
                                           <Image url="@home.png" />
                                        </image>
                                     </ImageView>
-                                    <Text onMouseClicked="#handlerRetourMenu" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="typo-default" text="Menu principal" />
+                                    <Text strokeType="OUTSIDE" strokeWidth="0.0" styleClass="typo-default" text="Menu principal" />
                                  </children>
                               </HBox>
                               <Separator prefWidth="200.0" styleClass="menu-sepator">
@@ -271,14 +270,8 @@
                                           <Image url="@send.png" />
                                        </image>
                                     </ImageView>
-                                    <Text strokeType="OUTSIDE" strokeWidth="0.0" styleClass="typo-default" text="Partager les données">
-                                       <HBox.margin>
-                                          <Insets />
-                                       </HBox.margin></Text>
+                                    <Text strokeType="OUTSIDE" strokeWidth="0.0" styleClass="typo-default" text="Partager les données" />
                                  </children>
-                                 <VBox.margin>
-                                    <Insets bottom="5.0" />
-                                 </VBox.margin>
                               </HBox>
                               <HBox alignment="CENTER_LEFT" onMouseClicked="#clickDechargerDonnees" prefHeight="6.0" prefWidth="268.0" styleClass="btn-menu">
                                  <children>
@@ -299,6 +292,9 @@
                                  <padding>
                                     <Insets left="10.0" right="10.0" />
                                  </padding>
+                                 <VBox.margin>
+                                    <Insets top="5.0" />
+                                 </VBox.margin>
                               </HBox>
                               <Separator prefWidth="200.0" styleClass="menu-sepator">
                                  <VBox.margin>
@@ -350,28 +346,19 @@
             <HBox alignment="TOP_RIGHT" maxHeight="1.0" maxWidth="1.0" minHeight="1.0" minWidth="1330.0" prefHeight="1.0" prefWidth="1.0">
                <children>
                   <VBox fx:id="notificationFrame" mouseTransparent="true" prefHeight="725.0" prefWidth="338.0" visible="false">
-                     <HBox.margin>
-                        <Insets />
-                     </HBox.margin>
                      <children>
-                        <HBox fx:id="notifFrame" minWidth="362.0" prefHeight="100.0" prefWidth="200.0" styleClass="notification">
-                           <VBox.margin>
-                              <Insets top="30.0" />
-                           </VBox.margin>
+                        <HBox minWidth="362.0" prefHeight="100.0" prefWidth="200.0" styleClass="notification">
                            <children>
                               <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
-                                 <HBox.margin>
-                                    <Insets left="10.0" top="10.0" />
-                                 </HBox.margin>
                                  <image>
                                     <Image url="@info.png" />
                                  </image>
+                                 <HBox.margin>
+                                    <Insets left="10.0" top="10.0" />
+                                 </HBox.margin>
                               </ImageView>
                               <Text strokeType="OUTSIDE" strokeWidth="0.0" />
                               <VBox maxWidth="5.0" minWidth="310.0" prefHeight="200.0" prefWidth="5.0">
-                                 <HBox.margin>
-                                    <Insets left="7.0" />
-                                 </HBox.margin>
                                  <children>
                                     <Text fx:id="notificationTitre" fill="#f7f8fa" strokeType="OUTSIDE" strokeWidth="0.0" text="Titre">
                                        <VBox.margin>
@@ -383,9 +370,6 @@
                                        </styleClass>
                                     </Text>
                                     <TextFlow prefHeight="200.0" prefWidth="200.0">
-                                       <VBox.margin>
-                                          <Insets bottom="7.0" top="5.0" />
-                                       </VBox.margin>
                                        <children>
                                           <Text fx:id="notificationDescription" fill="#f7f8fa" strokeType="OUTSIDE" strokeWidth="0.0" text="Description">
                                              <styleClass>
@@ -394,8 +378,11 @@
                                              </styleClass>
                                           </Text>
                                        </children>
+                                       <VBox.margin>
+                                          <Insets bottom="7.0" top="5.0" />
+                                       </VBox.margin>
                                     </TextFlow>
-                                    <Button fx:id="notificationBouton" mnemonicParsing="false" prefHeight="26.0" prefWidth="76.0" styleClass="btn-text-light" text="D'accord">
+                                    <Button fx:id="notificationBouton" mnemonicParsing="false" prefHeight="26.0" prefWidth="75.0" styleClass="btn-text-light" text="D'accord">
                                        <VBox.margin>
                                           <Insets />
                                        </VBox.margin>
@@ -404,10 +391,19 @@
                                        </padding>
                                     </Button>
                                  </children>
+                                 <HBox.margin>
+                                    <Insets left="7.0" />
+                                 </HBox.margin>
                               </VBox>
                            </children>
+                           <VBox.margin>
+                              <Insets top="30.0" />
+                           </VBox.margin>
                         </HBox>
                      </children>
+                     <HBox.margin>
+                        <Insets />
+                     </HBox.margin>
                   </VBox>
                </children>
             </HBox>

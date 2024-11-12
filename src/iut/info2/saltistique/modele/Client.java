@@ -22,7 +22,7 @@ public class Client implements Runnable{
     private final String dossierSauvegarde = "src/ressources/fichiers";
 
     /** Taille du buffer de lecture (4096 octets) pour améliorer la lisibilité et la flexibilité */
-    private static final int BUFFER_SIZE = 4096;
+    private static final int BUFFER_SIZE = 1024;
 
     private double progression;
 
@@ -34,16 +34,16 @@ public class Client implements Runnable{
      * @param host Adresse IP du serveur.
      * @param port Port du serveur.
      */
-    public Client(String host, int port) throws Notification {
+    public Client(String host, int port) {
         this.host = host;
         this.port = port;
 
         // Vérification des données
         if (host == null || host.isEmpty()) {
-            throw new Notification("Adresse IP Invalide", "L'adresse IP du serveur ne peut pas être vide.");
+            throw new IllegalArgumentException("Adresse IP Invalide : L'adresse IP du serveur ne peut pas être vide.");
         }
         if (port < 1024 || port > 65535) {
-            throw new Notification("Port Invalide", "Le numéro de port doit être compris entre 1024 et 65535.");
+            throw new IllegalArgumentException("Port Invalide : Le numéro de port doit être compris entre 1024 et 65535.");
         }
     }
 
@@ -111,6 +111,8 @@ public class Client implements Runnable{
 
             System.out.println("Connecté au serveur sur " + host + ":" + port);
 
+            new Notification("Importation des données", "Importation via " + host + ":" + port);
+
             try{
                 BufferedInputStream bis = new BufferedInputStream(socket.getInputStream());
                 DataInputStream dis = new DataInputStream(bis);
@@ -124,18 +126,20 @@ public class Client implements Runnable{
                 for (int i = 0; i < nbFichiers; i++) {
                     recevoirFichier(dis);
 
-                    //System.out.println("Ratio : " + this.progression/ tailleTotale);
-
                     Thread.sleep(1000);
                 }
+
+
+                Saltistique.gestionDonnees.finInmportationReseau();
+
             } catch (IOException e) {
-                System.err.println("Erreur de lecture du fichier : " + e.getMessage());
+                new Notification("Erreur de lecture du fichier", "Accès au fichiers distants impossible.");
 
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
         } catch (IOException e) {
-            System.err.println("Erreur de connexion au serveur : " + e.getMessage());
+            new Notification("Erreur de connexion au serveur", "Impossible de se connecter au serveur.");
         }
     }
 }

@@ -23,10 +23,10 @@ class TestFichier {
 
     /** Lien vers les fichiers */
     public static final String[] LIEN_FICHIERS = {
-            "src/test/resources/activites.csv",
-            "src/test/resources/employes.csv",
-            "src/test/resources/reservations.csv",
-            "src/test/resources/salles.csv"
+            "src/iut/info2/test/ressources/activites.csv",
+            "src/iut/info2/test/ressources/employes.csv",
+            "src/iut/info2/test/ressources/reservations.csv",
+            "src/iut/info2/test/ressources/salles.csv",
     };
 
     /** Nom des fichiers sans leurs extentions */
@@ -38,12 +38,7 @@ class TestFichier {
     };
 
     /** Objets fichiers */
-    public static final Fichier[] OBJET_FICHIER = new Fichier[] {
-            new Fichier("src/test/resources/activites.csv"),
-            new Fichier("src/test/resources/employes.csv"),
-            new Fichier("src/test/resources/reservations.csv"),
-            new Fichier("src/test/resources/salles.csv")
-    };
+    public static final Fichier[] OBJET_FICHIER = new Fichier[LIEN_FICHIERS.length];
 
     /** Contenu des fichiers */
     public static final String[][] CONTENU_DE_FICHIERS = {
@@ -78,8 +73,16 @@ class TestFichier {
     @BeforeAll
     static void setUpBeforeClass() throws Exception {
         System.out.println("------TEST DE LA CLASSE Fichier------");
+
+        for (int indiceTest = 0;
+             indiceTest < LIEN_FICHIERS.length; indiceTest++) {
+
+            OBJET_FICHIER[indiceTest] = new Fichier(LIEN_FICHIERS[indiceTest]);
+        }
+
     }
 
+    // TODO : FIX THE TESTS
     @AfterAll
     static void tearDownAfterClass() throws Exception {
         System.out.println("---FIN DE TEST DE LA CLASSE Fichier---");
@@ -136,7 +139,7 @@ class TestFichier {
     }
 
     @Test
-    void testGetFichierExploite() {
+    void testGetFichierExploite() throws IOException {
         Fichier fichier;
 
         for (int indiceTest = 0;

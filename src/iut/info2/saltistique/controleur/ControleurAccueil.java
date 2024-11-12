@@ -6,23 +6,23 @@
  */
 package iut.info2.saltistique.controleur;
 
-import iut.info2.saltistique.Saltistique;
+    import iut.info2.saltistique.Saltistique;
+import iut.info2.saltistique.modele.Notification;
 import iut.info2.saltistique.modele.Scenes;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.input.DragEvent;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
-import javafx.scene.text.TextFlow;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import java.awt.*;
@@ -156,8 +156,8 @@ public class ControleurAccueil {
      * @param event évenement de drag and drop
      */
     @FXML
-    void filesDragged(DragEvent event) throws IOException {
-        List files = event.getDragboard().getFiles();
+    void filesDragged(DragEvent event) {
+        List files = event.getDragboard().getFiles(); // TODO : trouver un autre moyen que List
         String[] chemins;
         chemins = new String[files.size()];
 
@@ -165,16 +165,7 @@ public class ControleurAccueil {
             chemins[files.indexOf(file)] = ((File) file).getAbsolutePath();
         }
 
-        try {
-            Saltistique.gestionDonnees.importerDonnees(chemins);
-            ControleurConsulterDonnees controleur = Saltistique.getController(Scenes.CONSULTER_DONNEES);
-            controleur.rafraichirTableaux();
-            Saltistique.changeScene(Scenes.CONSULTER_DONNEES);
-
-
-        } catch (Exception e) {
-            System.out.println("Erreur lors de l'importation des fichiers : " + e.getMessage());
-        }
+        importerDonnees(chemins);
     }
 
     /**
@@ -199,14 +190,49 @@ public class ControleurAccueil {
             for (int i = 0; i < files.size(); i++) {
                 chemins[i] = files.get(i).getAbsolutePath();
             }
-            try {
-                Saltistique.gestionDonnees.importerDonnees(chemins);
-                ControleurConsulterDonnees controleur = Saltistique.getController(Scenes.CONSULTER_DONNEES);
-                controleur.rafraichirTableaux();
-                Saltistique.changeScene(Scenes.CONSULTER_DONNEES);
-            } catch (Exception e) {
-                System.out.println("Erreur lors de l'importation des fichiers : " + e.getMessage());
-            }
+            importerDonnees(chemins);
+        }
+    }
+
+    /**
+     * Permet d'importer les données depuis les fichiers spécifiés
+     * Si une erreur survient lors de l'importation, une notification est affichée
+     * Si l'importation est réussie, la vue de consultation des données est affichée
+     * Si l'importation est réussie mais que des lignes ont été ignorées, la vue
+     * de consultation des données ignorée est affichée
+     * @param chemins les chemins des fichiers à importer
+     */
+    private void importerDonnees(String[] chemins) {
+        ArrayList<String[]> lignesIncorrectesSalles;
+        ArrayList<String[]> lignesIncorrectesActivites;
+        ArrayList<String[]> lignesIncorrectesReservations;
+        ArrayList<String[]> lignesIncorrectesUtilisateurs;
+
+        try {
+            Saltistique.gestionDonnees.importerDonnees(chemins);
+        } catch (Exception e) {
+            new Notification("Erreur lors de l'importation des fichiers : ", e.getMessage());
+            return;
+        }
+
+        lignesIncorrectesSalles = Saltistique.gestionDonnees.getLignesIncorrectesSalles();
+        lignesIncorrectesActivites = Saltistique.gestionDonnees.getLignesIncorrectesActivites();
+        lignesIncorrectesReservations = Saltistique.gestionDonnees.getLignesIncorrectesReservations();
+        lignesIncorrectesUtilisateurs = Saltistique.gestionDonnees.getLignesIncorrectesUtilisateurs();
+
+        if (!lignesIncorrectesSalles.isEmpty() || !lignesIncorrectesActivites.isEmpty()
+         || !lignesIncorrectesReservations.isEmpty() || !lignesIncorrectesUtilisateurs.isEmpty()) {
+            Saltistique.changeScene(Scenes.CONSULTER_DONNEES_INCORRECTES);
+            ControleurDonneesIncorrectes controleur = Saltistique.getController(Scenes.CONSULTER_DONNEES_INCORRECTES); // TODO : Réfléchir à une classe controlleur héritée par exemple ControleurConsultation, ou une classe statique pour éviter de répéter le code
+            controleur.rafraichirTableaux();
+
+            new Notification("Importation réussie avec des lignes incorrectes", "Certaines lignes n'ont pas été importées correctement. Consultez les données incorrectes pour plus d'informations.");
+        } else {
+            Saltistique.changeScene(Scenes.CONSULTER_DONNEES);
+            ControleurConsulterDonnees controleur = Saltistique.getController(Scenes.CONSULTER_DONNEES);
+            controleur.rafraichirTableaux();
+
+            new Notification("Importation réussie", "Les données ont été importées avec succès.");
         }
     }
 
@@ -251,16 +277,6 @@ public class ControleurAccueil {
             burgerClicked();
         }
     }
-
-    /**
-     * Handler pour le clic sur le bouton d'exportation des données
-     * Cela permet d'ouvir la fenètre permettant l'exportation des données.
-     */
-    @FXML
-    void handlerPartager() {
-        Saltistique.showPopUp(Scenes.EXPORTER_RESEAU);
-    }
-
 
     /**
      * Gère le clic sur le bouton d'aide et tente d'ouvrir un fichier PDF d'aide utilisateur.

@@ -36,7 +36,7 @@ public class Utilisateur implements Serializable {
 
     @Override
     public String toString() {
-        return identifiant;
+        return prenom + " " + nom;
     }
 
 }
