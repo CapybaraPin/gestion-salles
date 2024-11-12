@@ -109,7 +109,6 @@ public class Client implements Runnable{
         try {
             Socket socket = new Socket(host, port);
 
-
             System.out.println("Connecté au serveur sur " + host + ":" + port);
 
             new Notification("Importation des données", "Importation via " + host + ":" + port);

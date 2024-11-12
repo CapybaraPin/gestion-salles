@@ -63,8 +63,6 @@ public class ControleurImporterReseau {
     @FXML
     void clickImporter() {
 
-        progressControl();
-
         try {
             Saltistique.gestionDonnees.importerDonnees(adresseIp.getText(), Integer.parseInt(port.getText()));
             //finImportation();
@@ -97,12 +95,15 @@ public class ControleurImporterReseau {
         progressVbox.setVisible(true);
         progressBar.setProgress(0);
         progressLabel.setText("Importation des données en cours : 0%");
-
     }
 
     public void onProgressUpdate(double progress) {
         // Met à jour l'interface graphique dans le thread JavaFX
         javafx.application.Platform.runLater(() -> {
+            if(!progressVbox.isVisible()) {
+                progressVbox.setVisible(true);
+                progressBar.setProgress(0);
+            }
             progressBar.setProgress(progress);
             progressLabel.setText("Progression : " + (int) (progress * 100) + "%");
         });
