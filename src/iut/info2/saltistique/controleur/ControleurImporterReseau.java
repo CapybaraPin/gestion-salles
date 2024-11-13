@@ -5,55 +5,46 @@
 package iut.info2.saltistique.controleur;
 
 import iut.info2.saltistique.Saltistique;
-import iut.info2.saltistique.modele.Scenes;
 import javafx.fxml.FXML;
-import javafx.scene.Node;
-import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.control.TextField;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
-import javafx.stage.Stage;
 
 /**
  * Controleur de la vue d'importation des données depuis le réseau.
  *
  * @author Hugo ROBLES
  */
-public class ControleurImporterReseau {
+public class ControleurImporterReseau extends Controleur {
 
-
-    double x,y;
-
-    /** Champ contenant l'adresse IP renseignée par l'utilisateur */
+    /**
+     * Champ contenant l'adresse IP renseignée par l'utilisateur
+     */
     @FXML
     private TextField adresseIp;
 
-    /** Champ contenant le port renseigné par l'utilisateur */
+    /**
+     * Champ contenant le port renseigné par l'utilisateur
+     */
     @FXML
     private TextField port;
 
-    /** Bouton d'éxecution de l'importation */
-    @FXML
-    private Button btnImporter;
-
-    /** Bouton d'appel de la notice */
-    @FXML
-    private Button btnAide;
-
-    /** Position de la souris en abscisse */
-    double xOffset = 0;
-
-    /** Position de la souris en ordonné */
-    double yOffset = 0;
-
+    /**
+     * Texte correspondant à la bar de progression
+     */
     @FXML
     private Label progressLabel;
 
+    /**
+     * Conteneur de la bar de progression et du texte
+     */
     @FXML
     private VBox progressVbox;
 
+    /**
+     * Bar de progression
+     */
     @FXML
     private ProgressBar progressBar;
 
@@ -62,85 +53,23 @@ public class ControleurImporterReseau {
      */
     @FXML
     void clickImporter() {
-
-        try {
-            Saltistique.gestionDonnees.importerDonnees(adresseIp.getText(), Integer.parseInt(port.getText()));
-            //finImportation();
-        } catch (Exception e) {
-            return;
-        }
-
-
-    }
-
-    public void finImportation(){
-        System.out.println("Fermeture de la fenêtre");
-        javafx.application.Platform.runLater(() -> {
-            ControleurConsulterDonnees controleur = Saltistique.getController(Scenes.CONSULTER_DONNEES);
-            controleur.rafraichirTableaux();
-            Saltistique.changeScene(Scenes.CONSULTER_DONNEES);
-
-            Stage stage = (Stage) adresseIp.getScene().getWindow();
-            stage.close();
-        });
+        Saltistique.gestionDonnees.importerDonnees(adresseIp.getText(), Integer.parseInt(port.getText()));
     }
 
     /**
-     * Si la valeur de paramètre est à null alors la vbox est pas visible,
-     * sinon la valeur est définie sur la progressBar
+     * Met à jour la bar de progression
+     *
+     * @param progress, correspond
      */
-    @FXML
-    void progressControl() {
-        System.out.println("Initialisation de la progress bar");
-        progressVbox.setVisible(true);
-        progressBar.setProgress(0);
-        progressLabel.setText("Importation des données en cours : 0%");
-    }
-
-    public void onProgressUpdate(double progress) {
+    public void miseAJourProgression(double progress) {
         // Met à jour l'interface graphique dans le thread JavaFX
         javafx.application.Platform.runLater(() -> {
-            if(!progressVbox.isVisible()) {
+            if (!progressVbox.isVisible()) {
                 progressVbox.setVisible(true);
                 progressBar.setProgress(0);
             }
             progressBar.setProgress(progress);
             progressLabel.setText("Progression : " + (int) (progress * 100) + "%");
         });
-    }
-
-    public void fermetureFenetre() {
-        Stage stage = (Stage) adresseIp.getScene().getWindow();
-        stage.close();
-    }
-
-    /**
-     * Ferme la fenêtre actuelle.
-     * @param event évenement de clique de souris
-     */
-    @FXML
-    void fermerFenetre(MouseEvent event) {
-        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-        stage.close();
-    }
-
-    /**
-     * Permet de vérifier les coordonnées de clique d'une souris
-     * @param event évenement de clique de souris
-     */
-    @FXML
-    void clicked(MouseEvent event) {
-        xOffset = event.getSceneX();
-        yOffset = event.getSceneY();
-    }
-    /**
-     * Permet de gérer le drag de la fenêtre (optionnel si vous voulez rendre la fenêtre mobile).
-     * @param event évenement de clique de souris
-     */
-    @FXML
-    void dragged(MouseEvent event) {
-        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-        stage.setX(event.getScreenX() - xOffset);
-        stage.setY(event.getScreenY() - yOffset);
     }
 }

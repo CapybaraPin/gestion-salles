@@ -151,7 +151,7 @@ public class GestionDonnees implements Serializable {
     public void finInmportationReseau() {
         javafx.application.Platform.runLater(() -> {
             ControleurImporterReseau controleurImporterReseau = Saltistique.getController(Scenes.IMPORTATION_RESEAU);
-            controleurImporterReseau.fermetureFenetre();
+            controleurImporterReseau.fermerFenetre();
             // Appeler importerDonnees avec les fichiers reçus
 
             File dossierSauvegarde = new File(DOSSIER_SOURCES);
@@ -159,7 +159,7 @@ public class GestionDonnees implements Serializable {
 
             if (fichiersExistants != null && fichiersExistants.length > 0) {
                 String[] cheminFichiers = new String[4];
-                for (int i = 0; i < 4; i++) {
+                for (int i = 0; i < 4;  i++) {
                     cheminFichiers[i] = fichiersExistants[i].getAbsolutePath();
                 }
                 try {

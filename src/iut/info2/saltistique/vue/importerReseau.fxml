@@ -7,147 +7,134 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.shape.*?>
 <?import javafx.scene.text.*?>
-<?import javafx.geometry.Insets?>
-<?import javafx.scene.Cursor?>
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.control.TextField?>
-<?import javafx.scene.layout.ColumnConstraints?>
-<?import javafx.scene.layout.GridPane?>
-<?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.RowConstraints?>
-<?import javafx.scene.layout.VBox?>
-<?import javafx.scene.shape.Line?>
-<?import javafx.scene.text.Font?>
-<?import java.lang.String?>
 
-<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="330.0" prefWidth="507.0" stylesheets="@style.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="iut.info2.saltistique.controleur.ControleurImporterReseau">
-   <children>
-      <GridPane minHeight="33.0" minWidth="507.0" onMouseDragged="#dragged" onMousePressed="#clicked" prefHeight="33.0" prefWidth="507.0">
-        <columnConstraints>
-          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-        </columnConstraints>
-        <rowConstraints>
-          <RowConstraints />
-            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-        </rowConstraints>
-         <children>
-            <Label alignment="CENTER" contentDisplay="CENTER" styleClass="typo-h2" text="Importer les données via le réseau" textAlignment="CENTER" GridPane.columnSpan="2" GridPane.halignment="CENTER" GridPane.rowIndex="1">
-               <font>
-                  <Font name="System Bold" size="18.0" />
-               </font>
-            </Label>
-            <Button fx:id="btnFermer" alignment="CENTER" contentDisplay="CENTER" maxHeight="33.0" maxWidth="33.0" mnemonicParsing="false" onMouseClicked="#fermerFenetre" prefHeight="33.0" prefWidth="33.0" styleClass="navbar-btn-close" text="X" textAlignment="CENTER" textFill="#b2b2b2" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="1">
-               <font>
-                  <Font size="14.0" />
-               </font>
-            </Button>
-         </children>
-      </GridPane>
-      <Line endX="507.0" stroke="#ebecf0" />
-      <HBox alignment="CENTER" fillHeight="false" prefHeight="100.0" prefWidth="200.0">
-         <children>
-            <Label maxHeight="50.0" maxWidth="441.0" minHeight="50.0" minWidth="441.0" prefHeight="50.0" prefWidth="441.0" styleClass="typo-paragraph" text="Indiquez ci-dessous les informations relatives au poste distant pour la récupération des données via le réseau." wrapText="true">
-               <cursor>
-                  <Cursor fx:constant="NONE" />
-               </cursor>
-               <font>
-                  <Font size="13.0" />
-               </font>
-            </Label>
-         </children>
-      </HBox>
-      <HBox alignment="CENTER_LEFT">
-         <children>
-            <TextField fx:id="adresseIp" maxHeight="28.0" maxWidth="136.0" minHeight="28.0" minWidth="136.0" prefHeight="28.0" prefWidth="136.0" promptText="Adresse IP" styleClass="input-default" text="127.0.0.1">
-               <HBox.margin>
-                  <Insets left="25.0" />
-               </HBox.margin>
-            </TextField>
-            <Label styleClass="typo-disabled" text="192.167.1.1">
-               <HBox.margin>
-                  <Insets left="25.0" />
-               </HBox.margin>
-            </Label>
-         </children>
-         <VBox.margin>
-            <Insets bottom="25.0" />
-         </VBox.margin>
-      </HBox>
-      <HBox alignment="CENTER_LEFT">
-         <children>
-            <TextField fx:id="port" maxHeight="28.0" maxWidth="136.0" minHeight="28.0" minWidth="136.0" prefHeight="28.0" prefWidth="136.0" promptText="Port" styleClass="input-default" text="12345">
-               <HBox.margin>
-                  <Insets left="25.0" />
-               </HBox.margin>
-            </TextField>
-            <Label styleClass="typo-disabled" text="8080">
-               <HBox.margin>
-                  <Insets left="25.0" />
-               </HBox.margin>
-            </Label>
-         </children>
-      </HBox>
-      <VBox fx:id="progressVbox" prefHeight="66.0" prefWidth="508.0" visible="false">
-         <children>
-            <Line endX="507.0" stroke="#ebecf0" />
-            <ProgressBar fx:id="progressBar" prefHeight="20.0" prefWidth="445.0" progress="0.18">
-               <VBox.margin>
-                  <Insets left="25.0" top="10.0" />
-               </VBox.margin>
-            </ProgressBar>
-            <Label fx:id="progressLabel" text="Importation en cours...">
-               <VBox.margin>
-                  <Insets left="25.0" />
-               </VBox.margin>
-            </Label>
-         </children>
-         <VBox.margin>
-            <Insets top="5.0" />
-         </VBox.margin>
-      </VBox>
-      <Line endX="507.0" stroke="#ebecf0">
-         <VBox.margin>
-            <Insets top="10.0" />
-         </VBox.margin>
-      </Line>
-      <HBox alignment="CENTER" prefHeight="69.0" prefWidth="505.0">
-         <children>
-            <HBox alignment="CENTER_LEFT" HBox.hgrow="ALWAYS">
-               <children>
-                  <Button mnemonicParsing="false" prefHeight="24.0" prefWidth="24.0" styleClass="help" text="?">
-                     <HBox.margin>
-                        <Insets left="25.0" />
-                     </HBox.margin>
-                  </Button>
-               </children>
-            </HBox>
-            <HBox alignment="CENTER_RIGHT" HBox.hgrow="ALWAYS">
-               <children>
-                  <Button maxHeight="28.0" maxWidth="73.0" minHeight="28.0" minWidth="73.0" mnemonicParsing="false" onMouseClicked="#fermerFenetre" prefHeight="28.0" prefWidth="73.0" styleClass="btn-secondary" text="Annuler">
-                     <HBox.margin>
-                        <Insets right="25.0" />
-                     </HBox.margin>
-                     <font>
-                        <Font size="13.0" />
-                     </font>
-                  </Button>
-                  <Button maxHeight="28.0" maxWidth="73.0" minHeight="28.0" minWidth="73.0" mnemonicParsing="false" onAction="#clickImporter" prefHeight="28.0" prefWidth="73.0" styleClass="btn-primary" text="Importer" textFill="WHITE">
-                     <HBox.margin>
-                        <Insets right="25.0" />
-                     </HBox.margin>
-                     <font>
-                        <Font size="13.0" />
-                     </font>
-                  </Button>
-               </children>
-            </HBox>
-         </children>
-      </HBox>
-   </children>
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="330.0"
+      prefWidth="507.0" stylesheets="@style.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="iut.info2.saltistique.controleur.ControleurImporterReseau">
    <styleClass>
-      <String fx:value="background" />
-      <String fx:value="border" />
+      <String fx:value="background"/>
+      <String fx:value="border"/>
    </styleClass>
+   <GridPane minHeight="33.0" minWidth="507.0" onMouseDragged="#dragged" onMousePressed="#clicked" prefHeight="33.0"
+             prefWidth="507.0">
+      <columnConstraints>
+         <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0"/>
+         <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0"/>
+      </columnConstraints>
+      <rowConstraints>
+         <RowConstraints/>
+         <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+      </rowConstraints>
+      <Label alignment="CENTER" contentDisplay="CENTER" styleClass="typo-h2"
+             text="Importer les données via le réseau" textAlignment="CENTER" GridPane.columnSpan="2"
+             GridPane.halignment="CENTER" GridPane.rowIndex="1">
+         <font>
+            <Font name="System Bold" size="18.0"/>
+         </font>
+      </Label>
+      <Button fx:id="btnFermer" alignment="CENTER" contentDisplay="CENTER" maxHeight="33.0" maxWidth="33.0"
+              mnemonicParsing="false" onMouseClicked="#fermerFenetre" prefHeight="33.0" prefWidth="33.0"
+              styleClass="navbar-btn-close" text="X" textAlignment="CENTER" textFill="#b2b2b2"
+              GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="1">
+         <font>
+            <Font size="14.0"/>
+         </font>
+      </Button>
+   </GridPane>
+   <Line endX="507.0" stroke="#ebecf0"/>
+   <HBox alignment="CENTER" fillHeight="false" prefHeight="100.0" prefWidth="200.0">
+      <Label maxHeight="50.0" maxWidth="441.0" minHeight="50.0" minWidth="441.0" prefHeight="50.0" prefWidth="441.0"
+             styleClass="typo-paragraph"
+             text="Indiquez ci-dessous les informations relatives au poste distant pour la récupération des données via le réseau."
+             wrapText="true">
+         <cursor>
+            <Cursor fx:constant="NONE"/>
+         </cursor>
+         <font>
+            <Font size="13.0"/>
+         </font>
+      </Label>
+   </HBox>
+   <HBox alignment="CENTER_LEFT">
+      <VBox.margin>
+         <Insets bottom="25.0"/>
+      </VBox.margin>
+      <TextField fx:id="adresseIp" maxHeight="28.0" maxWidth="136.0" minHeight="28.0" minWidth="136.0"
+                 prefHeight="28.0" prefWidth="136.0" promptText="Adresse IP" styleClass="input-default"
+                 text="127.0.0.1">
+         <HBox.margin>
+            <Insets left="25.0"/>
+         </HBox.margin>
+      </TextField>
+      <Label styleClass="typo-disabled" text="192.167.1.1">
+         <HBox.margin>
+            <Insets left="25.0"/>
+         </HBox.margin>
+      </Label>
+   </HBox>
+   <HBox alignment="CENTER_LEFT">
+      <TextField fx:id="port" maxHeight="28.0" maxWidth="136.0" minHeight="28.0" minWidth="136.0" prefHeight="28.0"
+                 prefWidth="136.0" promptText="Port" styleClass="input-default" text="12345">
+         <HBox.margin>
+            <Insets left="25.0"/>
+         </HBox.margin>
+      </TextField>
+      <Label styleClass="typo-disabled" text="8080">
+         <HBox.margin>
+            <Insets left="25.0"/>
+         </HBox.margin>
+      </Label>
+   </HBox>
+   <VBox fx:id="progressVbox" prefHeight="66.0" prefWidth="508.0" visible="false">
+      <VBox.margin>
+         <Insets top="5.0"/>
+      </VBox.margin>
+      <Line endX="507.0" stroke="#ebecf0"/>
+      <ProgressBar fx:id="progressBar" prefHeight="20.0" prefWidth="445.0" progress="0.18">
+         <VBox.margin>
+            <Insets left="25.0" top="10.0"/>
+         </VBox.margin>
+      </ProgressBar>
+      <Label fx:id="progressLabel" text="Importation en cours...">
+         <VBox.margin>
+            <Insets left="25.0"/>
+         </VBox.margin>
+      </Label>
+   </VBox>
+   <Line endX="507.0" stroke="#ebecf0">
+      <VBox.margin>
+         <Insets top="10.0"/>
+      </VBox.margin>
+   </Line>
+   <HBox alignment="CENTER" prefHeight="69.0" prefWidth="505.0">
+      <HBox alignment="CENTER_LEFT" HBox.hgrow="ALWAYS">
+         <Button mnemonicParsing="false" prefHeight="24.0" prefWidth="24.0" styleClass="help" text="?">
+            <HBox.margin>
+               <Insets left="25.0"/>
+            </HBox.margin>
+         </Button>
+      </HBox>
+      <HBox alignment="CENTER_RIGHT" HBox.hgrow="ALWAYS">
+         <Button maxHeight="28.0" maxWidth="73.0" minHeight="28.0" minWidth="73.0" mnemonicParsing="false"
+                 onMouseClicked="#fermerFenetre" prefHeight="28.0" prefWidth="73.0" styleClass="btn-secondary"
+                 text="Annuler">
+            <HBox.margin>
+               <Insets right="25.0"/>
+            </HBox.margin>
+            <font>
+               <Font size="13.0"/>
+            </font>
+         </Button>
+         <Button maxHeight="28.0" maxWidth="73.0" minHeight="28.0" minWidth="73.0" mnemonicParsing="false"
+                 onAction="#clickImporter" prefHeight="28.0" prefWidth="73.0" styleClass="btn-primary"
+                 text="Importer" textFill="WHITE">
+            <HBox.margin>
+               <Insets right="25.0"/>
+            </HBox.margin>
+            <font>
+               <Font size="13.0"/>
+            </font>
+         </Button>
+      </HBox>
+   </HBox>
 </VBox>

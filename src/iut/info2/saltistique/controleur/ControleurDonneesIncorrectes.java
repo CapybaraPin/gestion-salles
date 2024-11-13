@@ -8,7 +8,9 @@
 package iut.info2.saltistique.controleur;
 
 import iut.info2.saltistique.Saltistique;
-import iut.info2.saltistique.modele.*;
+import iut.info2.saltistique.modele.Notification;
+import iut.info2.saltistique.modele.Scenes;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -16,132 +18,133 @@ import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.Pane;
-import javafx.scene.layout.VBox;
 import javafx.scene.shape.Line;
-import javafx.scene.text.Text;
-import javafx.stage.Stage;
-
-import java.awt.Desktop;
-import java.io.File;
-import java.io.IOException;
-
-import static iut.info2.saltistique.Saltistique.gestionDonnees;
 
 /**
  * Le contrôleur de la vue permettant de consulter les données.
  * Cette classe gère l'affichage et l'interaction avec les tables de données
  * (réservations, activités, employés, salles) ainsi que le contrôle des boutons
  * et autres éléments interactifs de l'interface.
- *
  */
-public class ControleurDonneesIncorrectes {
+public class ControleurDonneesIncorrectes extends Controleur {
 
-    /** Bouton pour afficher les employés. */
+    /**
+     * Bouton pour afficher les employés.
+     */
     @FXML
     public Button employes;
 
-    /** Bouton pour afficher les activités. */
+    /**
+     * Bouton pour afficher les activités.
+     */
     @FXML
     public Button activites;
 
-    /** Bouton pour afficher les réservations. */
+    /**
+     * Bouton pour afficher les réservations.
+     */
     @FXML
     public Button reservations;
 
-    /** Bouton pour afficher les salles. */
+    /**
+     * Bouton pour afficher les salles.
+     */
     @FXML
     public Button salles;
 
-    /** Ligne de sélection pour le bouton "Salles". */
+    /**
+     * Ligne de sélection pour le bouton "Salles".
+     */
     @FXML
     public Line SelectionSalles;
 
-    /** Ligne de sélection pour le bouton "Activités". */
+    /**
+     * Ligne de sélection pour le bouton "Activités".
+     */
     @FXML
     public Line SelectionActivites;
 
-    /** Ligne de sélection pour le bouton "Employés". */
+    /**
+     * Ligne de sélection pour le bouton "Employés".
+     */
     @FXML
     public Line SelectionEmployes;
 
-    /** Ligne de sélection pour le bouton "Réservations". */
+    /**
+     * Ligne de sélection pour le bouton "Réservations".
+     */
     @FXML
     public Line SelectionReservations;
 
-    /** Position horizontale de la souris pour le déplacement de la fenêtre. */
-    double xOffset = 0;
-
-    /** Position verticale de la souris pour le déplacement de la fenêtre. */
-    double yOffset = 0;
-
-    /** Conteneur pour le menu de navigation. */
-    @FXML
-    private VBox menuContainer;
-
-    /** Couche utilisée pour fermer le menu de navigation. */
-    @FXML
-    private Pane layerMenu;
-
-    @FXML
-    public VBox notificationFrame;
-
-    @FXML
-    public Text notificationTitre;
-
-    @FXML
-    public Text notificationDescription;
-
-    @FXML
-    public Button notificationBouton;
-
-    /** Tableau des salles. */
+    /**
+     * Tableau des salles.
+     */
     @FXML
     private TableView<String[]> tableauSalles;
 
-    /** Tableau des activités. */
+    /**
+     * Tableau des activités.
+     */
     @FXML
     private TableView<String[]> tableauActivites;
 
-    /** Tableau des employés. */
+    /**
+     * Tableau des employés.
+     */
     @FXML
     private TableView<String[]> tableauEmployes;
 
-    /** Tableau des réservations. */
+    /**
+     * Tableau des réservations.
+     */
     @FXML
     private TableView<String[]> tableauReservations;
 
-    /** Colonne de la ligne de la salle. */
+    /**
+     * Colonne de la ligne de la salle.
+     */
     @FXML
     private TableColumn<String[], String> LigneSalles;
 
-    /** Colonne de l'erreur de la ligne Salle. */
+    /**
+     * Colonne de l'erreur de la ligne Salle.
+     */
     @FXML
     private TableColumn<String[], String> ErreurSalles;
 
-    /** Colonne de la ligne de l'activité. */
+    /**
+     * Colonne de la ligne de l'activité.
+     */
     @FXML
     private TableColumn<String[], String> LigneActivites;
 
-    /** Colonne de l'erreur de la ligne Activité. */
+    /**
+     * Colonne de l'erreur de la ligne Activité.
+     */
     @FXML
     private TableColumn<String[], String> ErreurActivites;
 
-    /** Colonne de la ligne de l'employé. */
+    /**
+     * Colonne de la ligne de l'employé.
+     */
     @FXML
     private TableColumn<String[], String> LigneEmployes;
 
-    /** Colonne de l'erreur de la ligne Employé. */
+    /**
+     * Colonne de l'erreur de la ligne Employé.
+     */
     @FXML
     private TableColumn<String[], String> ErreurEmployes;
 
-    /** Colonne de la ligne de la réservation. */
+    /**
+     * Colonne de la ligne de la réservation.
+     */
     @FXML
     private TableColumn<String[], String> LigneReservations;
 
-    /** Colonne de l'erreur de la ligne Réservation. */
+    /**
+     * Colonne de l'erreur de la ligne Réservation.
+     */
     @FXML
     private TableColumn<String[], String> ErreurReservations;
 
@@ -151,7 +154,6 @@ public class ControleurDonneesIncorrectes {
      * Ces listes sont utilisées pour afficher et gérer les types de données disponibles
      * dans l'application, permettant la liaison de données pour des composants
      * de l'interface utilisateur, tels que des tableaux ou des listes.
-     *
      */
     private ObservableList<String[]> listeSalles;
     private ObservableList<String[]> listeActivites;
@@ -171,11 +173,7 @@ public class ControleurDonneesIncorrectes {
         initialiserTableauActivites();
         initialiserTableauEmployes();
         initialiserTableauReservations();
-
-        notificationBouton.setOnAction(event -> { // TODO : enlever ce code
-            notificationFrame.setVisible(false);
-            notificationFrame.setMouseTransparent(true);
-        });
+        clickBoutonNotification();
     }
 
     /**
@@ -187,10 +185,10 @@ public class ControleurDonneesIncorrectes {
      * aux listes correspondantes.
      */
     private void initialiserTableaux() {
-        listeSalles.addAll(gestionDonnees.getLignesIncorrectesSalles());
-        listeActivites.addAll(gestionDonnees.getLignesIncorrectesActivites());
-        listeEmployes.addAll(gestionDonnees.getLignesIncorrectesUtilisateurs());
-        listeReservations.addAll(gestionDonnees.getLignesIncorrectesReservations());
+        listeSalles.addAll(Saltistique.gestionDonnees.getLignesIncorrectesSalles());
+        listeActivites.addAll(Saltistique.gestionDonnees.getLignesIncorrectesActivites());
+        listeEmployes.addAll(Saltistique.gestionDonnees.getLignesIncorrectesUtilisateurs());
+        listeReservations.addAll(Saltistique.gestionDonnees.getLignesIncorrectesReservations());
     }
 
     /**
@@ -263,133 +261,10 @@ public class ControleurDonneesIncorrectes {
         Saltistique.changeScene(Scenes.ACCUEIL);
     }
 
-
-    /**
-     * Gère le clic sur le bouton de chargement des données.
-     * Vide les données du modèle et change de scène pour l'accueil.
-     * Affiche une notification pour informer l'utilisateur du succès de l'opération.
-     */
-    @FXML
-    void clickDechargerDonnees() {
-        if (menuContainer.isVisible()) {
-            burgerClicked();
-        }
-
-        gestionDonnees.viderDonnees();
-        Saltistique.changeScene(Scenes.ACCUEIL);
-
-        new Notification("Données déchargées", "Les données ont été déchargées avec succès.");
-    }
-
-    /**
-     * Gère le clic sur le bouton de partage pour exporter les données.
-     * Affiche un popup pour exporter les données sur le réseau.
-     */
-    @FXML
-    void handlerPartager() {
-        Saltistique.showPopUp(Scenes.EXPORTER_RESEAU);
-    }
-
-    /**
-     * Gère le clic sur le bouton d'aide.
-     * Affiche l'aide utilisateur sous forme d'un fichier PDF.
-     */
-    @FXML
-    void handlerAide() {
-        clickAide();
-        if (menuContainer.isVisible()) {
-            burgerClicked();
-        }
-    }
-
-    /**
-     * Ouvre le fichier PDF d'aide utilisateur.
-     */
-    private void clickAide() {
-        try {
-            File pdfFile = new File("src/ressources/noticeUtilisation.pdf");
-            if (!pdfFile.exists()) {
-                throw new IOException("Le fichier spécifié n'existe pas.");
-            }
-
-            if (!Desktop.isDesktopSupported()) {
-                throw new UnsupportedOperationException("Desktop n'est pas supporté sur ce système.");
-            }
-
-            Desktop desktop = Desktop.getDesktop();
-            if (!desktop.isSupported(Desktop.Action.OPEN)) {
-                throw new UnsupportedOperationException("L'ouverture de fichiers n'est pas supportée sur ce système.");
-            }
-
-            desktop.open(pdfFile);
-
-        } catch (IOException | UnsupportedOperationException e) {
-            System.out.println("Erreur : " + e.getMessage());
-        }
-    }
-
-    /**
-     * Ferme la fenêtre active.
-     * @param event L'événement de souris déclenché lors du clic pour fermer la fenêtre.
-     */
-    @FXML
-    void fermerFenetre(MouseEvent event) {
-        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-        stage.close();
-    }
-
-    /**
-     * Réduit la fenêtre active.
-     * @param event L'événement de souris déclenché lors du clic pour réduire la fenêtre.
-     */
-    @FXML
-    void reduireFenetre(MouseEvent event) {
-        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-        stage.setIconified(true);
-    }
-
-    /**
-     * Affiche ou masque le menu de navigation.
-     */
-    @FXML
-    void burgerClicked() {
-        if (menuContainer.isVisible()) {
-            menuContainer.setVisible(false);
-            menuContainer.setMouseTransparent(true);
-            layerMenu.setMouseTransparent(true);
-        } else {
-            menuContainer.setVisible(true);
-            menuContainer.setMouseTransparent(false);
-            layerMenu.setMouseTransparent(false);
-        }
-    }
-
-    /**
-     * Capture les coordonnées de la souris lors d'un clic.
-     * Utilisé pour le déplacement de la fenêtre.
-     * @param event L'événement de souris.
-     */
-    @FXML
-    void clicked(MouseEvent event) {
-        xOffset = event.getSceneX();
-        yOffset = event.getSceneY();
-    }
-
-    /**
-     * Déplace la fenêtre en fonction des coordonnées de la souris.
-     * @param event L'événement de souris déclenché lors du déplacement.
-     */
-    @FXML
-    void dragged(MouseEvent event) {
-        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-        stage.setX(event.getScreenX() - xOffset);
-        stage.setY(event.getScreenY() - yOffset);
-    }
-
     /**
      * Affiche le tableau et la sélection spécifiés, tout en masquant les autres.
      *
-     * @param tableau La référence au Node représentant le tableau à afficher.
+     * @param tableau   La référence au Node représentant le tableau à afficher.
      * @param selection La référence au Node représentant la sélection à afficher.
      */
     @FXML
@@ -454,17 +329,6 @@ public class ControleurDonneesIncorrectes {
     @FXML
     void afficherTableauEmployes() {
         afficherTableau(tableauEmployes, SelectionEmployes);
-    }
-
-    /**
-     * Gère le retour au menu principal.
-     */
-    @FXML
-    public void handlerRetourMenu() {
-        if (menuContainer.isVisible()) {
-            burgerClicked();
-        }
-        chargerSceneConsulterDonnees();
     }
 
     /**

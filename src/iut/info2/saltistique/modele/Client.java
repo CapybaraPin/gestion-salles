@@ -102,7 +102,7 @@ public class Client implements Runnable{
             this.progression += bytesRead;
 
             ControleurImporterReseau controleurImporterReseau = Saltistique.getController(Scenes.IMPORTATION_RESEAU);
-            controleurImporterReseau.onProgressUpdate(this.progression / this.tailleTotale);
+            controleurImporterReseau.miseAJourProgression(this.progression / this.tailleTotale);
 
         }
         bos.flush();

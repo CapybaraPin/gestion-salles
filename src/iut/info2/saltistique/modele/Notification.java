@@ -45,22 +45,22 @@ public class Notification {
             if (Saltistique.getPrimaryStage().getScene() == Saltistique.scenes.get(scene)) {
                 switch (scene) {
                     case ACCUEIL:
-                        controleurAccueil.notificationFrame.setMouseTransparent(false);
-                        controleurAccueil.notificationTitre.setText(titre);
-                        controleurAccueil.notificationDescription.setText(description);
-                        controleurAccueil.notificationFrame.setVisible(true);
+                        controleurAccueil.cadreNotification.setMouseTransparent(false);
+                        controleurAccueil.titreNotification.setText(titre);
+                        controleurAccueil.descriptionNotification.setText(description);
+                        controleurAccueil.cadreNotification.setVisible(true);
                         break;
                     case CONSULTER_DONNEES:
-                        controleurConsulterDonnees.notificationFrame.setMouseTransparent(false);
-                        controleurConsulterDonnees.notificationTitre.setText(titre);
-                        controleurConsulterDonnees.notificationDescription.setText(description);
-                        controleurConsulterDonnees.notificationFrame.setVisible(true);
+                        controleurConsulterDonnees.cadreNotification.setMouseTransparent(false);
+                        controleurConsulterDonnees.titreNotification.setText(titre);
+                        controleurConsulterDonnees.descriptionNotification.setText(description);
+                        controleurConsulterDonnees.cadreNotification.setVisible(true);
                         break;
                     case CONSULTER_DONNEES_INCORRECTES:
-                        controleurDonneesIncorrectes.notificationFrame.setMouseTransparent(false);
-                        controleurDonneesIncorrectes.notificationTitre.setText(titre);
-                        controleurDonneesIncorrectes.notificationDescription.setText(description);
-                        controleurDonneesIncorrectes.notificationFrame.setVisible(true);
+                        controleurDonneesIncorrectes.cadreNotification.setMouseTransparent(false);
+                        controleurDonneesIncorrectes.titreNotification.setText(titre);
+                        controleurDonneesIncorrectes.descriptionNotification.setText(description);
+                        controleurDonneesIncorrectes.cadreNotification.setVisible(true);
                         break;
                 }
 
@@ -72,23 +72,23 @@ public class Notification {
                     fadeOut.setToValue(0.0);
 
                     if (scene == Scenes.ACCUEIL) {
-                        fadeOut.setNode(controleurAccueil.notificationFrame);
+                        fadeOut.setNode(controleurAccueil.cadreNotification);
                     } else if (scene == Scenes.CONSULTER_DONNEES) {
-                        fadeOut.setNode(controleurConsulterDonnees.notificationFrame);
+                        fadeOut.setNode(controleurConsulterDonnees.cadreNotification);
                     } else if (scene == Scenes.CONSULTER_DONNEES_INCORRECTES) {
-                        fadeOut.setNode(controleurDonneesIncorrectes.notificationFrame);
+                        fadeOut.setNode(controleurDonneesIncorrectes.cadreNotification);
                     }
 
                     fadeOut.setOnFinished(e -> {
                         if (scene == Scenes.ACCUEIL) {
-                            controleurAccueil.notificationFrame.setVisible(false);
-                            controleurAccueil.notificationFrame.setOpacity(1.0);
+                            controleurAccueil.cadreNotification.setVisible(false);
+                            controleurAccueil.cadreNotification.setOpacity(1.0);
                         } else if (scene == Scenes.CONSULTER_DONNEES) {
-                            controleurConsulterDonnees.notificationFrame.setVisible(false);
-                            controleurConsulterDonnees.notificationFrame.setOpacity(1.0);
+                            controleurConsulterDonnees.cadreNotification.setVisible(false);
+                            controleurConsulterDonnees.cadreNotification.setOpacity(1.0);
                         } else if (scene == Scenes.CONSULTER_DONNEES_INCORRECTES) {
-                            controleurDonneesIncorrectes.notificationFrame.setVisible(false);
-                            controleurDonneesIncorrectes.notificationFrame.setOpacity(1.0);
+                            controleurDonneesIncorrectes.cadreNotification.setVisible(false);
+                            controleurDonneesIncorrectes.cadreNotification.setOpacity(1.0);
                         }
                     });
 
