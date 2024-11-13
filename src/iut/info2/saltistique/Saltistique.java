@@ -167,6 +167,11 @@ public class Saltistique extends Application {
         launch();
     }
 
+    /**
+     * Retourne la scène principale de l'application, qui sert de fenêtre principale.
+     *
+     * @return la scène principale de l'application
+     */
     public static Stage getPrimaryStage() {
         return primaryStage;
     }

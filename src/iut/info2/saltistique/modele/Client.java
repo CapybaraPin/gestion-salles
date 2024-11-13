@@ -9,6 +9,8 @@ import java.net.Socket;
 /**
  * La classe Client permet de se connecter à un serveur pour recevoir et sauvegarder
  * plusieurs fichiers CSV. Chaque fichier est sauvegardé dans un répertoire spécifié.
+ *
+ * @author Jules Vialas, Néo Bécogné, Dorian Adams, Hugo Robles, Tom Gutierrez
  */
 public class Client implements Runnable{
 
@@ -24,8 +26,10 @@ public class Client implements Runnable{
     /** Taille du buffer de lecture (4096 octets) pour améliorer la lisibilité et la flexibilité */
     private static final int BUFFER_SIZE = 1024;
 
+    /** Progession de l'envoie des fichier */
     private double progression;
 
+    /** Taille Total d'un fichier */
     private long tailleTotale;
 
     /**

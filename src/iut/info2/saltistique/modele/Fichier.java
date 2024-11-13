@@ -14,6 +14,8 @@ import java.io.*;
  * Les fichiers pris en charge doivent avoir une extension .csv.
  * La classe gère également les erreurs courantes liées à l'ouverture,
  * la lecture et la fermeture des fichiers.
+ *
+ * @author Jules Vialas, Néo Bécogné, Dorian Adams, Hugo Robles, Tom Gutierrez
  */
 public class Fichier {
 

@@ -5,52 +5,64 @@ package iut.info2.saltistique.modele;
  * IUT de Rodez, pas de copyrights ni copyleft
  */
 
-import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
- * La classe Chiffrage fournit des méthodes pour le chiffrement
- * et le déchiffrement grace a un algorithme de vigenere
+ * La classe  Chiffrage fournit des méthodes pour chiffrer et déchiffrer des données
+ * en utilisant deux algorithmes de cryptographie,le chiffrement de Vigenère
+ * et l'échange de clés Diffie-Hellman.
+ *
+ * <p>Cette classe prend en charge le chiffrement et le déchiffrement de textes,
+ * en appliquant des algorithmes de cryptographie.
+ * Elle permet également de générer des clés sécurisées pour assurer la confidentialité des échanges de données.</p>
+ *
+ * <p>Les principales fonctionnalités incluent :</p>
+ * <ul>
+ *   <li>Chiffrement et déchiffrement de chaînes de caractères</li>
+ *   <li>Échange de clés sécurisé avec l'algorithme Diffie-Hellman</li>
+ * </ul>
+ *
+ * @author Jules Vialas, Néo Bécogné, Dorian Adams, Hugo Robles, Tom Gutierrez
  */
 public class Chiffrage {
 
 
-    // Longueur minimale et maximale d'une clé de chiffrement
+    /**Longueur minimale et maximale d'une clé de chiffrement*/
     private static final int LONGUEUR_CLE_MINIMUM = 40 ;
     private static final int LONGUEUR_CLE_MAXIMUM = 60 ;
 
-    // Alphabet personnalisé pouvant etre chiffré
+    /**Alphabet personnalisé pouvant etre chiffré*/
     public static String CUSTOM_ALPHABET = "abcdefghijklmnopqrstuvwxyzABCDEFGH"
             + "IJKLMNOPQRSTUVWXYZ&~\"#'({[-|`_\\^@)]}/*.!?,;:<>1234567890$% +=\n";
 
-    // Mapping des caractères de l'alphabet vers des entiers
-    public static final HashMap<Character, Integer> ALPAHABET_TO_INT
+    /**Mapping des caractères de l'alphabet vers des entiers*/
+    public static final HashMap<Character, Integer> ALPHABET_TO_INT
             = new HashMap<>();
 
-    // Mapping des entiers vers des caractères de l'alphabet
+    /**Mapping des entiers vers des caractères de l'alphabet*/
     public static final HashMap<Integer, Character> INT_TO_ALPHABET
             = new HashMap<>();
 
 
-    // Paramètres pour l'algorithme de Diffie-Hellman
+    /**Paramètres pour l'algorithme de Diffie-Hellman*/
     public static final int P = 8291;
     public static final int G = 4148;
     private static final int PUISSANCE_MINI = 5000 ;
     private static final int PUISSANCE_MAXI = 9999 ;
 
-    // Valeur partagée dans l'algorithme de Diffie-Hellman
+    /**Valeur partagée dans l'algorithme de Diffie-Hellman*/
     private static int gab = 0;
 
-    // Initialisation des mappings entre caractères et entiers
+    /**Initialisation des mappings entre caractères et entiers*/
     static {
 
         for (int i = 0; i < CUSTOM_ALPHABET.length(); i++) {
             char c = CUSTOM_ALPHABET.charAt(i);
-            ALPAHABET_TO_INT.put(c, i);
+            ALPHABET_TO_INT.put(c, i);
             INT_TO_ALPHABET.put(i, c);
         }
     }
-    // Nombre de lettres dans l'alphabet personnalisé
+    /**Nombre de lettres dans l'alphabet personnalisé*/
     final static int NOMBRE_LETTRE_ALPHABET = CUSTOM_ALPHABET.length();
 
 
@@ -87,7 +99,7 @@ public class Chiffrage {
         StringBuilder aCrypter = new StringBuilder();
         for (int i = 0; i < message.length(); i++) {
             char currentChar = message.charAt(i);
-            Integer messageI = ALPAHABET_TO_INT.get(currentChar);
+            Integer messageI = ALPHABET_TO_INT.get(currentChar);
 
             if (messageI == null) {
                 // Ignorer les caractères qui ne sont pas dans l'alphabet
@@ -96,7 +108,7 @@ public class Chiffrage {
             }
 
             // Valeur du caractère de la clé
-            int cleI = ALPAHABET_TO_INT.get(cle.charAt(i % cle.length()));
+            int cleI = ALPHABET_TO_INT.get(cle.charAt(i % cle.length()));
 
             char crypter = INT_TO_ALPHABET.get((messageI + cleI) % NOMBRE_LETTRE_ALPHABET);
             aCrypter.append(crypter);
@@ -116,7 +128,7 @@ public class Chiffrage {
         StringBuilder aCrypter = new StringBuilder();
         for (int i = 0; i < message.length(); i++) {
             char currentChar = message.charAt(i);
-            Integer messageI = ALPAHABET_TO_INT.get(currentChar);
+            Integer messageI = ALPHABET_TO_INT.get(currentChar);
 
             if (messageI == null) {
                 // Ignorer les caractères qui ne sont pas dans l'alphabet
@@ -125,7 +137,7 @@ public class Chiffrage {
             }
 
             // Valeur du caractère de la clé
-            int cleI = ALPAHABET_TO_INT.get(cle.charAt(i % cle.length()));
+            int cleI = ALPHABET_TO_INT.get(cle.charAt(i % cle.length()));
 
             int positionReelle = (messageI - cleI) % NOMBRE_LETTRE_ALPHABET;
             positionReelle = positionReelle < 0 ? positionReelle + NOMBRE_LETTRE_ALPHABET : positionReelle;
@@ -137,7 +149,7 @@ public class Chiffrage {
 
 
     /**
-     * Calcule le résultat de (a^exp) % modulo de manière efficace.
+     * Calcule le résultat de (a^exp) % modulo.
      *
      * @param a      La base.
      * @param exp    L'exposant.
