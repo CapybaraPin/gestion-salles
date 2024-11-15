@@ -441,6 +441,8 @@ public class ControleurConsulterDonnees extends Controleur {
             filtre.setEmployeFiltre(null);
             rafraichirTableaux();
         } else {
+            // TODO Récuperer le contenu du champ de saisi
+
             filtre.setEmployeFiltre(tableauEmployes.getSelectionModel().getSelectedItem());
             appliquerFiltres();
         }
