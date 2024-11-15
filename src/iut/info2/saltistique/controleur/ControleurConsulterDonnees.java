@@ -8,10 +8,7 @@
 package iut.info2.saltistique.controleur;
 
 import iut.info2.saltistique.Saltistique;
-import iut.info2.saltistique.modele.Activite;
-import iut.info2.saltistique.modele.Reservation;
-import iut.info2.saltistique.modele.Salle;
-import iut.info2.saltistique.modele.Utilisateur;
+import iut.info2.saltistique.modele.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -247,11 +244,14 @@ public class ControleurConsulterDonnees extends Controleur {
     private ObservableList<Activite> listeActivites;
     private ObservableList<Utilisateur> listeEmployes;
     private ObservableList<Reservation> listeReservations;
+    private final Utilisateur employeFiltre = null;
+    private Filtre filtre;
 
     /**
      * Initialise le contrôleur et configure les tableaux.
      */
     public void initialize() {
+        filtre = new Filtre();
         listeSalles = FXCollections.observableArrayList();
         listeActivites = FXCollections.observableArrayList();
         listeEmployes = FXCollections.observableArrayList();
@@ -424,10 +424,33 @@ public class ControleurConsulterDonnees extends Controleur {
     }
 
     /**
+     * Applique les filtres à l'aide de la classe Filtre et met à jour les tableaux.
+     */
+    private void appliquerFiltres() {
+        Map<String, ObservableList<?>> resultatsFiltres = filtre.appliquerFiltres(Saltistique.gestionDonnees.getReservations());
+
+        tableauReservations.setItems((ObservableList<Reservation>) resultatsFiltres.get("reservations"));
+        tableauSalles.setItems((ObservableList<Salle>) resultatsFiltres.get("salles"));
+        tableauActivites.setItems((ObservableList<Activite>) resultatsFiltres.get("activites"));
+        tableauEmployes.setItems((ObservableList<Utilisateur>) resultatsFiltres.get("utilisateurs"));
+    }
+
+    @FXML
+    private void filtrerParEmploye() {
+        if (filtre.getEmployeFiltre() != null) {
+            filtre.setEmployeFiltre(null);
+            rafraichirTableaux();
+        } else {
+            filtre.setEmployeFiltre(tableauEmployes.getSelectionModel().getSelectedItem());
+            appliquerFiltres();
+        }
+    }
+
+    /**
      * Gère la génération d'un rapport PDF
      */
     @FXML
-    public void clickGenererPDF() {
+    void clickGenererPDF() {
         //TODO
     }
 }

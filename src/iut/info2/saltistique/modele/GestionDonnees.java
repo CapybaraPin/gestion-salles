@@ -12,7 +12,6 @@ import iut.info2.saltistique.controleur.ControleurImporterReseau;
 import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.ArrayList;
@@ -770,4 +769,16 @@ public class GestionDonnees implements Serializable {
         return nb;
     }
 
+    public void setReservations(HashMap<Integer, Reservation> reservations) {
+        this.reservations = reservations;
+    }
+
+    public void setActivites(HashMap<Integer, Object> integerObjectHashMap) {
+    }
+
+    public void setSalles(HashMap<Integer, Object> integerObjectHashMap) {
+    }
+
+    public void setUtilisateurs(HashMap<Integer, Object> integerObjectHashMap) {
+    }
 }
