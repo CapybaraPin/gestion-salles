@@ -1,153 +1,212 @@
 package iut.info2.saltistique.modele;
 
-/*
- * Chiffrage.java 								18/10/2023
- * IUT de Rodez, pas de copyrights ni copyleft
- */
-
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.io.*;
+import java.security.SecureRandom;
 
 /**
- * La classe Chiffrage fournit des méthodes pour le chiffrement
- * et le déchiffrement grace a un algorithme de vigenere
+ * TODO : utilisation de BigInteger pour une meilleur protection
+ * @author Dorian ADAMS, Néo BECOGNE
  */
 public class Chiffrage {
 
+    private final int G = 4148;
+    private final int P = 8291;
 
-    // Longueur minimale et maximale d'une clé de chiffrement
-    private static final int LONGUEUR_CLE_MINIMUM = 40 ;
-    private static final int LONGUEUR_CLE_MAXIMUM = 60 ;
+    /** Clé commune calculée */
+    private int clePartager;
 
-    // Alphabet personnalisé pouvant etre chiffré
-    public static String CUSTOM_ALPHABET = "abcdefghijklmnopqrstuvwxyzABCDEFGH"
+    /** Clé privée calculée */
+    private int clePrivee;
+
+    /** Puissance minimal et maximal */
+    private final int PUISSANCE_MINI = 5000000;
+    private final int PUISSANCE_MAXI = 9999999;
+
+    private String cheminFichier;
+    private String cle_vigenere;
+
+    private static String CUSTOM_ALPHABET = "abcdefghijklmnopqrstuvwxyzABCDEFGH"
             + "IJKLMNOPQRSTUVWXYZ&~\"#'({[-|`_\\^@)]}/*.!?,;:<>1234567890$% +=\n";
 
-    // Mapping des caractères de l'alphabet vers des entiers
-    public static final HashMap<Character, Integer> ALPAHABET_TO_INT
-            = new HashMap<>();
-
-    // Mapping des entiers vers des caractères de l'alphabet
-    public static final HashMap<Integer, Character> INT_TO_ALPHABET
-            = new HashMap<>();
-
-
-    // Paramètres pour l'algorithme de Diffie-Hellman
-    public static final int P = 8291;
-    public static final int G = 4148;
-    private static final int PUISSANCE_MINI = 5000 ;
-    private static final int PUISSANCE_MAXI = 9999 ;
-
-    // Valeur partagée dans l'algorithme de Diffie-Hellman
-    private static int gab = 0;
-
-    // Initialisation des mappings entre caractères et entiers
-    static {
-
-        for (int i = 0; i < CUSTOM_ALPHABET.length(); i++) {
-            char c = CUSTOM_ALPHABET.charAt(i);
-            ALPAHABET_TO_INT.put(c, i);
-            INT_TO_ALPHABET.put(i, c);
-        }
-    }
-    // Nombre de lettres dans l'alphabet personnalisé
-    final static int NOMBRE_LETTRE_ALPHABET = CUSTOM_ALPHABET.length();
-
-
-
-    /**
-     * Méthode de génération de clé
-     * @return une cle de longueur comprise entre
-     * LONGUEUR_CLE_MINIMUM et LONGUEUR_CLE_MAXIMUM
-     * et comprenant uniquement des caractères de INT_TO_ALPHABET
-     */
-    public static String generationCle() {
-        int longueurCle = (int)(Math.random()*
-                (LONGUEUR_CLE_MAXIMUM + 1 - LONGUEUR_CLE_MINIMUM)
-                + LONGUEUR_CLE_MINIMUM);
-        StringBuilder cle = new StringBuilder();
-        for (int i = 0 ; i < longueurCle ; i++) {
-            char ajout = INT_TO_ALPHABET.get(
-                    (int)(Math.random()*NOMBRE_LETTRE_ALPHABET));
-
-            cle.append(ajout);
-        }
-        return cle.toString();
+    public Chiffrage(String cheminFichier) {
+        this.cheminFichier = cheminFichier;
+        this.clePrivee = modExponentiation(G, generateExponent(), P);
     }
 
+    /** Retourne le message crypter */
+    public String crypter() {
+        try {
+            String cheminFichierCrypte = cheminFichier.replace(".csv", "-c.csv");
+            StringBuilder contenu = new StringBuilder();
+            try (BufferedReader lecteur = new BufferedReader(new FileReader(cheminFichier))) {
+                String ligne;
+                while ((ligne = lecteur.readLine()) != null) {
+                    contenu.append(ligne).append("\n"); // Ajoute un saut de ligne après chaque ligne lue
+                }
+            }
+            String contenuFichier = contenu.toString();
 
-    /**
-     * Chiffre un message donné en utilisant une clé fournie.
-     *
-     * @param message Le message à chiffrer.
-     * @param cle     La clé de chiffrement.
-     * @return Le message chiffré.
-     */
-    public static String chiffrement(String message, String cle) {
-        StringBuilder aCrypter = new StringBuilder();
-        for (int i = 0; i < message.length(); i++) {
-            char currentChar = message.charAt(i);
-            Integer messageI = ALPAHABET_TO_INT.get(currentChar);
-
-            if (messageI == null) {
-                // Ignorer les caractères qui ne sont pas dans l'alphabet
-                aCrypter.append(currentChar);
-                continue; // Passe à la prochaine itération
+            try (BufferedWriter writer = new BufferedWriter(new FileWriter(cheminFichierCrypte))) {
+                System.out.println(contenuFichier);
+                StringBuilder ligneCrypter = new StringBuilder();
+                int k = 0;
+                for (int i = 0; i < contenuFichier.length(); i++) {
+                    int valeur_m = CUSTOM_ALPHABET.indexOf(contenuFichier.charAt(i));
+                    int valeur_c = CUSTOM_ALPHABET.indexOf(cle_vigenere.charAt(k));
+                    if (valeur_m == -1) { // Caractère non trouvé dans l'alphabet
+                        ligneCrypter.append(contenuFichier.charAt(i)); // Ajout direct du caractère non crypté
+                    } else {
+                        if (k == cle_vigenere.length() - 1) {
+                            k = 0;
+                        } else {
+                            k++;
+                        }
+                        int valeur_total = valeur_m + valeur_c;
+                        ligneCrypter.append(CUSTOM_ALPHABET.charAt(valeur_total % CUSTOM_ALPHABET.length()));
+                    }
+                }
+                System.out.println(ligneCrypter.toString());
+                writer.write(ligneCrypter.toString());
             }
 
-            // Valeur du caractère de la clé
-            int cleI = ALPAHABET_TO_INT.get(cle.charAt(i % cle.length()));
 
-            char crypter = INT_TO_ALPHABET.get((messageI + cleI) % NOMBRE_LETTRE_ALPHABET);
-            aCrypter.append(crypter);
+            // Utilisation de try-with-resources pour assurer la fermeture du BufferedWriter
+            /*try (BufferedWriter writer = new BufferedWriter(new FileWriter(cheminFichierCrypte))) {
+                for (String line : lignes) {
+                    System.out.println(line);
+                    StringBuilder ligneCrypter = new StringBuilder();
+                    int k = 0;
+                    for (int i = 0; i < line.length(); i++) {
+                        int valeur_m = CUSTOM_ALPHABET.indexOf(line.charAt(i));
+                        int valeur_c = CUSTOM_ALPHABET.indexOf(cle_vigenere.charAt(k));
+                        if (valeur_m == -1) { // Caractère non trouvé dans l'alphabet
+                            ligneCrypter.append(line.charAt(i)); // Ajout direct du caractère non crypté
+                        } else {
+                            if (k == cle_vigenere.length() - 1) {
+                                k = 0;
+                            } else {
+                                k++;
+                            }
+                            int valeur_total = valeur_m + valeur_c;
+                            ligneCrypter.append(CUSTOM_ALPHABET.charAt(valeur_total % CUSTOM_ALPHABET.length()));
+                        }
+                    }
+                    System.out.println(ligneCrypter.toString());
+                    writer.write(ligneCrypter.toString());
+                    writer.newLine();
+                }
+            }*/
+
+            return cheminFichierCrypte;
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
-        return aCrypter.toString();
     }
 
+    /** Retourne le message décrypter */
+    public String decrypter() {
+        try {
+            String cheminFichierDecrypte = cheminFichier.replace("-c.csv", "-dc.csv");
+            StringBuilder contenu = new StringBuilder();
+            try (BufferedReader lecteur = new BufferedReader(new FileReader(cheminFichier))) {
+                String ligne;
+                while ((ligne = lecteur.readLine()) != null) {
+                    contenu.append(ligne).append("\n"); // Ajoute un saut de ligne après chaque ligne lue
+                }
+            }
+            String contenuFichier = contenu.toString();
 
-    /**
-     * Déchiffre un message donné en utilisant une clé fournie.
-     *
-     * @param message Le message à déchiffrer.
-     * @param cle     La clé de déchiffrement.
-     * @return Le message déchiffré.
-     */
-    public static String dechiffrement(String message, String cle) {
-        StringBuilder aCrypter = new StringBuilder();
-        for (int i = 0; i < message.length(); i++) {
-            char currentChar = message.charAt(i);
-            Integer messageI = ALPAHABET_TO_INT.get(currentChar);
+            try (BufferedWriter writer = new BufferedWriter(new FileWriter(cheminFichierDecrypte))) {
+                StringBuilder ligneDecrypter = new StringBuilder();
+                int k = 0;
+                for (int i = 0; i < contenuFichier.length()-1; i++) {
+                    int valeur_m = CUSTOM_ALPHABET.indexOf(contenuFichier.charAt(i));
+                    int valeur_c = CUSTOM_ALPHABET.indexOf(cle_vigenere.charAt(k));
 
-            if (messageI == null) {
-                // Ignorer les caractères qui ne sont pas dans l'alphabet
-                aCrypter.append(currentChar);
-                continue; // Passe à la prochaine itération
+                    // Vérifie si le caractère est dans l'alphabet
+                    if (valeur_m == -1) {
+                        ligneDecrypter.append(contenuFichier.charAt(i)); // Ajoute le caractère non crypté
+                    } else {
+                        if (k == cle_vigenere.length() - 1) {
+                            k = 0;
+                        } else {
+                            k++;
+                        }
+
+                        int valeur_total = (valeur_m - valeur_c) % CUSTOM_ALPHABET.length();
+                        if (valeur_total < 0) {
+                            valeur_total += CUSTOM_ALPHABET.length(); // Corrige pour éviter les valeurs négatives
+                        }
+
+                        ligneDecrypter.append(CUSTOM_ALPHABET.charAt(valeur_total));
+                    }
+                }
+
+                writer.write(ligneDecrypter.toString());
             }
 
-            // Valeur du caractère de la clé
-            int cleI = ALPAHABET_TO_INT.get(cle.charAt(i % cle.length()));
+            // Utilisation de try-with-resources pour assurer la fermeture du BufferedWriter
+            /*try (BufferedWriter writer = new BufferedWriter(new FileWriter(cheminFichierDecrypte))) {
+                for (String line : lignes) {
+                    StringBuilder ligneDecrypter = new StringBuilder();
+                    int k = 0;
+                    for (int i = 0; i < line.length(); i++) {
+                        int valeur_m = CUSTOM_ALPHABET.indexOf(line.charAt(i));
+                        int valeur_c = CUSTOM_ALPHABET.indexOf(cle_vigenere.charAt(k));
 
-            int positionReelle = (messageI - cleI) % NOMBRE_LETTRE_ALPHABET;
-            positionReelle = positionReelle < 0 ? positionReelle + NOMBRE_LETTRE_ALPHABET : positionReelle;
-            char crypter = INT_TO_ALPHABET.get(positionReelle);
-            aCrypter.append(crypter);
+                        // Vérifie si le caractère est dans l'alphabet
+                        if (valeur_m == -1) {
+                            ligneDecrypter.append(line.charAt(i)); // Ajoute le caractère non crypté
+                        } else {
+                            if (k == cle_vigenere.length() - 1) {
+                                k = 0;
+                            } else {
+                                k++;
+                            }
+
+                            int valeur_total = (valeur_m - valeur_c) % CUSTOM_ALPHABET.length();
+                            if (valeur_total < 0) {
+                                valeur_total += CUSTOM_ALPHABET.length(); // Corrige pour éviter les valeurs négatives
+                            }
+
+                            ligneDecrypter.append(CUSTOM_ALPHABET.charAt(valeur_total));
+                        }
+                    }
+
+                    writer.write(ligneDecrypter.toString());
+                    writer.newLine();
+                }
+            }*/
+
+            return cheminFichierDecrypte;
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
-        return aCrypter.toString();
     }
 
+    public void setCle_vigenere(String cleVigenere) {
+        this.cle_vigenere = cleVigenere;
+    }
 
     /**
-     * Calcule le résultat de (a^exp) % modulo de manière efficace.
-     *
-     * @param a      La base.
-     * @param exp    L'exposant.
+     * Génère un exposant aléatoire dans la plage définie.
+     * @return Un exposant aléatoire.
+     */
+    private int generateExponent() {
+        return new SecureRandom().nextInt(PUISSANCE_MAXI - PUISSANCE_MINI + 1) + PUISSANCE_MINI;
+    }
+
+    /**
+     * Calcule (a^exp) % modulo de manière efficace en utilisant l'exponentiation modulaire.
+     * Utilisé pour générer des clés partagées en Diffie-Hellman.
+     * @param a La base.
+     * @param exp L'exposant.
      * @param modulo Le modulo.
      * @return Le résultat de (a^exp) % modulo.
      */
-    public static int exposantModulo(int a, int exp, int modulo) {
+    private int modExponentiation(int a, int exp, int modulo) {
         int result = 1;
         a = a % modulo;
-
         while (exp > 0) {
             if (exp % 2 == 1) {
                 result = (result * a) % modulo;
@@ -155,58 +214,36 @@ public class Chiffrage {
             exp = exp / 2;
             a = (a * a) % modulo;
         }
-
         return result;
     }
 
-    /**
-     * @return Une puissance aléatoire  dans la plage spécifiée
-     * [PUISSANCE_MINI, PUISSANCE_MAXI].
-     */
-    public static int genererPuissance() {
-        return (int)(Math.random()*
-                (PUISSANCE_MAXI + 1 - PUISSANCE_MINI)+PUISSANCE_MINI);
+    public int getClePrivee() {
+        return clePrivee;
+    }
+
+    public int getClePartager() {
+        return clePartager;
+    }
+
+    public void calculeClePartager(int cle) {
+        this.clePartager = modExponentiation(G, clePrivee * cle, P);
 
     }
 
     /**
-     * Génère une clé secrète basée sur l'algorithme
-     * d'échange de clés Diffie-Hellman.
-     *
-     * @return La clé secrète générée.
+     * Génère une clé secrète basée sur Diffie-Hellman en utilisant gab.
+     * @return La clé Diffie-Hellman générée.
      */
-    public static String cleDepuisDiffie() {
-        String gabString = "" + gab;
-        int actuelle ;
-        StringBuilder cle = new StringBuilder();
-        for (int  i  = 0 ; i < gabString.length() ; i++ ) {
-            for (int j = 0 ; j < gabString.length() ; j++) {
-                actuelle = Integer.parseInt("" + gabString.charAt(i)
-                        + gabString.charAt(j));
-                actuelle = actuelle%NOMBRE_LETTRE_ALPHABET;
-                cle.append(INT_TO_ALPHABET.get(actuelle));
-            }
+    public void generateKeyFromDiffie() {
+        StringBuilder secretKey = new StringBuilder();
+        String gabString = String.valueOf(clePartager);
+        System.out.println(gabString);
+
+        for (int i = 0; i < gabString.length(); i++) {
+            int index = Character.getNumericValue(gabString.charAt(i)) % CUSTOM_ALPHABET.length();
+            secretKey.append(CUSTOM_ALPHABET.charAt(index));
         }
-        return cle.toString();
+        this.cle_vigenere = secretKey.toString();
     }
 
-    /**
-     * Définit la valeur de la clé partagée (gab)
-     * utilisée dans l'échange de clés Diffie-Hellman.
-     *
-     * @param nouveau La nouvelle valeur de la clé partagée.
-     */
-    public static void setGab(int nouveau) {
-        gab = nouveau;
-    }
-
-    /**
-     * Obtient la valeur de la clé partagée (gab)
-     * utilisée dans l'échange de clés Diffie-Hellman.
-     *
-     * @return La valeur de la clé partagée.
-     */
-    public static int getGab() {
-        return gab;
-    }
 }
