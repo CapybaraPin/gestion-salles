@@ -16,11 +16,23 @@ import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.shape.Line;
-
 import java.time.LocalDateTime;
 import java.util.Map;
+import com.itextpdf.kernel.pdf.PdfDocument;
+import com.itextpdf.layout.Document;
+import com.itextpdf.layout.element.Table;
+import com.itextpdf.layout.element.Cell;
+import java.io.File;
+import java.io.IOException;
+import javafx.stage.FileChooser;
+import javafx.stage.Stage;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.ButtonType;
+import java.awt.Desktop;
 
 /**
  * Le contrôleur de la vue permettant de consulter les données.
@@ -233,6 +245,7 @@ public class ControleurConsulterDonnees extends Controleur {
      */
     @FXML
     public TableColumn<Salle, Boolean> Imprimante;
+    public TextField valeurFiltre;
 
     /**
      * Listes observables contenant les objets de chaques types.
@@ -288,8 +301,6 @@ public class ControleurConsulterDonnees extends Controleur {
      */
     void initialiserTableaux() {
         for (Map.Entry<Integer, Salle> entry : Saltistique.gestionDonnees.getSalles().entrySet()) {
-            //TODO remplacer true par vrai
-            //TODO remplacer false par faux
             listeSalles.add(entry.getValue());
         }
         for (Map.Entry<Integer, Activite> entry : Saltistique.gestionDonnees.getActivites().entrySet()) {
@@ -436,23 +447,162 @@ public class ControleurConsulterDonnees extends Controleur {
     }
 
     @FXML
-    private void filtrerParEmploye() {
-        if (filtre.getEmployeFiltre() != null) {
+    private void clickFiltrer() {
+        String texteFiltre = valeurFiltre.getText().trim();
+        if (texteFiltre.isEmpty()) {
             filtre.setEmployeFiltre(null);
             rafraichirTableaux();
-        } else {
-            // TODO Récuperer le contenu du champ de saisi
-
-            filtre.setEmployeFiltre(tableauEmployes.getSelectionModel().getSelectedItem());
+            return;
+        }
+        Utilisateur employeTrouve = null;
+        for (Reservation reservation : tableauReservations.getItems()) {
+            Utilisateur utilisateur = reservation.getUtilisateur();
+            String[] motsFiltre = texteFiltre.toLowerCase().split(" ");
+            boolean trouve = true;
+            for (String mot : motsFiltre) {
+                if (!(utilisateur.getPrenom().toLowerCase().contains(mot) || utilisateur.getNom().toLowerCase().contains(mot))) {
+                    trouve = false;
+                    break;
+                }
+            }
+            if (trouve) {
+                employeTrouve = utilisateur;
+                break;
+            }
+        }
+        if (employeTrouve != null) {
+            filtre.setEmployeFiltre(employeTrouve);
             appliquerFiltres();
+        } else {
+            System.out.println("Cet employé ne possède aucune réservation");
         }
     }
 
-    /**
-     * Gère la génération d'un rapport PDF
-     */
+
     @FXML
     void clickGenererPDF() {
-        //TODO
+        // Créer un FileChooser pour permettre à l'utilisateur de choisir où enregistrer le fichier PDF
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Fichiers PDF", "*.pdf"));
+        File fichier = fileChooser.showSaveDialog(new Stage());
+
+        // Vérifier que le fichier n'est pas null (l'utilisateur a choisi un emplacement)
+        if (fichier != null) {
+            // Créer un PdfDocument pour générer le PDF
+            try (PdfDocument pdfDocument = new PdfDocument(new com.itextpdf.kernel.pdf.PdfWriter(fichier))) {
+                // Créer un document PDF
+                Document document = new Document(pdfDocument);
+
+                // Ajouter un titre au document
+                document.add(new com.itextpdf.layout.element.Paragraph("Rapport de données"));
+
+                // Ajouter les tableaux dans le document
+                ajouterTableauReservations(document);
+                ajouterTableauActivites(document);
+                ajouterTableauEmployes(document);
+                ajouterTableauSalles(document);
+
+                // Fermer le document
+                document.close();
+
+                // Afficher un message de confirmation
+                Alert alert = new Alert(AlertType.INFORMATION, "Le PDF a été généré avec succès!", ButtonType.OK);
+                alert.showAndWait();
+
+                // Ouvrir automatiquement le fichier PDF généré
+                Desktop.getDesktop().open(fichier);
+
+            } catch (IOException e) {
+                // Gestion des erreurs
+                Alert alert = new Alert(AlertType.ERROR, "Erreur lors de la génération du PDF: " + e.getMessage(), ButtonType.OK);
+                alert.showAndWait();
+            }
+        }
     }
+
+    private void ajouterTableauReservations(Document document) {
+        // Créer une table pour les réservations
+        Table table = new Table(new float[]{1, 3, 3, 3, 2, 3, 3});
+        table.addCell(new Cell().add(new com.itextpdf.layout.element.Paragraph("Identifiant")));
+        table.addCell(new Cell().add(new com.itextpdf.layout.element.Paragraph("Date de début")));
+        table.addCell(new Cell().add(new com.itextpdf.layout.element.Paragraph("Date de fin")));
+        table.addCell(new Cell().add(new com.itextpdf.layout.element.Paragraph("Description")));
+        table.addCell(new Cell().add(new com.itextpdf.layout.element.Paragraph("Salle")));
+        table.addCell(new Cell().add(new com.itextpdf.layout.element.Paragraph("Activité")));
+        table.addCell(new Cell().add(new com.itextpdf.layout.element.Paragraph("Utilisateur")));
+
+        for (Reservation reservation : listeReservations) {
+            table.addCell(reservation.getIdentifiant());
+            table.addCell(reservation.getDateDebut().toString());
+            table.addCell(reservation.getDateFin().toString());
+            table.addCell(reservation.getDescription());
+            table.addCell(reservation.getSalle().getNom());
+            table.addCell(reservation.getActivite().getNom());
+            table.addCell(reservation.getUtilisateur().getNom() + " " + reservation.getUtilisateur().getPrenom());
+        }
+
+        // Ajouter la table de réservations au document
+        document.add(new com.itextpdf.layout.element.Paragraph("Réservations"));
+        document.add(table);
+    }
+
+    private void ajouterTableauActivites(Document document) {
+        // Créer une table pour les activités
+        Table table = new Table(new float[]{1, 3});
+        table.addCell(new Cell().add(new com.itextpdf.layout.element.Paragraph("Identifiant")));
+        table.addCell(new Cell().add(new com.itextpdf.layout.element.Paragraph("Nom")));
+
+        for (Activite activite : listeActivites) {
+            table.addCell(activite.getIdentifiant());
+            table.addCell(activite.getNom());
+        }
+
+        // Ajouter la table des activités au document
+        document.add(new com.itextpdf.layout.element.Paragraph("Activités"));
+        document.add(table);
+    }
+
+    private void ajouterTableauEmployes(Document document) {
+        // Créer une table pour les employés
+        Table table = new Table(new float[]{1, 3, 3, 3});
+        table.addCell(new Cell().add(new com.itextpdf.layout.element.Paragraph("Identifiant")));
+        table.addCell(new Cell().add(new com.itextpdf.layout.element.Paragraph("Nom")));
+        table.addCell(new Cell().add(new com.itextpdf.layout.element.Paragraph("Prénom")));
+        table.addCell(new Cell().add(new com.itextpdf.layout.element.Paragraph("Téléphone")));
+
+        for (Utilisateur employe : listeEmployes) {
+            table.addCell(employe.getIdentifiant());
+            table.addCell(employe.getNom());
+            table.addCell(employe.getPrenom());
+            table.addCell(employe.getNumeroTelephone());
+        }
+
+        // Ajouter la table des employés au document
+        document.add(new com.itextpdf.layout.element.Paragraph("Employés"));
+        document.add(table);
+    }
+
+    private void ajouterTableauSalles(Document document) {
+        // Créer une table pour les salles
+        Table table = new Table(new float[]{1, 3, 2, 2, 2, 2});
+        table.addCell(new Cell().add(new com.itextpdf.layout.element.Paragraph("Identifiant")));
+        table.addCell(new Cell().add(new com.itextpdf.layout.element.Paragraph("Nom")));
+        table.addCell(new Cell().add(new com.itextpdf.layout.element.Paragraph("Capacité")));
+        table.addCell(new Cell().add(new com.itextpdf.layout.element.Paragraph("Vidéo Projecteur")));
+        table.addCell(new Cell().add(new com.itextpdf.layout.element.Paragraph("Écran XXL")));
+        table.addCell(new Cell().add(new com.itextpdf.layout.element.Paragraph("Ordinateurs")));
+
+        for (Salle salle : listeSalles) {
+            table.addCell(salle.getIdentifiant());
+            table.addCell(salle.getNom());
+            table.addCell(String.valueOf(salle.getCapacite()));
+            table.addCell(String.valueOf(salle.isVideoProjecteur()));
+            table.addCell(String.valueOf(salle.isEcranXXL()));
+            table.addCell(String.valueOf(salle.getOrdinateurs()));
+        }
+
+        document.add(new com.itextpdf.layout.element.Paragraph("Salles"));
+        document.add(table);
+    }
+
 }

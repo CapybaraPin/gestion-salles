@@ -765,20 +765,6 @@ public class GestionDonnees implements Serializable {
         if (!nbStr.isEmpty()) {
             nb = Integer.parseInt(nbStr);
         }
-
         return nb;
-    }
-
-    public void setReservations(HashMap<Integer, Reservation> reservations) {
-        this.reservations = reservations;
-    }
-
-    public void setActivites(HashMap<Integer, Object> integerObjectHashMap) {
-    }
-
-    public void setSalles(HashMap<Integer, Object> integerObjectHashMap) {
-    }
-
-    public void setUtilisateurs(HashMap<Integer, Object> integerObjectHashMap) {
     }
 }

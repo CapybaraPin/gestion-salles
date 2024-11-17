@@ -5,10 +5,10 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.Cursor?>
 <?import javafx.scene.control.Button?>
-<?import javafx.scene.control.CheckBox?>
 <?import javafx.scene.control.Separator?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.HBox?>
@@ -130,15 +130,27 @@
             <Line fx:id="SelectionActivites" endX="66.0" stroke="#3574f0" strokeLineCap="ROUND" strokeWidth="2.0" visible="false" />
             <Line fx:id="SelectionReservations" endX="93.0" stroke="#3574f0" strokeLineCap="ROUND" strokeWidth="2.0" visible="false" />
          </HBox>
-         <HBox prefHeight="28.0" prefWidth="182.0">
+         <HBox alignment="CENTER" prefHeight="28.0" prefWidth="182.0">
             <padding>
                <Insets right="30.0" top="30.0" />
             </padding>
-            <CheckBox mnemonicParsing="false" onAction="#filtrerParEmploye" text="Filtrer par employé">
+            <TextField fx:id="valeurFiltre" alignment="CENTER" maxHeight="28.0" maxWidth="136.0" minHeight="28.0" minWidth="136.0" prefHeight="28.0" prefWidth="136.0" promptText="Prénom Nom" styleClass="input-default" />
+            <Button maxHeight="28.0" maxWidth="73.0" minHeight="28.0" minWidth="73.0" mnemonicParsing="false" onAction="#clickFiltrer" prefHeight="28.0" prefWidth="73.0" styleClass="btn-primary" text="Filtrer" textFill="WHITE">
+               <font>
+                  <Font size="13.0" />
+               </font>
                <HBox.margin>
-                  <Insets left="25.0" />
+                  <Insets left="15.0" />
                </HBox.margin>
-            </CheckBox>
+            </Button>
+            <Button maxHeight="28.0" maxWidth="161.0" minHeight="28.0" minWidth="73.0" mnemonicParsing="false" onAction="#clickGenererPDF" prefHeight="28.0" prefWidth="161.0" styleClass="btn-primary" text="Générer un rapport PDF" textFill="WHITE">
+               <font>
+                  <Font size="13.0" />
+               </font>
+               <HBox.margin>
+                  <Insets left="500.0" />
+               </HBox.margin>
+            </Button>
          </HBox>
          <StackPane prefHeight="485.0" prefWidth="1274.0">
             <VBox.margin>
