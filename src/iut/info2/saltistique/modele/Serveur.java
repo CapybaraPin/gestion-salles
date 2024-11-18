@@ -5,6 +5,7 @@
 package iut.info2.saltistique.modele;
 
 import java.io.*;
+import java.math.BigInteger;
 import java.net.ServerSocket;
 import java.net.Socket;
 
@@ -81,6 +82,7 @@ public class Serveur implements Runnable {
 
             // Envoie le nombre total de fichiers à envoyer
             dos.writeInt(fichiersCSV.length);
+            System.out.println("Envoie du nombre de fichier envoyée");
 
             // Envoie de la taille totale des fichiers
             long tailleTotale = 0;
@@ -89,10 +91,11 @@ public class Serveur implements Runnable {
             }
 
             dos.writeLong(tailleTotale);
+            System.out.println("Taille envoyer ");
 
             // Envoie chaque fichier individuellement
             for (Fichier fichier : fichiersCSV) {
-                envoyerFichier(dos, fichier);
+                envoyerFichier(dos, fichier, clientSocket);
             }
         } catch (IOException e) {
             System.err.println("Erreur lors de l'envoi des fichiers au client : " + e.getMessage());
@@ -106,12 +109,33 @@ public class Serveur implements Runnable {
      * @param fichier le fichier à envoyer.
      * @throws IOException si une erreur de lecture/écriture se produit.
      */
-    private void envoyerFichier(DataOutputStream dos, Fichier fichier) throws IOException {
-        File fichierExploite = fichier.getFichierExploite();
-        dos.writeUTF(fichierExploite.getName());
-        dos.writeLong(fichierExploite.length());
-
+    private void envoyerFichier(DataOutputStream dos, Fichier fichier, Socket clientSocket) throws IOException {
         try{
+            Chiffrage chiffrage = new Chiffrage(fichier.getFichierExploite().getAbsolutePath());
+            // Envoi d'un BigInteger
+            BigInteger bigIntToSend = chiffrage.getClePrivee();
+            dos.writeInt(bigIntToSend.toByteArray().length);
+            dos.write(bigIntToSend.toByteArray());
+            dos.flush();
+            System.out.println("BigInteger envoyé au client.");
+
+            //Reception d'un BigInteger
+            DataInputStream dis = new DataInputStream(clientSocket.getInputStream());
+            int lenght = dis.readInt();
+            byte[] bytes = new byte[lenght];
+            dis.readFully(bytes);
+            BigInteger bigIntReceived = new BigInteger(bytes);
+            System.out.println("BigInteger reçu du serveur : " + bigIntReceived);
+
+            chiffrage.calculeClePartager(bigIntReceived);
+            chiffrage.generateKeyFromDiffie();
+
+            String cheminFichierCrypter = chiffrage.crypter();
+
+            File fichierExploite = new File(cheminFichierCrypter);
+            dos.writeUTF(fichierExploite.getName());
+            dos.writeLong(fichierExploite.length());
+
             FileInputStream fis = new FileInputStream(fichierExploite);
             BufferedInputStream bis = new BufferedInputStream(fis);
 
@@ -122,9 +146,11 @@ public class Serveur implements Runnable {
             }
             dos.flush(); // Assure l'envoi complet du fichier
             System.out.println("Fichier envoyé : " + fichierExploite.getAbsolutePath());
+            fis.close();
+            fichierExploite.delete();
 
         } catch (IOException e) {
-            System.err.println("Erreur lors de l'envoi du fichier " + fichierExploite.getName() + " : " + e.getMessage());
+            System.err.println("Erreur lors de l'envoi du fichier " + fichier.getFichierExploite().getName() + " : " + e.getMessage());
         }
     }
 

@@ -40,6 +40,11 @@ public class Chiffrage {
         //System.out.println(clePrivee);
     }
 
+    public Chiffrage() {
+        BigInteger exposant = generateExponent();
+        this.clePrivee = modExponentiation(G, exposant, P);
+    }
+
     /** Retourne le message crypté */
     public String crypter() {
         try {
@@ -163,5 +168,9 @@ public class Chiffrage {
             secretKey.append(CUSTOM_ALPHABET.charAt(index));
         }
         this.cle_vigenere = secretKey.toString();
+    }
+
+    public void setCheminFichier(String cheminFichier) {
+        this.cheminFichier = cheminFichier;
     }
 }
