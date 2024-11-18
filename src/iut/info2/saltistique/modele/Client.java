@@ -75,7 +75,7 @@ public class Client implements Runnable{
             //Envoi d'un BigInteger
             BufferedOutputStream boss = new BufferedOutputStream(socket.getOutputStream());
             DataOutputStream dos = new DataOutputStream(boss);
-            BigInteger bigIntToSend = chiffrage.getClePrivee();
+            BigInteger bigIntToSend = chiffrage.getClePublic();
             dos.writeInt(bigIntToSend.toByteArray().length);
             dos.write(bigIntToSend.toByteArray());
             dos.flush();
