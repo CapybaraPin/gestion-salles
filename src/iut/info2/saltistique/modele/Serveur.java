@@ -109,7 +109,7 @@ public class Serveur implements Runnable {
         try{
             Chiffrage chiffrage = new Chiffrage(fichier.getFichierExploite().getAbsolutePath());
             // Envoi d'un BigInteger
-            BigInteger bigIntToSend = chiffrage.getClePrivee();
+            BigInteger bigIntToSend = chiffrage.getClePublic();
             dos.writeInt(bigIntToSend.toByteArray().length);
             dos.write(bigIntToSend.toByteArray());
             dos.flush();
