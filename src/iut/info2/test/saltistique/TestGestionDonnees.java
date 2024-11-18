@@ -2,16 +2,12 @@ package iut.info2.test.saltistique;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import iut.info2.saltistique.modele.Fichier;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-import iut.info2.saltistique.modele.GestionDonnees;
-
 import java.io.File;
 import java.io.IOException;
-import java.io.StringReader;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 

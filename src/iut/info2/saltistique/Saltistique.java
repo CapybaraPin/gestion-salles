@@ -4,7 +4,6 @@
  */
 package iut.info2.saltistique;
 
-import iut.info2.saltistique.modele.GestionDonnees;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
