@@ -977,6 +977,10 @@ public class Importation {
         return nb;
     }
 
+    /**
+     * Récupère les instances de fichiers
+     * @return les instances de fichiers
+     */
     public Fichier[] getFichiers() {
         return fichiers;
     }

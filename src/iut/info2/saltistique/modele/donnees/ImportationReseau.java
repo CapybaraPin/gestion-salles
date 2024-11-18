@@ -4,7 +4,6 @@
  */
 package iut.info2.saltistique.modele.donnees;
 
-import iut.info2.saltistique.Saltistique;
 import iut.info2.saltistique.modele.Client;
 
 import java.io.File;
@@ -14,29 +13,38 @@ import java.net.UnknownHostException;
 import java.nio.file.Files;
 
 /**
+ * Classe permettant l'importation de données via une connexion réseau.
  *
+ * <p>Elle se connecte à un serveur distant pour recevoir des fichiers de données,
+ * les sauvegarde localement, puis les traite via la classe parente {@link Importation}.</p>
  */
 public class ImportationReseau extends Importation {
 
-    /** Dossier des sources des fichiers */
+    /** Chemin vers le dossier des fichiers sources. */
     private static final String DOSSIER_SOURCES = "src/ressources/fichiers";
 
-    /** Dossier de sauvegarde */
+    /** Répertoire où les fichiers importés sont sauvegardés. */
     private File dossierSauvegarde;
 
-    /** Adresse IP du serveur d'importation */
+    /** Adresse IP du serveur d'importation. */
     private InetAddress host;
 
-    /** Port du serveur d'importation */
+    /** Port du serveur d'importation. */
     private int port;
 
-    /** Client permettant la connexion au socket */
+    /** Client permettant la communication via un socket. */
     private Client client;
 
     /**
-     * Constructeur d'importation des données via le réseau
-     * @param host Adresse IP du serveur d'importation
-     * @param port Port du serveur d'importation
+     * Constructeur de la classe ImportationReseau.
+     * Initialise la connexion réseau, vérifie la validité des paramètres,
+     * et lance l'importation des données.
+     *
+     * @param host Adresse IP du serveur d'importation (au format chaîne).
+     * @param port Port du serveur d'importation (doit être entre 1024 et 65535).
+     * @param donnees Instance de {@link GestionDonnees} pour traiter les fichiers importés.
+     * @throws IOException Si une erreur survient lors de la gestion des fichiers locaux.
+     * @throws IllegalArgumentException Si l'adresse IP ou le port sont invalides.
      */
     public ImportationReseau(String host, int port, GestionDonnees donnees) throws IOException {
         super(donnees);
@@ -49,7 +57,6 @@ public class ImportationReseau extends Importation {
             throw new IllegalArgumentException("Adresse IP Invalide : L'adresse IP du serveur ne peut pas être vide.");
         }
 
-        // Vérification que l'adresse IP est valide (sous le bon format)
         try {
             this.host = InetAddress.getByName(host);
         } catch (UnknownHostException e) {
@@ -59,8 +66,7 @@ public class ImportationReseau extends Importation {
         this.port = port;
         this.dossierSauvegarde = new File(DOSSIER_SOURCES);
 
-        // Vérification que le dossier des sources est vide
-        if (!sourceEstVide()){
+        if (!sourceEstVide()) {
             viderSources();
         }
 
@@ -68,24 +74,22 @@ public class ImportationReseau extends Importation {
     }
 
     /**
-     * Gère toute la connexion au client
-     * et le transfert de données.
+     * Initialise la connexion avec le client en utilisant l'adresse IP et le port fournis.
+     * La connexion est gérée dans un thread distinct.
      */
-    private void connexionClient(){
+    private void connexionClient() {
         System.out.println("Connexion avec le client...");
-
         String adresseIp = host.toString();
-        System.out.println(host.toString());
-
-        client = new Client(adresseIp.toString().replace("/", ""), port);
+        client = new Client(adresseIp.replace("/", ""), port);
         Thread clientThread = new Thread(client);
         clientThread.start();
     }
 
     /**
-     * Récupère les données transmises par le client dans le dossier
-     * de source, et l'envoi à la classe {@link Importation} d'importation
-     * via les fichiers.
+     * Lance l'importation des données transmises par le serveur distant.
+     * Vérifie la présence des fichiers reçus et les transmet à la classe parente {@link Importation}.
+     *
+     * @throws IOException Si une erreur survient lors de la gestion des fichiers locaux.
      */
     private void importationDonnees() throws IOException {
         System.out.println("Importation des données via le client...");
@@ -94,7 +98,7 @@ public class ImportationReseau extends Importation {
         File[] fichiersExistants = dossierSauvegarde.listFiles();
         String[] cheminFichiers = new String[4];
 
-        if (sourceEstVide()){
+        if (sourceEstVide()) {
             for (int i = 0; i < 4; i++) {
                 cheminFichiers[i] = fichiersExistants[i].getAbsolutePath();
             }
@@ -103,21 +107,19 @@ public class ImportationReseau extends Importation {
     }
 
     /**
-     * Vérifie que le dossier source est vide.
-     * <ul>
-     *      <li>Vrai, si le dossier de sources est vide</li>
-     *      <li>Faux, si le dossier de sources est non vide</li>
-     * </ul>
-     * @return boolean
+     * Vérifie si le dossier source contenant les fichiers est vide.
+     *
+     * @return {@code true} si le dossier contient des fichiers, sinon {@code false}.
      */
-    private boolean sourceEstVide(){
+    private boolean sourceEstVide() {
         File[] fichiersExistants = dossierSauvegarde.listFiles();
         return fichiersExistants != null && fichiersExistants.length > 0;
     }
 
     /**
-     * Vide le dossier de sources s'il y a encore
-     * d'anciens fichiers dans celui-ci.
+     * Vide le dossier source en supprimant tous les fichiers qu'il contient.
+     *
+     * @throws IOException Si un fichier ne peut pas être supprimé.
      */
     private void viderSources() throws IOException {
         File[] fichiersExistants = dossierSauvegarde.listFiles();
@@ -127,7 +129,7 @@ public class ImportationReseau extends Importation {
                 try {
                     Files.deleteIfExists(fichier.toPath());
                 } catch (IOException e) {
-                    throw new IOException("Impossible de supprimer le fichier du dossier source : "+ fichier.getName());
+                    throw new IOException("Impossible de supprimer le fichier du dossier source : " + fichier.getName());
                 }
             }
         }
