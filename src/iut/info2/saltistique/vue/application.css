@@ -1,0 +1,10 @@
+@font-face {
+    font-family: 'Inter';
+    src: url('Inter_regular.ttf');
+}
+
+.btn-primary{
+    -fx-background-color: #3574F0;
+    -fx-text-fill: #FFFFFF;
+    -fx-font-family: "Inter";
+}

@@ -9,7 +9,7 @@ Ce projet consiste à développer une application Java pour gérer les salles pa
 - **HUGO ROBLES** : hugo.robles@iut-rodez.fr
 - **TOM GUTIERREZ** : tom.gutierrez@iut-rodez.fr
 - **DORIAN ADAMS** : dorian.adams@iut-rodez.fr
-- **JULES VIALAS** : jules.vialas@iut-rodez.fr
+- **JULES VIALAS** : jules.vialas@iut-rodez.frx
 - **NEO BECOGNE** : neo.becogne@iut-rodez.fr
 
 ### Lien vers le board Github Project
