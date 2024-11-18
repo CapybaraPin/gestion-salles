@@ -64,6 +64,12 @@ public class ImportationReseau extends Importation {
         }
 
         connexionClient();
+
+        try{
+            importationDonnees();
+        } catch (IOException e) {
+            throw new IOException("Erreur lors de l'importation des données : " + e.getMessage());
+        }
     }
 
     /**
@@ -94,8 +100,6 @@ public class ImportationReseau extends Importation {
             }
 
             super.importerDonnees(cheminFichiers);
-
-            /** TODO : Mettre en place cette gestion dans le controleur */
         }
     }
 

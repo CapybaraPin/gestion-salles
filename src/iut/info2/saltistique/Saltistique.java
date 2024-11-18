@@ -17,6 +17,7 @@ import java.util.HashMap;
 import java.io.IOException;
 
 import iut.info2.saltistique.modele.Scenes;
+import iut.info2.saltistique.modele.donnees.GestionDonnees;
 
 /**
  * <b>Saltistique</b> est la classe principale de l'application JavaFX.

@@ -28,15 +28,30 @@ public class ExportationReseau {
 
         // TODO : Vérification de la variable fichiers
         this.fichiers = fichiers;
-
     }
 
     /**
      * Exporte les données via le réseau au travers de la classe {@link Serveur}
      */
-    private void exportationDonnees(){
+    public void exportationDonnees(){
         this.serveur = new Serveur(port, this.fichiers);
         Thread serveurThread = new Thread(serveur);
         serveurThread.start();
+    }
+
+    /**
+     * Retourne le serveur associé à l'exportation des données
+     * @return Serveur associé à l'exportation des données
+     */
+    public Serveur getServeur() {
+        return serveur;
+    }
+
+    /**
+     * Modifie le serveur associé à l'exportation des données
+     * @param serveur Serveur associé à l'exportation des données
+     */
+    public void setServeur(Serveur serveur) {
+        this.serveur = serveur;
     }
 }

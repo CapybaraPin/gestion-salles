@@ -5,6 +5,8 @@
 package iut.info2.saltistique.controleur;
 
 import iut.info2.saltistique.Saltistique;
+import iut.info2.saltistique.modele.Notification;
+import iut.info2.saltistique.modele.donnees.ImportationReseau;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
@@ -49,11 +51,15 @@ public class ControleurImporterReseau extends Controleur {
     private ProgressBar progressBar;
 
     /**
-     * Permet la gestion du click sur le bouton de démarage de l'importation
+     * Permet la gestion du click sur le bouton de démarrage de l'importation
      */
     @FXML
     void clickImporter() {
-        Saltistique.gestionDonnees.importerDonnees(adresseIp.getText(), Integer.parseInt(port.getText()));
+        try{
+            ImportationReseau importationReseau = new ImportationReseau(adresseIp.getText(), Integer.parseInt(port.getText()), Saltistique.gestionDonnees);
+        } catch (Exception e) {
+            new Notification("Erreur lors de l'importation des fichiers : ", e.getMessage());
+        }
     }
 
     /**

@@ -79,7 +79,6 @@ public class Importation {
         }
     }
 
-
     /**
      * Permet de stocker les fichiers dans les attributs de la classe
      * fichierActivites, fichierReservations, fichierSalles, fichierUtilisateurs
@@ -621,5 +620,9 @@ public class Importation {
         }
 
         return nb;
+    }
+
+    public Fichier[] getFichiers() {
+        return fichiers;
     }
 }

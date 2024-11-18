@@ -7,6 +7,7 @@ package iut.info2.saltistique.controleur;
 import iut.info2.saltistique.Saltistique;
 import iut.info2.saltistique.modele.Notification;
 import iut.info2.saltistique.modele.Scenes;
+import iut.info2.saltistique.modele.donnees.Importation;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.input.DragEvent;
@@ -25,7 +26,6 @@ import java.util.List;
  * @author Tom GUTIERREZ & Hugo ROBLES
  */
 public class ControleurAccueil extends Controleur {
-
 
     /**
      * Titre de la notification
@@ -130,7 +130,8 @@ public class ControleurAccueil extends Controleur {
         ArrayList<String[]> lignesIncorrectesUtilisateurs;
 
         try {
-            Saltistique.gestionDonnees.importerDonnees(chemins);
+            Importation importationDonnees = new Importation(Saltistique.gestionDonnees);
+            importationDonnees.importerDonnees(chemins);
         } catch (Exception e) {
             new Notification("Erreur lors de l'importation des fichiers : ", e.getMessage());
             return;
