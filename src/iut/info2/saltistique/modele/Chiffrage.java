@@ -36,57 +36,65 @@ import java.security.SecureRandom;
  */
 public class Chiffrage {
 
-    /** TODO */
+    /** Base publique pour le calcul de Diffie-Hellman, entier générateur. */
     private final BigInteger G = new BigInteger("293420472449539282455733124980401731387348120353499102030073038693451021459432155986836198729889379129133276675643359344407061495518484882889255574219109091144354842690051056706764720316243236342474368038219273019275745144167424235176331112507920866365947957948345947545404084592870247787654918296581073234611");
 
-    /** TODO */
+    /** Modulo public pour le calcul de Diffie-Hellman, entier premier. */
     private final BigInteger P = new BigInteger("162259276829213363391578010288127");
 
-    /** Clé commune calculée de Diffie-Helman */
+    /** Clé partagée calculée via Diffie-Hellman. */
     private BigInteger clePartager;
 
-    /** Clé privée calculée de Diffie-Helman */
-    private BigInteger clePrivee;
+    /** Clé publique générée pour le calcul de Diffie-Hellman. */
+    private BigInteger clePublic;
 
-    /** Puissance minimale et maximale pour les clé de Diffie-Helman */
-    private final BigInteger PUISSANCE_MINI = new BigInteger("5000000");
-    private final BigInteger PUISSANCE_MAXI = new BigInteger("9999999");
+    /** Limite minimal pour la génération de l'exposant Diffie-Hellman. */
+    private final BigInteger PUISSANCE_MINI = new BigInteger("5000000000000000");
 
-    /** Chemin du fichier a crypter ou décrypter */
+    /** Limite maximale pour la génération de l'exposant Diffie-Hellman. */
+    private final BigInteger PUISSANCE_MAXI = new BigInteger("9999999999999999");
+
+    /** Chemin du fichier à crypter ou décrypter. */
     private String cheminFichier;
 
-    /** Clé secrète de Vigenère */
+    /** Clé secrète générée pour le chiffrement Vigenère. */
     private String cle_vigenere;
 
-    /** Alphabet personnalisé pour la clé de Vigenère */
+    /** Alphabet personnalisé utilisé pour le chiffrement et le déchiffrement de Vigenère. */
     private static final String CUSTOM_ALPHABET = "abcdefghijklmnopqrstuvwxyzABCDEFGH"
             + "IJKLMNOPQRSTUVWXYZ&~\"#'({[-|`_\\^@)]}/*.!?,;:<>1234567890$% +=\n";
 
     /**
-     * Constructeur de la classe.
-     * Remplis le chemin du fichier,
-     * calcule également la clé privée de Diffie-Helman.
-     * @param cheminFichier, chemin du fichier a crypter ou décrypter.
+     * Constructeur principal qui initialise le chemin du fichier et génère une clé publique Diffie-Hellman.
+     *
+     * @param cheminFichier chemin du fichier à crypter ou décrypter.
      */
     public Chiffrage(String cheminFichier) {
         this.cheminFichier = cheminFichier;
         BigInteger exposant = generateExponent();
-        this.clePrivee = modExponentiation(G, exposant, P);
+        this.clePublic = modExponentiation(G, exposant, P);
         //System.out.println(clePrivee);
     }
 
     /**
-     * Constructeur de la classe.
-     * Calcule la clé privée de Diffie-Helman.
+     * Constructeur sans chemin de fichier.
+     * Génère une clé publique Diffie-Hellman.
      */
     public Chiffrage() {
         BigInteger exposant = generateExponent();
-        this.clePrivee = modExponentiation(G, exposant, P);
+        this.clePublic = modExponentiation(G, exposant, P);
     }
 
     /**
-     * Permet de chiffrer un message à l'aide du chiffrage de Vigenère.
-     * @return le message une fois crypter.
+     * Chiffre le fichier spécifié en utilisant le chiffrement de Vigenère.
+     *
+     * <p>
+     * Le fichier chiffré sera enregistré avec le même nom que le fichier original,
+     * suivi du suffixe "-c.csv".
+     * </p>
+     *
+     * @return le chemin du fichier chiffré.
+     * @throws RuntimeException si une erreur d'entrée/sortie survient.
      */
     public String crypter() {
         try {
@@ -128,8 +136,15 @@ public class Chiffrage {
     }
 
     /**
-     * Permet de déchiffrer un message a l'aide du chiffrement de Vigenère.
-     * @return le message décrypter.
+     * Déchiffre le fichier spécifié en utilisant le chiffrement de Vigenère.
+     *
+     * <p>
+     * Le fichier déchiffré sera enregistré avec le même nom que le fichier chiffré,
+     * suivi du suffixe "-dc.csv".
+     * </p>
+     *
+     * @return le chemin du fichier déchiffré.
+     * @throws RuntimeException si une erreur d'entrée/sortie survient.
      */
     public String decrypter() {
         try {
@@ -177,9 +192,9 @@ public class Chiffrage {
     }
 
     /**
-     * Permet de générer une puissance aléatoirement,
-     * compris entre PUISSANCE_MINI et PUISSANCE_MAXI.
-     * @return la puissance générer
+     * Génère une puissance aléatoire utilisée comme exposant pour Diffie-Hellman.
+     *
+     * @return une puissance aléatoire comprise entre {@link #PUISSANCE_MINI} et {@link #PUISSANCE_MAXI}.
      */
     private BigInteger generateExponent() {
         return new BigInteger(PUISSANCE_MAXI.bitLength(), new SecureRandom())
@@ -187,11 +202,12 @@ public class Chiffrage {
     }
 
     /**
-     * Permet d'effectuer le calcule (base^exponent mod modulo)
-     * @param base
-     * @param exponent
-     * @param modulo
-     * @return le resultat du calcule.
+     * Effectue une exponentiation modulaire.
+     *
+     * @param base la base à élever.
+     * @param exponent l'exposant.
+     * @param modulo le modulo.
+     * @return le résultat de (base^exponent) mod modulo.
      */
     private BigInteger modExponentiation(BigInteger base, BigInteger exponent, BigInteger modulo) {
         if (modulo.equals(BigInteger.ONE)) {
@@ -202,27 +218,35 @@ public class Chiffrage {
 
 
     /**
-     * @return la clé privée de Diffie-Helman
+     * Retourne la clé privée de Diffie-Hellman.
+     *
+     * @return la clé privée.
      */
-    public BigInteger getClePrivee() {
-        return clePrivee;
+    public BigInteger getClePublic() {
+        return clePublic;
     }
 
     /**
-     * @return la clé partager de Diffie-Helman
+     * Retourne la clé partagée de Diffie-Hellman.
+     *
+     * @return la clé partagée.
      */
     public BigInteger getClePartager() {
         return clePartager;
     }
 
     /**
-     * Permet le calcule de la clé partager
-     * @param cle, correspond a la clé distante
+     * Calcule la clé partagée à partir de la clé publique distante.
+     *
+     * @param cle clé publique de l'autre participant au protocole Diffie-Hellman.
      */
     public void calculeClePartager(BigInteger cle) {
-        this.clePartager = modExponentiation(G, clePrivee.multiply(cle), P);
+        this.clePartager = modExponentiation(G, clePublic.multiply(cle), P);
     }
 
+    /**
+     * Génère une clé de chiffrement Vigenère à partir de la clé partagée.
+     */
     public void generateKeyFromDiffie() {
         StringBuilder secretKey = new StringBuilder();
         String gabString = clePartager.toString();
@@ -233,6 +257,11 @@ public class Chiffrage {
         this.cle_vigenere = secretKey.toString();
     }
 
+    /**
+     * Modifie le chemin du fichier à crypter ou décrypter.
+     *
+     * @param cheminFichier nouveau chemin du fichier.
+     */
     public void setCheminFichier(String cheminFichier) {
         this.cheminFichier = cheminFichier;
     }
