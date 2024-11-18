@@ -12,6 +12,8 @@ import java.net.Socket;
 /**
  * La classe Serveur gère les connexions client pour envoyer une liste de fichiers CSV.
  * Chaque fichier est transmis individuellement au client connecté.
+ *
+ * @author Hugo ROBLES, Dorian ADAMS
  */
 public class Serveur implements Runnable {
 
@@ -110,43 +112,57 @@ public class Serveur implements Runnable {
      * @throws IOException si une erreur de lecture/écriture se produit.
      */
     private void envoyerFichier(DataOutputStream dos, Fichier fichier, Socket clientSocket) throws IOException {
+        Chiffrage chiffrage;
+        BigInteger envoiGrosEntier;
+        String cheminFichierCrypter;
+        int tailleTableauCle;
+        DataInputStream dis;
+        BigInteger receptionGrosEntier;
+        File fichierExploite;
+
         try{
-            Chiffrage chiffrage = new Chiffrage(fichier.getFichierExploite().getAbsolutePath());
+            chiffrage = new Chiffrage(fichier.getFichierExploite().getAbsolutePath());
+
             // Envoi d'un BigInteger
-            BigInteger bigIntToSend = chiffrage.getClePublic();
-            dos.writeInt(bigIntToSend.toByteArray().length);
-            dos.write(bigIntToSend.toByteArray());
+            envoiGrosEntier = chiffrage.getClePublic();
+            dos.writeInt(envoiGrosEntier.toByteArray().length);
+            dos.write(envoiGrosEntier.toByteArray());
             dos.flush();
-            System.out.println("BigInteger envoyé au client.");
+
+            // Préparation de la reception d'un BigInteger
+            dis = new DataInputStream(clientSocket.getInputStream());
 
             //Reception d'un BigInteger
-            DataInputStream dis = new DataInputStream(clientSocket.getInputStream());
-            int lenght = dis.readInt();
-            byte[] bytes = new byte[lenght];
+            tailleTableauCle = dis.readInt();
+            byte[] bytes = new byte[tailleTableauCle];
             dis.readFully(bytes);
-            BigInteger bigIntReceived = new BigInteger(bytes);
-            System.out.println("BigInteger reçu du serveur : " + bigIntReceived);
+            receptionGrosEntier = new BigInteger(bytes);
 
-            chiffrage.calculeClePartager(bigIntReceived);
+            // Préparation chiffrage avec la clé reçue + Chiffrage
+            chiffrage.calculeClePartager(receptionGrosEntier);
             chiffrage.generateKeyFromDiffie();
+            cheminFichierCrypter = chiffrage.crypter();
 
-            String cheminFichierCrypter = chiffrage.crypter();
-
-            File fichierExploite = new File(cheminFichierCrypter);
-            dos.writeUTF(fichierExploite.getName());
-            dos.writeLong(fichierExploite.length());
-
+            //Preparation envoie du fichier
+            fichierExploite = new File(cheminFichierCrypter);
             FileInputStream fis = new FileInputStream(fichierExploite);
             BufferedInputStream bis = new BufferedInputStream(fis);
+
+            //Envoie du fichier
+            dos.writeUTF(fichierExploite.getName());
+            dos.writeLong(fichierExploite.length());
 
             byte[] buffer = new byte[BUFFER_SIZE];
             int bytesRead;
             while ((bytesRead = bis.read(buffer)) != -1) {
                 dos.write(buffer, 0, bytesRead);
             }
+
             dos.flush(); // Assure l'envoi complet du fichier
             System.out.println("Fichier envoyé : " + fichierExploite.getAbsolutePath());
             fis.close();
+
+            // Supression du fichier chiffrer
             fichierExploite.delete();
 
         } catch (IOException e) {
