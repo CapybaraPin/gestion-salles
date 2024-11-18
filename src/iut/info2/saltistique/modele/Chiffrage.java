@@ -73,7 +73,6 @@ public class Chiffrage {
         this.cheminFichier = cheminFichier;
         BigInteger exposant = generateExponent();
         this.clePublic = modExponentiation(G, exposant, P);
-        //System.out.println(clePrivee);
     }
 
     /**

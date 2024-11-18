@@ -11,7 +11,7 @@ import java.net.Socket;
 
 /**
  * La classe Serveur gère les connexions client pour envoyer une liste de fichiers CSV.
- * Chaque fichier est transmis individuellement au client connecté.
+ * Chaque fichier est transmis individuellement au client connecté et de manière chiffré.
  *
  * @author Hugo ROBLES, Dorian ADAMS
  */
