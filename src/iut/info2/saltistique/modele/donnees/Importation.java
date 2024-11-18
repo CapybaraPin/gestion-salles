@@ -1,313 +1,84 @@
 /*
- * GestionDonnees.java              21/10/2024
- * Tom GUTTIEREZ Jules VIALAS, pas de copyrights
+ * Importation.java              13/11/2024
+ * Tom GUTIERREZ Hugo ROBLES, pas de copyrights
  */
 
-package iut.info2.saltistique.modele;
+package iut.info2.saltistique.modele.donnees;
 
-import iut.info2.saltistique.Saltistique;
-import iut.info2.saltistique.controleur.ControleurConsulterDonnees;
-import iut.info2.saltistique.controleur.ControleurImporterReseau;
 
-import java.io.File;
+import iut.info2.saltistique.modele.*;
+
 import java.io.IOException;
-import java.io.Serializable;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.ArrayList;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.function.Consumer;
 
 /**
- * Classe responsable de la gestion des données, y compris l'importation et l'exportation des fichiers.
- * Elle contient des expressions régulières pour valider les entrées des employés, salles, activités et réservations.
+ * <p><b>Importation</b> est responsable de l'importation des données
+ * dans l'application. Elle interagit directement avec l'objet GestionDonnees
+ * pour y intégrer les données importées. Elle assure la validation
+ * des données avant leur intégration. La classe Importation prend également
+ * en charge la gestion des erreurs courantes liées à l'importation</p>
+ * <br>
+ * <p>Les fichiers pris en charge doivent avoir une extension .csv.</p>
  */
-public class GestionDonnees implements Serializable {
-
-    /** TODO : la javadoc */
-    private static final long serialVersionUID = 1L;
-
-    /** Délimiteur utilisé dans les fichiers CSV */
-    private static final String DELIMITEUR = ";";
+public class Importation {
 
     /** Message d'erreur affiché lorsque le nombre de fichiers fournis est incorrect. */
     private static final String ERREUR_NB_CHEMINS_FICHIERS =
             "Le nombre de fichiers à fournir n'est pas respecté";
 
-    /** Dossier des sources des fichiers */
-    private static final String DOSSIER_SOURCES = "src/ressources/fichiers";
-
+    private static final String DELIMITEUR = ";";
     private Fichier[] fichiers;
-
-    private HashMap<Integer, Salle> salles;
-    private HashMap<Integer, Activite> activites;
-    private HashMap<Integer, Utilisateur> utilisateurs;
-    private HashMap<Integer, Reservation> reservations;
-
-    public Serveur serveur;
-
     private Fichier fichierActivites;
     private Fichier fichierReservations;
     private Fichier fichierSalles;
     private Fichier fichierUtilisateurs;
-    private ArrayList<String[]> lignesIncorrectesActivites;
-    private ArrayList<String[]> lignesIncorrectesReservations;
-    private ArrayList<String[]> lignesIncorrectesSalles;
-    private ArrayList<String[]> lignesIncorrectesUtilisateurs;
+    private GestionDonnees donnees;
 
     /**
-     * Constructeur de la classe GestionDonnees.
-     * Initialise les tableaux des employés, salles, activités, et réservations.
-     * Initialise les tableaux des lignes incorrectes pour les employés, salles, activités, et réservations.
+     * Constructeur de la classe Importation.
+     * Initialise l'objet GestionDonnees et les tableaux de fichiers.
+     * @param donnees l'objet GestionDonnees
      */
-    public GestionDonnees() {
-        activites = new HashMap<>();
-        reservations = new HashMap<>();
-        salles = new HashMap<>();
-        utilisateurs = new HashMap<>();
-        lignesIncorrectesActivites = new ArrayList<>();
-        lignesIncorrectesReservations = new ArrayList<>();
-        lignesIncorrectesSalles = new ArrayList<>();
-        lignesIncorrectesUtilisateurs = new ArrayList<>();
+    public Importation(GestionDonnees donnees) {
+        this.donnees = donnees;
+        this.fichiers = new Fichier[4];
     }
 
     /**
-     * Importe les données depuis les fichiers spécifiés et les stocke dans les tableaux finaux
-     * des employés, salles, activités, et réservations après avoir vérifié leur validité.
-     * @param cheminFichiers Un tableau de chaînes de caractères représentant les chemins vers les fichiers à importer.
+     * Importe les données à partir des fichiers spécifiés.
+     * Les fichiers sont stockés dans les attributs de la classe.
+     * Les données sont ensuite ajoutées à l'objet GestionDonnees.
+     *
+     * Les fichiers doivent être fournis par 4, et doivent être non
+     * vide.
+     *
+     * @param cheminFichiers les chemins des fichiers à importer
+     * @throws IOException si une erreur survient lors de la lecture des fichiers
      */
     public void importerDonnees(String[] cheminFichiers) throws IOException {
-        viderDonnees();
+        donnees.viderDonnees();
         ajouterFichier(cheminFichiers);
 
         ajouterDonnees(fichierActivites.contenuFichier(), this::ajouterActivite);
         ajouterDonnees(fichierSalles.contenuFichier(), this::ajouterSalle);
         ajouterDonnees(fichierUtilisateurs.contenuFichier(), this::ajouterUtilisateur);
         ajouterDonnees(fichierReservations.contenuFichier(), this::ajouterReservation);
-
-        // TODO : ne pas ajouter les lignes vide et l'entete dans les talbeauxligne incorrectes
     }
 
-    /** TODO : la javadoc */
-    private void ajouterDonnees(String[] contenuFichier, Consumer<String> ajouterLigne) throws IOException {
+
+    private void ajouterDonnees(String[] contenuFichier, Consumer<String> ajouterLigne) {
         for (int i = 1; i < contenuFichier.length; i++) {
             ajouterLigne.accept(contenuFichier[i]);
         }
     }
 
-    /**
-     * Vide les données stockées dans les tableaux des employés, salles, activités, et réservations.
-     * Vide également les tableaux des lignes incorrectes pour les employés, salles, activités, et réservations.
-     * Remet à null les fichiers importés. // TODO : vérifier si les fichiers se ferment bien
-     */
-    public void viderDonnees() {
-        try {
-            activites.clear();
-            reservations.clear();
-            salles.clear();
-            utilisateurs.clear();
-            lignesIncorrectesActivites.clear();
-            lignesIncorrectesReservations.clear();
-            lignesIncorrectesSalles.clear();
-            lignesIncorrectesUtilisateurs.clear();
-            fichierActivites = null;
-            fichierUtilisateurs = null;
-            fichierSalles = null;
-            fichierReservations = null;
-        } catch (Exception e) {
-            new Notification("Impossible de vider les données", "Erreur lors de la suppression des données.");
-        }
-    }
-
-    /**
-     * Importe les données depuis une adresse IP et un port spécifiés.
-     *
-     * @param ip l'adresse IP du serveur
-     * @param port le port à utiliser pour l'importation
-     */
-    public void importerDonnees(String ip, int port) {
-
-        File dossierSauvegarde = new File(DOSSIER_SOURCES);
-
-        File[] fichiersExistants = dossierSauvegarde.listFiles();
-        if (fichiersExistants != null && fichiersExistants.length > 0) {
-            // Le dossier n'est pas vide
-            new Notification("Avertissement Importation", "Le dossier de sauvegarde n'est pas vide. Déchargez les données...");
-        }
-
-        Client client = new Client(ip, port);
-        Thread clientThread = new Thread(client);
-        clientThread.start();
-    }
-
-    /**
-     * TODO : javadoc
-     */
-    public void finInmportationReseau() {
-        javafx.application.Platform.runLater(() -> {
-            ControleurImporterReseau controleurImporterReseau = Saltistique.getController(Scenes.IMPORTATION_RESEAU);
-            controleurImporterReseau.fermerFenetre();
-            // Appeler importerDonnees avec les fichiers reçus
-
-            File dossierSauvegarde = new File(DOSSIER_SOURCES);
-            File[] fichiersExistants = dossierSauvegarde.listFiles();
-
-            if (fichiersExistants != null && fichiersExistants.length > 0) {
-                String[] cheminFichiers = new String[4];
-                for (int i = 0; i < 4;  i++) {
-                    cheminFichiers[i] = fichiersExistants[i].getAbsolutePath();
-                }
-                try {
-                    importerDonnees(cheminFichiers);
-                    ControleurConsulterDonnees controleur = Saltistique.getController(Scenes.CONSULTER_DONNEES);
-                    controleur.rafraichirTableaux();
-                    Saltistique.changeScene(Scenes.CONSULTER_DONNEES);
-
-                    new Notification("Importation réussie", "Les données ont été importées avec succès.");
-                } catch (IOException e) {
-                    new Notification("Erreur d'importation", "Erreur lors de l'importation des données.");
-                }
-            } else {
-                new Notification("Erreur d'importation", "Erreur lors de la réception des fichiers.");
-            }
-        });
-    }
-
-    /**
-     * Exporte les données vers un port spécifié.
-     *
-     * @param port le port à utiliser pour l'exportation
-     */
-    public void exporterDonnees(int port) {
-        this.serveur = new Serveur(port, this.fichiers);
-        Thread serveurThread = new Thread(serveur);
-        serveurThread.start();
-    }
-
-    public HashMap<Integer, Salle> getSalles() {
-        return this.salles;
-    }
-
-    public HashMap<Integer, Utilisateur> getUtilisateurs() {
-        return this.utilisateurs;
-    }
-
-
-    public HashMap<Integer, Activite> getActivites() {
-        return this.activites;
-    }
-
-    public HashMap<Integer, Reservation> getReservations() {
-        return this.reservations;
-    }
-
-    public ArrayList<String[]> getLignesIncorrectesActivites() {
-        return this.lignesIncorrectesActivites;
-    }
-
-    public ArrayList<String[]> getLignesIncorrectesReservations() {
-        return this.lignesIncorrectesReservations;
-    }
-
-    public ArrayList<String[]> getLignesIncorrectesSalles() {
-        return this.lignesIncorrectesSalles;
-    }
-
-    public ArrayList<String[]> getLignesIncorrectesUtilisateurs() {
-        return this.lignesIncorrectesUtilisateurs;
-    }
-
-    public Fichier getFichierActivites() {
-        return this.fichierActivites;
-    }
-
-    public Fichier getFichierReservations() {
-        return this.fichierReservations;
-    }
-
-    public Fichier getFichierSalles() {
-        return this.fichierSalles;
-    }
-
-    public Fichier getFichierUtilisateurs() {
-        return this.fichierUtilisateurs;
-    }
-
-    /**
-     * Vérifie si une ligne donnée est complète selon le type de fichier spécifié.
-     * Si le type de fichier est "reservations", la méthode vérifie également que la date de début est antérieure à la date de fin.
-     *
-     * @param ligne la ligne à valider
-     * @param delimiteur le délimiteur utilisé dans la ligne
-     * @param typeFichier le type de fichier (employes, salles, activites, reservations)
-     * @return true si la ligne est valide, sinon false
-     * @throws IllegalArgumentException si le type de fichier est inconnu
-     */
-    public static boolean estLigneComplete(String ligne, String delimiteur, String typeFichier) {
-        if (ligne == null || delimiteur == null || typeFichier == null) {
-            throw new IllegalArgumentException("Les arguments ne peuvent pas être nuls.");
-        }
-
-        String regex = switch (typeFichier) {
-            case "employes" -> Regex.EMPLOYES.getRegex(DELIMITEUR);
-            case "salles" -> Regex.SALLES.getRegex(DELIMITEUR);
-            case "activites" -> Regex.ACTIVITES.getRegex(DELIMITEUR);
-            case "reservations" -> Regex.RESERVATIONS.getRegex(DELIMITEUR);
-            default -> throw new IllegalArgumentException("Type de fichier inconnu : " + typeFichier);
-        };
-
-        if (ligne.matches(regex)) {
-            if ("reservations".equals(typeFichier)) {
-                String[] attributs = ligne.split(delimiteur);
-                LocalDateTime dateDebut = construireDate(attributs[4], attributs[5]); // Indice dateDebut
-                LocalDateTime dateFin = construireDate(attributs[4], attributs[6]); // Indice dateFin
-                return dateDebut.isBefore(dateFin);
-            }
-            return true;
-        }
-
-        return false;
-    }
-
-    /**
-     * Construit une date à partir d'une chaîne de caractères représentant une date et une heure.
-     *
-     * @param date la date au format "JJ/MM/AAAA"
-     * @param heureMinutes l'heure au format "XXhXX"
-     * @return un objet LocalDateTime correspondant à la date et l'heure fournies
-     * @throws IllegalArgumentException si le format est incorrect ou si la date n'est pas valide
-     */
-    public static LocalDateTime construireDate(String date, String heureMinutes) {
-        DateTimeFormatter formatDate;
-        DateTimeFormatter formatHeure;
-        LocalDate dateConvertie;
-        LocalTime heureConvertie;
-
-
-        // Vérifie que les arguments ne sont pas nuls
-        if (date == null || heureMinutes == null) {
-            throw new IllegalArgumentException("Les arguments ne peuvent pas être nuls.");
-        }
-
-        // Définit les formats attendus pour la date et l'heure
-        formatDate = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-        formatHeure = DateTimeFormatter.ofPattern("H'h'mm");
-        try {
-            // convertit les chaînes de caractères en LocalDate et LocalTime
-            dateConvertie = LocalDate.parse(date, formatDate);
-            heureConvertie = LocalTime.parse(heureMinutes, formatHeure);
-
-
-        } catch (DateTimeParseException e) {
-            throw new IllegalArgumentException("Le format de la date ou de l'heure est incorrect.", e);
-        }
-
-        return LocalDateTime.of(dateConvertie, heureConvertie);
-    }
 
     /**
      * Permet de stocker les fichiers dans les attributs de la classe
@@ -333,7 +104,6 @@ public class GestionDonnees implements Serializable {
             throw new IllegalArgumentException(ERREUR_NB_CHEMINS_FICHIERS);
         }
 
-        fichiers = new Fichier[4];
         for (int i = 0; i < 4; i++) {
             fichiers[i] = new Fichier(cheminFichiers[i]);
         }
@@ -345,7 +115,7 @@ public class GestionDonnees implements Serializable {
                         erreurUtilisateurs = "Vous avez fourni plusieurs fichiers d'employés : "
                                 + fichiers[i].getFichierExploite().getName() + " et "
                                 + fichierUtilisateurs.getFichierExploite().getName();
-                        viderDonnees();
+                        donnees.viderDonnees();
                         throw new IllegalArgumentException(erreurUtilisateurs);
                     }
                     fichierUtilisateurs = fichiers[i];
@@ -355,7 +125,7 @@ public class GestionDonnees implements Serializable {
                         erreurSalles = "Vous avez fourni plusieurs fichiers de salles : "
                                 + fichiers[i].getFichierExploite().getName() + " et "
                                 + fichierSalles.getFichierExploite().getName();
-                        viderDonnees();
+                        donnees.viderDonnees();
                         throw new IllegalArgumentException(erreurSalles);
                     }
                     fichierSalles = fichiers[i];
@@ -365,7 +135,7 @@ public class GestionDonnees implements Serializable {
                         erreurActivites = "Vous avez fourni plusieurs fichiers d'activités : "
                                 + fichiers[i].getFichierExploite().getName() + " et "
                                 + fichierActivites.getFichierExploite().getName();
-                        viderDonnees();
+                        donnees.viderDonnees();
                         throw new IllegalArgumentException(erreurActivites);
                     }
                     fichierActivites = fichiers[i];
@@ -375,17 +145,18 @@ public class GestionDonnees implements Serializable {
                         erreurReservations = "Vous avez fourni plusieurs fichiers de réservations : "
                                 + fichiers[i].getFichierExploite().getName() + " et "
                                 + fichierReservations.getFichierExploite().getName();
-                        viderDonnees();
+                        donnees.viderDonnees();
                         throw new IllegalArgumentException(erreurReservations);
                     }
                     fichierReservations = fichiers[i];
                     break;
                 default:
-                    fichierActivites = fichierReservations = fichierSalles = fichierUtilisateurs = null; // Remise à zéro
+                    donnees.viderDonnees(); // remise à zéro des fichiers
                     throw new IllegalArgumentException("\"" + fichiers[i].getFichierExploite().getName() + "\" non reconnu");
             }
         }
     }
+
 
     /**
      * Ajoute la ligne d'activité spécifiée aux activités.
@@ -398,11 +169,13 @@ public class GestionDonnees implements Serializable {
         String[] attributs;
         int identifiant;
         String messageErreur;
+        HashMap<Integer, Activite> activites;
 
         messageErreur = null;
         attributs = ligne.split(DELIMITEUR, -1);
         identifiant = extraireNombre(attributs[0]);
-        if (estLigneComplete(ligne, DELIMITEUR, "activites")) {
+        activites = donnees.getActivites();
+        if (estLigneComplete(ligne, "activites")) {
             if (!activites.containsKey(identifiant)) {
                 activites.put(identifiant, creerActivite(ligne));
             } else {
@@ -417,7 +190,7 @@ public class GestionDonnees implements Serializable {
         }
 
         if (messageErreur != null) {
-            lignesIncorrectesActivites.add(new String[]{ligne, messageErreur});
+            donnees.getLignesIncorrectesActivites().add(new String[]{ligne, messageErreur});
         }
     }
 
@@ -440,6 +213,7 @@ public class GestionDonnees implements Serializable {
         return activite;
     }
 
+
     /**
      * Ajoute la ligne de salle spécifiée aux salles.
      * Si la ligne est incorrecte, elle est ajoutée au tableau des lignes incorrectes.
@@ -451,12 +225,15 @@ public class GestionDonnees implements Serializable {
         String[] attributs;
         int identifiant;
         String messageErreur;
+        HashMap<Integer, Salle> salles;
 
         messageErreur = null;
         attributs = ligne.split(DELIMITEUR, -1);
-        identifiant = extraireNombre(attributs[0]);
-        if (estLigneComplete(ligne, DELIMITEUR, "salles")) {
-            if(!salles.containsKey(identifiant)){ // Vérifie que la salle n'existe pas déjà
+        if (estLigneComplete(ligne, "salles")) {
+            identifiant = extraireNombre(attributs[0]);
+            salles = donnees.getSalles();
+
+            if (!salles.containsKey(identifiant)) { // Vérifie que la salle n'existe pas déjà
                 salles.put(identifiant, creerSalle(ligne));
             } else {
                 messageErreur = "Identifiant déjà utilisé";
@@ -472,7 +249,7 @@ public class GestionDonnees implements Serializable {
         }
 
         if (messageErreur != null) {
-            lignesIncorrectesSalles.add(new String[]{ligne, messageErreur});
+            donnees.getLignesIncorrectesSalles().add(new String[]{ligne, messageErreur});
         }
     }
 
@@ -530,11 +307,14 @@ public class GestionDonnees implements Serializable {
         int identifiant;
         Reservation reservation;
         String messageErreur;
+        HashMap<Integer, Reservation> reservations;
 
         messageErreur = null;
         attributs = ligne.split(DELIMITEUR, -1);
-        identifiant = extraireNombre(attributs[0]);
-        if (estLigneComplete(ligne, DELIMITEUR, "reservations")) {
+
+        if (estLigneComplete(ligne, "reservations")) {
+            identifiant = extraireNombre(attributs[0]);
+            reservations = donnees.getReservations();
             if (!reservations.containsKey(identifiant)) {  // Vérifie que la réservation n'existe pas déjà
                 reservation = switch (attributs[3]) {
                     case "formation" -> creerFormation(ligne);
@@ -560,7 +340,7 @@ public class GestionDonnees implements Serializable {
         }
 
         if (messageErreur != null) {
-            lignesIncorrectesReservations.add(new String[]{ligne, messageErreur});
+            donnees.getLignesIncorrectesReservations().add(new String[]{ligne, messageErreur});
         }
     }
 
@@ -586,9 +366,9 @@ public class GestionDonnees implements Serializable {
         Collection<Activite> activites;
 
         attributs = ligne.split(DELIMITEUR, -1);
-        salle = salles.get(extraireNombre(attributs[1]));
-        utilisateur = utilisateurs.get(extraireNombre(attributs[2]));
-        activites = this.activites.values();
+        salle = donnees.getSalles().get(extraireNombre(attributs[1]));
+        utilisateur = donnees.getUtilisateurs().get(extraireNombre(attributs[2]));
+        activites = donnees.getActivites().values();
         activite = null;
         for (Activite a : activites) {
             if (a.getNom().toLowerCase().contains(attributs[3].toLowerCase())) {
@@ -701,11 +481,13 @@ public class GestionDonnees implements Serializable {
         int identifiant;
         Utilisateur utilisateur;
         String messageErreur;
+        HashMap<Integer, Utilisateur> utilisateurs;
 
         messageErreur = null;
         attributs = ligne.split(DELIMITEUR, -1);
-        identifiant = extraireNombre(attributs[0]);
-        if (estLigneComplete(ligne, DELIMITEUR, "employes")) {
+        if (estLigneComplete(ligne, "employes")) {
+            identifiant = extraireNombre(attributs[0]);
+            utilisateurs = donnees.getUtilisateurs();
             if (!utilisateurs.containsKey(identifiant)) {  // Vérifie que l'utilisateur n'existe pas déjà
                 utilisateur = creerUtilisateur(ligne);
                 utilisateurs.put(identifiant, utilisateur);
@@ -723,7 +505,7 @@ public class GestionDonnees implements Serializable {
         }
 
         if (messageErreur != null) {
-            lignesIncorrectesUtilisateurs.add(new String[]{ligne, messageErreur});
+            donnees.getLignesIncorrectesUtilisateurs().add(new String[]{ligne, messageErreur});
         }
     }
 
@@ -750,6 +532,78 @@ public class GestionDonnees implements Serializable {
 
 
     /**
+     * Vérifie si une ligne donnée est complète selon le type de fichier spécifié.
+     * Si le type de fichier est "reservations", la méthode vérifie également que la date de début est antérieure à la date de fin.
+     *
+     * @param ligne la ligne à valider
+     * @param typeFichier le type de fichier (employes, salles, activites, reservations)
+     * @return true si la ligne est valide, sinon false
+     * @throws IllegalArgumentException si le type de fichier est inconnu
+     */
+    public boolean estLigneComplete(String ligne, String typeFichier) {
+        if (ligne == null || typeFichier == null) {
+            throw new IllegalArgumentException("Les arguments ne peuvent pas être nuls.");
+        }
+
+        String regex = switch (typeFichier) {
+            case "employes" -> Regex.EMPLOYES.getRegex(DELIMITEUR);
+            case "salles" -> Regex.SALLES.getRegex(DELIMITEUR);
+            case "activites" -> Regex.ACTIVITES.getRegex(DELIMITEUR);
+            case "reservations" -> Regex.RESERVATIONS.getRegex(DELIMITEUR);
+            default -> throw new IllegalArgumentException("Type de fichier inconnu : " + typeFichier);
+        };
+
+        if (ligne.matches(regex)) {
+            if (typeFichier.equals("reservations")) {
+                String[] attributs = ligne.split(DELIMITEUR);
+                LocalDateTime dateDebut = construireDate(attributs[4], attributs[5]); // Indice dateDebut
+                LocalDateTime dateFin = construireDate(attributs[4], attributs[6]); // Indice dateFin
+                return dateDebut.isBefore(dateFin);
+            }
+            return true;
+        }
+
+        return false;
+    }
+
+
+    /**
+     * Construit une date à partir d'une chaîne de caractères représentant une date et une heure.
+     *
+     * @param date la date au format "JJ/MM/AAAA"
+     * @param heureMinutes l'heure au format "XXhXX"
+     * @return un objet LocalDateTime correspondant à la date et l'heure fournies
+     * @throws IllegalArgumentException si le format est incorrect ou si la date n'est pas valide
+     */
+    public static LocalDateTime construireDate(String date, String heureMinutes) {
+        DateTimeFormatter formatDate;
+        DateTimeFormatter formatHeure;
+        LocalDate dateConvertie;
+        LocalTime heureConvertie;
+
+
+        // Vérifie que les arguments ne sont pas nuls
+        if (date == null || heureMinutes == null) {
+            throw new IllegalArgumentException("Les arguments ne peuvent pas être nuls.");
+        }
+
+        // Définit les formats attendus pour la date et l'heure
+        formatDate = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        formatHeure = DateTimeFormatter.ofPattern("H'h'mm");
+        try {
+            // convertit les chaînes de caractères en LocalDate et LocalTime
+            dateConvertie = LocalDate.parse(date, formatDate);
+            heureConvertie = LocalTime.parse(heureMinutes, formatHeure);
+
+
+        } catch (DateTimeParseException e) {
+            throw new IllegalArgumentException("Le format de la date ou de l'heure est incorrect.", e);
+        }
+
+        return LocalDateTime.of(dateConvertie, heureConvertie);
+    }
+
+    /**
      * Récupère le nombre d'une chaines de caractères
      * Exemple : "E123456" -> 123456
      *         : "000012" -> 12
@@ -765,6 +619,7 @@ public class GestionDonnees implements Serializable {
         if (!nbStr.isEmpty()) {
             nb = Integer.parseInt(nbStr);
         }
+
         return nb;
     }
 }
