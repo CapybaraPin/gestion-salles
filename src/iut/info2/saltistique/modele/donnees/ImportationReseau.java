@@ -4,6 +4,7 @@
  */
 package iut.info2.saltistique.modele.donnees;
 
+import iut.info2.saltistique.Saltistique;
 import iut.info2.saltistique.modele.Client;
 
 import java.io.File;
@@ -63,13 +64,7 @@ public class ImportationReseau extends Importation {
             viderSources();
         }
 
-        connexionClient();
-
-        try{
-            importationDonnees();
-        } catch (IOException e) {
-            throw new IOException("Erreur lors de l'importation des données : " + e.getMessage());
-        }
+        importationDonnees();
     }
 
     /**
@@ -77,9 +72,12 @@ public class ImportationReseau extends Importation {
      * et le transfert de données.
      */
     private void connexionClient(){
-        String adresseIp = host.toString();
+        System.out.println("Connexion avec le client...");
 
-        client = new Client(adresseIp, port);
+        String adresseIp = host.toString();
+        System.out.println(host.toString());
+
+        client = new Client(adresseIp.toString().replace("/", ""), port);
         Thread clientThread = new Thread(client);
         clientThread.start();
     }
@@ -90,16 +88,17 @@ public class ImportationReseau extends Importation {
      * via les fichiers.
      */
     private void importationDonnees() throws IOException {
+        System.out.println("Importation des données via le client...");
+        connexionClient();
+
         File[] fichiersExistants = dossierSauvegarde.listFiles();
         String[] cheminFichiers = new String[4];
 
         if (sourceEstVide()){
-
             for (int i = 0; i < 4; i++) {
                 cheminFichiers[i] = fichiersExistants[i].getAbsolutePath();
             }
-
-            super.importerDonnees(cheminFichiers);
+            importerDonnees(cheminFichiers);
         }
     }
 
