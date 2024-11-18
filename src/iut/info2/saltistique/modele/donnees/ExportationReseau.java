@@ -28,12 +28,19 @@ public class ExportationReseau {
 
         // TODO : Vérification de la variable fichiers
         this.fichiers = fichiers;
+
+        // Liste des fichiers à exporter
+        for (Fichier fichier : fichiers) {
+            System.out.println(fichier.getFichierExploite().getName());
+        }
+
+        exportationDonnees();
     }
 
     /**
      * Exporte les données via le réseau au travers de la classe {@link Serveur}
      */
-    public void exportationDonnees(){
+    private void exportationDonnees(){
         this.serveur = new Serveur(port, this.fichiers);
         Thread serveurThread = new Thread(serveur);
         serveurThread.start();

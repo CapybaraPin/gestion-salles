@@ -5,8 +5,8 @@
 package iut.info2.saltistique.controleur;
 
 import iut.info2.saltistique.Saltistique;
+import iut.info2.saltistique.modele.Notification;
 import iut.info2.saltistique.modele.donnees.ExportationReseau;
-import iut.info2.saltistique.modele.donnees.Importation;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -41,6 +41,11 @@ public class ControleurExporterReseau extends Controleur {
     private Button btnStartStop;
 
     /**
+     * Exportation des données via le réseau
+     */
+    private ExportationReseau exporterDonnees;
+
+    /**
      * Initialise différents éléments de la vue d'accueil.
      */
     @FXML
@@ -59,21 +64,26 @@ public class ControleurExporterReseau extends Controleur {
      */
     @FXML
     void clickStartStop() {
-        Importation importerDonnees = new Importation(Saltistique.gestionDonnees);
-        ExportationReseau exporterDonnees = new ExportationReseau(Integer.parseInt(port.getText()),
-                                                                  importerDonnees.getFichiers());
-
-        if (exporterDonnees.getServeur() != null) {
-
+        if (exporterDonnees != null) {
             // Arrêt du serveur
             exporterDonnees.getServeur().arreter();
             exporterDonnees.setServeur(null);
             btnStartStop.setText("Démarrer le serveur");
         } else {
+            try {
+                int numeroPort = Integer.parseInt(port.getText());
 
-            // Démarrage du serveur
-            exporterDonnees.exportationDonnees();
-            btnStartStop.setText("Arrêter le serveur");
+                if (exporterDonnees == null) {
+                    javafx.application.Platform.runLater(() -> {
+                        exporterDonnees = new ExportationReseau(numeroPort, Saltistique.gestionDonnees.getFichiers());
+                    });
+                }
+
+                btnStartStop.setText("Arrêter le serveur");
+            } catch (Exception e) {
+                new Notification("Erreur lors de l'exportation", e.getMessage());
+            }
         }
     }
+
 }

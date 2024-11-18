@@ -47,6 +47,7 @@ public class Serveur implements Runnable {
     public void run() {
         try {
             serverSocket = new ServerSocket(port);
+            System.out.println("Serveur demarré...");
             new Notification("Exportation des données", "Serveur démarré sur le port : " + port);
 
             while (!serverSocket.isClosed()) {
@@ -56,11 +57,11 @@ public class Serveur implements Runnable {
 
                     envoyerFichiers(clientSocket);
                 } catch (IOException e) {
-                    new Notification("Exportation des données", "Erreur lors de la connexion avec un client.");
+                    throw new IOException("Erreur lors de la connexion avec un client.");
                 }
             }
         } catch (IOException e) {
-            new Notification("Exportation des données", "Erreur lors du démarrage du serveur.");
+            throw new RuntimeException("Erreur lors du démarrage du serveur.");
         }
     }
 

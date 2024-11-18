@@ -27,6 +27,8 @@ public class GestionDonnees {
     private ArrayList<String[]> lignesIncorrectesSalles;
     private ArrayList<String[]> lignesIncorrectesUtilisateurs;
 
+    private Fichier[] fichiers;
+
     /**
      * Constructeur de la classe GestionDonnees.
      * Initialise les tableaux des employés, salles, activités, et réservations.
@@ -61,6 +63,14 @@ public class GestionDonnees {
         } catch (Exception e) {
             new Notification("Impossible de vider les données", "Erreur lors de la suppression des données.");
         }
+    }
+
+    public void setFichiers(Fichier[] fichiers) {
+        this.fichiers = fichiers;
+    }
+
+    public Fichier[] getFichiers() {
+        return this.fichiers;
     }
 
     public HashMap<Integer, Salle> getSalles() {
