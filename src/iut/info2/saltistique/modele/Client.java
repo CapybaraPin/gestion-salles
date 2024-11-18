@@ -4,7 +4,11 @@ import iut.info2.saltistique.Saltistique;
 import iut.info2.saltistique.controleur.ControleurImporterReseau;
 
 import java.io.*;
+import java.math.BigInteger;
 import java.net.Socket;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 /**
  * La classe Client permet de se connecter à un serveur pour recevoir et sauvegarder
@@ -19,7 +23,7 @@ public class Client implements Runnable{
     private final int port;
 
     /** Dossier de sauvegarde des fichiers reçus */
-    private final String dossierSauvegarde = "src/ressources/fichiers";
+    private final String dossierSauvegarde = "src/ressources/fichiers/reception";
 
     /** Taille du buffer de lecture (4096 octets) pour améliorer la lisibilité et la flexibilité */
     private static final int BUFFER_SIZE = 1024;
@@ -27,6 +31,8 @@ public class Client implements Runnable{
     private double progression;
 
     private long tailleTotale;
+
+    private Socket socket;
 
     /**
      * Constructeur du Client.
@@ -50,21 +56,49 @@ public class Client implements Runnable{
     /**
      * Reçoit un fichier unique depuis le serveur et le sauvegarde dans le répertoire spécifié.
      *
-     * @param dis DataInputStream utilisé pour lire les données du serveur.
+     * @param dis    DataInputStream utilisé pour lire les données du serveur.
+     * @param socket
      * @throws IOException En cas de problème de réception du fichier.
      */
-    private void recevoirFichier(DataInputStream dis) throws IOException {
-        String nomFichier = dis.readUTF();
-        long tailleFichier = dis.readLong();
-        File sauvegardeFichier = new File(this.dossierSauvegarde, nomFichier);
-
+    private void recevoirFichier(DataInputStream dis, Socket socket) throws IOException {
+        String nomFichier = "";
         try{
+            Chiffrage chiffrage = new Chiffrage();
+
+            //Reception d'un BigInteger
+            int lenght = dis.readInt();
+            byte[] bytes = new byte[lenght];
+            dis.readFully(bytes);
+            BigInteger bigIntReceived = new BigInteger(bytes);
+            System.out.println("BigInteger reçu du serveur : " + bigIntReceived);
+
+            //Envoi d'un BigInteger
+            BufferedOutputStream boss = new BufferedOutputStream(socket.getOutputStream());
+            DataOutputStream dos = new DataOutputStream(boss);
+            BigInteger bigIntToSend = chiffrage.getClePrivee();
+            dos.writeInt(bigIntToSend.toByteArray().length);
+            dos.write(bigIntToSend.toByteArray());
+            dos.flush();
+            System.out.println("BigInteger envoyé au serveur.");
+
+            chiffrage.calculeClePartager(bigIntReceived);
+            chiffrage.generateKeyFromDiffie();
+
+            nomFichier = dis.readUTF();
+            long tailleFichier = dis.readLong();
+            File sauvegardeFichier = new File(this.dossierSauvegarde, nomFichier);
+
             FileOutputStream fos = new FileOutputStream(sauvegardeFichier);
             BufferedOutputStream bos = new BufferedOutputStream(fos);
 
             recevoirDonnees(dis, bos, tailleFichier);
+            fos.close();
 
             System.out.println("Fichier reçu et sauvegardé : " + sauvegardeFichier.getAbsolutePath());
+            chiffrage.setCheminFichier(sauvegardeFichier.getAbsolutePath());
+            String chemin = chiffrage.decrypter();
+            sauvegardeFichier.delete();
+            System.out.println("Fichier décrypter : " + chemin);
 
         } catch (IOException e) {
             System.err.println("Erreur lors de la réception du fichier " + nomFichier + " : " + e.getMessage());
@@ -108,6 +142,7 @@ public class Client implements Runnable{
     public void run() {
         try {
             Socket socket = new Socket(host, port);
+            this.socket = socket;
 
             System.out.println("Connecté au serveur sur " + host + ":" + port);
 
@@ -124,18 +159,19 @@ public class Client implements Runnable{
                 System.out.println("Taille totale des fichiers à recevoir : " + tailleTotale);
 
                 for (int i = 0; i < nbFichiers; i++) {
-                    recevoirFichier(dis);
+                    recevoirFichier(dis, socket);
 
                     Thread.sleep(1000);
                 }
 
 
-                Saltistique.gestionDonnees.finInmportationReseau();
+                Saltistique.gestionDonnees.finInmportationReseau(dossierSauvegarde);
 
             } catch (IOException e) {
                 new Notification("Erreur de lecture du fichier", "Accès au fichiers distants impossible.");
 
             } catch (InterruptedException e) {
+                System.out.println("Erreur");
                 throw new RuntimeException(e);
             }
         } catch (IOException e) {

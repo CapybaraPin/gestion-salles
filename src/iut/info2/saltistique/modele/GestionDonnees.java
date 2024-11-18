@@ -40,7 +40,7 @@ public class GestionDonnees implements Serializable {
             "Le nombre de fichiers à fournir n'est pas respecté";
 
     /** Dossier des sources des fichiers */
-    private static final String DOSSIER_SOURCES = "src/ressources/fichiers";
+    private static final String DOSSIER_SOURCES = "src/ressources/fichiers/reception";
 
     private Fichier[] fichiers;
 
@@ -148,13 +148,13 @@ public class GestionDonnees implements Serializable {
     /**
      * TODO : javadoc
      */
-    public void finInmportationReseau() {
+    public void finInmportationReseau(String dossier) {
         javafx.application.Platform.runLater(() -> {
             ControleurImporterReseau controleurImporterReseau = Saltistique.getController(Scenes.IMPORTATION_RESEAU);
             controleurImporterReseau.fermetureFenetre();
             // Appeler importerDonnees avec les fichiers reçus
 
-            File dossierSauvegarde = new File(DOSSIER_SOURCES);
+            File dossierSauvegarde = new File(dossier);
             File[] fichiersExistants = dossierSauvegarde.listFiles();
 
             if (fichiersExistants != null && fichiersExistants.length > 0) {
