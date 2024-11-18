@@ -6,6 +6,7 @@ package iut.info2.saltistique.controleur;
 
 import iut.info2.saltistique.Saltistique;
 import iut.info2.saltistique.modele.Notification;
+import iut.info2.saltistique.modele.Scenes;
 import iut.info2.saltistique.modele.donnees.ImportationReseau;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
@@ -55,12 +56,31 @@ public class ControleurImporterReseau extends Controleur {
      */
     @FXML
     void clickImporter() {
-        try{
-            ImportationReseau importationReseau = new ImportationReseau(adresseIp.getText(), Integer.parseInt(port.getText()), Saltistique.gestionDonnees);
+        try {
+            ImportationReseau importationReseau = new ImportationReseau(
+                    adresseIp.getText(),
+                    Integer.parseInt(port.getText()),
+                    Saltistique.gestionDonnees
+            );
         } catch (Exception e) {
-            new Notification("Erreur lors de l'importation des fichiers : ", e.getMessage());
+            e.printStackTrace(); // Affichez les détails dans la console
+            new Notification("Erreur lors de l'importation des fichiers", e.getMessage());
         }
     }
+
+    @FXML
+    public void finInmportationReseau() {
+        javafx.application.Platform.runLater(() -> {
+            fermerFenetre();
+
+            ControleurConsulterDonnees controleur = Saltistique.getController(Scenes.CONSULTER_DONNEES);
+            controleur.rafraichirTableaux();
+            Saltistique.changeScene(Scenes.CONSULTER_DONNEES);
+
+            new Notification("Importation réussie", "Les données ont été importées avec succès.");
+        });
+    }
+
 
     /**
      * Met à jour la bar de progression

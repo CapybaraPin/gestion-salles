@@ -100,10 +100,6 @@ public class Client implements Runnable{
             totalRead += bytesRead;
 
             this.progression += bytesRead;
-
-            ControleurImporterReseau controleurImporterReseau = Saltistique.getController(Scenes.IMPORTATION_RESEAU);
-            controleurImporterReseau.miseAJourProgression(this.progression / this.tailleTotale);
-
         }
         bos.flush();
     }
@@ -133,8 +129,8 @@ public class Client implements Runnable{
                     Thread.sleep(1000);
                 }
 
-
-                //Saltistique.gestionDonnees.finInmportationReseau();
+                ControleurImporterReseau controleurImporterReseau = Saltistique.getController(Scenes.IMPORTATION_RESEAU);
+                controleurImporterReseau.finInmportationReseau();
 
             } catch (IOException e) {
                 new Notification("Erreur de lecture du fichier", "Accès au fichiers distants impossible.");
@@ -143,6 +139,7 @@ public class Client implements Runnable{
                 throw new RuntimeException(e);
             }
         } catch (IOException e) {
+            e.printStackTrace();
             new Notification("Erreur de connexion au serveur", "Impossible de se connecter au serveur.");
         }
     }
