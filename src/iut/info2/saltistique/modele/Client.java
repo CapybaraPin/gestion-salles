@@ -132,7 +132,7 @@ public class Client implements Runnable{
             this.progression += bytesRead;
 
             ControleurImporterReseau controleurImporterReseau = Saltistique.getController(Scenes.IMPORTATION_RESEAU);
-            controleurImporterReseau.onProgressUpdate(this.progression / this.tailleTotale);
+            controleurImporterReseau.miseAJourProgression(this.progression / this.tailleTotale);
 
         }
         bos.flush();
@@ -164,8 +164,9 @@ public class Client implements Runnable{
                     Thread.sleep(1000);
                 }
 
+                ControleurImporterReseau controleurImporterReseau = Saltistique.getController(Scenes.IMPORTATION_RESEAU);
+                controleurImporterReseau.finInmportationReseau(dossierSauvegarde);
 
-                Saltistique.gestionDonnees.finInmportationReseau(dossierSauvegarde);
 
             } catch (IOException e) {
                 new Notification("Erreur de lecture du fichier", "Accès au fichiers distants impossible.");
