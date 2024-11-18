@@ -1,3 +1,7 @@
+/*
+ * Serveur.java           SAE 3.A.01
+ * IUT de RODEZ, tous les droits sont réservés
+ */
 package iut.info2.saltistique.modele;
 
 import java.io.*;
@@ -47,7 +51,6 @@ public class Serveur implements Runnable {
     public void run() {
         try {
             serverSocket = new ServerSocket(port);
-            System.out.println("Serveur demarré...");
             new Notification("Exportation des données", "Serveur démarré sur le port : " + port);
 
             while (!serverSocket.isClosed()) {

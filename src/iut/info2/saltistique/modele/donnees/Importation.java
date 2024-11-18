@@ -69,10 +69,6 @@ public class Importation {
         donnees.viderDonnees();
         ajouterFichier(cheminFichiers);
 
-        for (Fichier fichier : fichiers) {
-            System.out.println(fichier.getFichierExploite().getName());
-        }
-
         donnees.setFichiers(fichiers);
 
         ajouterDonnees(fichierActivites.contenuFichier(), this::ajouterActivite);

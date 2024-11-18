@@ -76,6 +76,7 @@ public class ControleurExporterReseau extends Controleur {
                 if (exporterDonnees == null) {
                     javafx.application.Platform.runLater(() -> {
                         exporterDonnees = new ExportationReseau(numeroPort, Saltistique.gestionDonnees.getFichiers());
+                        new Notification("Exportation des données", "Vous avez bien exporté les données sur le réseau.");
                     });
                 }
 
