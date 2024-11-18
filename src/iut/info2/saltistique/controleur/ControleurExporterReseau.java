@@ -5,6 +5,8 @@
 package iut.info2.saltistique.controleur;
 
 import iut.info2.saltistique.Saltistique;
+import iut.info2.saltistique.modele.donnees.ExportationReseau;
+import iut.info2.saltistique.modele.donnees.Importation;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -57,16 +59,20 @@ public class ControleurExporterReseau extends Controleur {
      */
     @FXML
     void clickStartStop() {
-        if (Saltistique.gestionDonnees.serveur != null) {
+        Importation importerDonnees = new Importation(Saltistique.gestionDonnees);
+        ExportationReseau exporterDonnees = new ExportationReseau(Integer.parseInt(port.getText()),
+                                                                  importerDonnees.getFichiers());
+
+        if (exporterDonnees.getServeur() != null) {
 
             // Arrêt du serveur
-            Saltistique.gestionDonnees.serveur.arreter();
-            Saltistique.gestionDonnees.serveur = null;
+            exporterDonnees.getServeur().arreter();
+            exporterDonnees.setServeur(null);
             btnStartStop.setText("Démarrer le serveur");
         } else {
 
             // Démarrage du serveur
-            Saltistique.gestionDonnees.exporterDonnees(Integer.parseInt(port.getText()));
+            exporterDonnees.exportationDonnees();
             btnStartStop.setText("Arrêter le serveur");
         }
     }

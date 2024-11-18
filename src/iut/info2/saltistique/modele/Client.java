@@ -134,7 +134,7 @@ public class Client implements Runnable{
                 }
 
 
-                Saltistique.gestionDonnees.finInmportationReseau();
+                //Saltistique.gestionDonnees.finInmportationReseau();
 
             } catch (IOException e) {
                 new Notification("Erreur de lecture du fichier", "Accès au fichiers distants impossible.");
