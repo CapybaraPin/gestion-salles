@@ -20,11 +20,12 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.shape.Line;
-
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * Le contrôleur de la vue permettant de consulter les données.
@@ -38,8 +39,6 @@ import java.util.Map;
  *     <li>L'application et la gestion des filtres pour les données visibles.</li>
  *     <li>La gestion de la navigation entre les différentes catégories de données.</li>
  * </ul>
- *
- * @author Jules VIALAS
  */
 public class ControleurConsulterDonnees extends Controleur {
 
@@ -265,6 +264,11 @@ public class ControleurConsulterDonnees extends Controleur {
     public Button boutonFiltrer;
 
     /**
+     * Selection de date pour filtrer par dates
+     */
+    public DatePicker filtreDate;
+
+    /**
      * Filtre contenant les différents filtres appliqués
      */
     @FXML
@@ -417,6 +421,7 @@ public class ControleurConsulterDonnees extends Controleur {
         Filtres.setVisible(afficherFiltres);
         boutonFiltrer.setVisible(afficherFiltres);
         hboxFiltresAppliques.setVisible(afficherFiltres);
+        filtreDate.setVisible(afficherFiltres);
     }
 
 
@@ -483,7 +488,7 @@ public class ControleurConsulterDonnees extends Controleur {
      */
     @FXML
     void clickFiltrer() {
-        if (valeurFiltre != null && !valeurFiltre.getText().isEmpty()) {
+        if (valeurFiltre != null && !valeurFiltre.getText().isEmpty() || filtreDate.equals(LocalDate.now())) {
             String critere = Filtres.getValue();
             String valeur = valeurFiltre.getText().toLowerCase();
             boolean correspondanceTrouvee = false; // Vérifie si des éléments correspondent
@@ -580,6 +585,35 @@ public class ControleurConsulterDonnees extends Controleur {
         }
     }
 
+    @FXML
+    void clickFiltrerDate() {
+        LocalDate dateSelectionnee = filtreDate.getValue();
+        if (dateSelectionnee != null) {
+            // Vérifier si la date existe dans les réservations
+            boolean dateExiste = listeReservations.stream()
+                    .anyMatch(reservation -> reservation.getDateDebut().toLocalDate().equals(dateSelectionnee));
+
+            if (dateExiste) {
+                // Si la date existe, vérifier si elle est déjà filtrée
+                boolean filtreDejaApplique = filtre.estDateFiltree(dateSelectionnee);
+
+                if (!filtreDejaApplique) {
+                    filtre.ajouterFiltreDate(dateSelectionnee);
+                    appliquerFiltres();
+                    afficherFiltresAppliques();
+                } else {
+                    new Notification("Filtre déjà appliqué", "La date que vous tentez d'appliquer est déjà filtrée.");
+                }
+            } else {
+                // Si la date n'existe pas dans les réservations, affiche un message
+                new Notification("Date invalide", "La date que vous avez entrée n'existe pas dans les données.");
+            }
+        } else {
+            new Notification("Aucun filtre", "Vous n'avez rentré aucune date.");
+        }
+    }
+
+
 
 
     /**
@@ -591,8 +625,19 @@ public class ControleurConsulterDonnees extends Controleur {
      */
     @FXML
     private void appliquerFiltres() {
-        tableauReservations.setItems(filtre.appliquerFiltres(new ArrayList<>(listeReservations)));
+        // Appliquer les filtres de date ainsi que les autres filtres
+        List<Reservation> reservationsFiltrees = filtre.appliquerFiltres(new ArrayList<>(listeReservations));
+
+        if (!filtre.getDatesFiltrees().isEmpty()) {
+            // Filtrer les réservations en fonction des dates filtrées
+            reservationsFiltrees = reservationsFiltrees.stream()
+                    .filter(reservation -> filtre.getDatesFiltrees().contains(reservation.getDateDebut().toLocalDate()))
+                    .collect(Collectors.toList());
+        }
+
+        tableauReservations.setItems(FXCollections.observableArrayList(reservationsFiltrees));
     }
+
 
     /**
      * Affiche les filtres actuellement appliqués sous forme de boutons interactifs.
@@ -601,6 +646,7 @@ public class ControleurConsulterDonnees extends Controleur {
         hboxFiltresAppliques.getChildren().clear();
         hboxFiltresAppliques.setSpacing(10);
 
+        // Afficher les filtres de salle
         if (filtre.getSallesFiltrees() != null) {
             for (Salle salle : filtre.getSallesFiltrees()) {
                 Button boutonSalle = creerBoutonFiltre("Salle : " + salle.getNom(), _ -> {
@@ -611,6 +657,7 @@ public class ControleurConsulterDonnees extends Controleur {
             }
         }
 
+        // Afficher les filtres d'employé
         if (filtre.getEmployesFiltres() != null) {
             for (Utilisateur employe : filtre.getEmployesFiltres()) {
                 Button boutonEmploye = creerBoutonFiltre("Employé : " + employe.getPrenom() + " " + employe.getNom(), _ -> {
@@ -621,6 +668,7 @@ public class ControleurConsulterDonnees extends Controleur {
             }
         }
 
+        // Afficher les filtres d'activité
         if (filtre.getActivitesFiltrees() != null) {
             for (Activite activite : filtre.getActivitesFiltrees()) {
                 Button boutonActivite = creerBoutonFiltre("Activité : " + activite.getNom(), _ -> {
@@ -630,7 +678,18 @@ public class ControleurConsulterDonnees extends Controleur {
                 hboxFiltresAppliques.getChildren().add(boutonActivite);
             }
         }
+
+        if (!filtre.getDatesFiltrees().isEmpty()) {
+            for (LocalDate dateFiltree : filtre.getDatesFiltrees()) {
+                Button boutonDate = creerBoutonFiltre("Date : " + dateFiltree, _ -> {
+                    filtre.supprimerFiltreDate(dateFiltree);
+                    mettreAJourFiltres();
+                });
+                hboxFiltresAppliques.getChildren().add(boutonDate);
+            }
+        }
     }
+
 
     /**
      * Crée un bouton de filtre avec un texte et un graphique (croix).
