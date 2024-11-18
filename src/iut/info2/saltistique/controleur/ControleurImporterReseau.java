@@ -87,7 +87,6 @@ public class ControleurImporterReseau extends Controleur {
             if (fichiersExistants != null && fichiersExistants.length > 0) {
                 String[] cheminFichiers = new String[4];
                 for (int i = 0; i < 4; i++) {
-                    System.out.println("Fichier  : " + fichiersExistants[i].getAbsolutePath());
                     cheminFichiers[i] = fichiersExistants[i].getAbsolutePath();
                 }
                 try {

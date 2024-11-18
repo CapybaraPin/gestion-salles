@@ -1,3 +1,7 @@
+/*
+ * Client.java           SAE 3.A.01
+ * IUT de RODEZ, tous les droits sont réservés
+ */
 package iut.info2.saltistique.modele;
 
 import iut.info2.saltistique.Saltistique;
