@@ -70,7 +70,7 @@ public class ImportationReseau extends Importation {
             viderSources();
         }
 
-        importationDonnees();
+        connexionClient();
     }
 
     /**
@@ -78,7 +78,6 @@ public class ImportationReseau extends Importation {
      * La connexion est gérée dans un thread distinct.
      */
     private void connexionClient() {
-        System.out.println("Connexion avec le client...");
         String adresseIp = host.toString();
         client = new Client(adresseIp.replace("/", ""), port);
         Thread clientThread = new Thread(client);
@@ -91,20 +90,20 @@ public class ImportationReseau extends Importation {
      *
      * @throws IOException Si une erreur survient lors de la gestion des fichiers locaux.
      */
-    private void importationDonnees() throws IOException {
-        System.out.println("Importation des données via le client...");
-        connexionClient();
-
-        File[] fichiersExistants = dossierSauvegarde.listFiles();
-        String[] cheminFichiers = new String[4];
-
-        if (sourceEstVide()) {
-            for (int i = 0; i < 4; i++) {
-                cheminFichiers[i] = fichiersExistants[i].getAbsolutePath();
-            }
-            importerDonnees(cheminFichiers);
-        }
-    }
+//    private void importationDonnees() throws IOException {
+//        System.out.println("Importation des données via le client...");
+//        connexionClient();
+//
+//        File[] fichiersExistants = dossierSauvegarde.listFiles();
+//        String[] cheminFichiers = new String[4];
+//
+//        if (sourceEstVide()) {
+//            for (int i = 0; i < 3; i++) {
+//                cheminFichiers[i] = fichiersExistants[i].getAbsolutePath();
+//            }
+//            importerDonnees(cheminFichiers);
+//        }
+//    }
 
     /**
      * Vérifie si le dossier source contenant les fichiers est vide.
@@ -113,7 +112,10 @@ public class ImportationReseau extends Importation {
      */
     private boolean sourceEstVide() {
         File[] fichiersExistants = dossierSauvegarde.listFiles();
-        return fichiersExistants != null && fichiersExistants.length > 0;
+        if (fichiersExistants != null && fichiersExistants.length > 0) {
+            return false;
+        }
+        return true;
     }
 
     /**
@@ -126,9 +128,11 @@ public class ImportationReseau extends Importation {
 
         if (fichiersExistants != null) {
             for (File fichier : fichiersExistants) {
+                System.out.println(fichier.getAbsolutePath());
                 try {
                     Files.deleteIfExists(fichier.toPath());
                 } catch (IOException e) {
+                    e.printStackTrace();
                     throw new IOException("Impossible de supprimer le fichier du dossier source : " + fichier.getName());
                 }
             }
