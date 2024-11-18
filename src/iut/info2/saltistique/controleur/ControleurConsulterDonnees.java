@@ -11,34 +11,35 @@ import iut.info2.saltistique.Saltistique;
 import iut.info2.saltistique.modele.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
-import javafx.scene.control.Button;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
 import javafx.scene.shape.Line;
+
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
-import com.itextpdf.kernel.pdf.PdfDocument;
-import com.itextpdf.layout.Document;
-import com.itextpdf.layout.element.Table;
-import com.itextpdf.layout.element.Cell;
-import java.io.File;
-import java.io.IOException;
-import javafx.stage.FileChooser;
-import javafx.stage.Stage;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Alert.AlertType;
-import javafx.scene.control.ButtonType;
-import java.awt.Desktop;
 
 /**
  * Le contrôleur de la vue permettant de consulter les données.
- * Affichage et interaction avec les tables de données
+ * Gère l'affichage, le filtrage, et l'interaction avec les tables de données
  * (réservations, activités, employés, salles) ainsi que le contrôle des boutons
  * et autres éléments interactifs de l'interface.
+ * <p>
+ * Ce contrôleur est responsable de :
+ * <ul>
+ *     <li>L'initialisation des tableaux pour afficher les données.</li>
+ *     <li>L'application et la gestion des filtres pour les données visibles.</li>
+ *     <li>La gestion de la navigation entre les différentes catégories de données.</li>
+ * </ul>
+ *
+ * @author Jules VIALAS
  */
 public class ControleurConsulterDonnees extends Controleur {
 
@@ -245,7 +246,36 @@ public class ControleurConsulterDonnees extends Controleur {
      */
     @FXML
     public TableColumn<Salle, Boolean> Imprimante;
+
+    /**
+     * Champs pour rentrer le filtre que l'on veut appliquer
+     */
+    @FXML
     public TextField valeurFiltre;
+
+    /**
+     * Permet de selectionner les données sur lesquelles appliqué le filtre
+     */
+    @FXML
+    public ComboBox<String> Filtres;
+
+    /**
+     * Bouton pour filtrer les données
+     */
+    public Button boutonFiltrer;
+
+    /**
+     * Filtre contenant les différents filtres appliqués
+     */
+    @FXML
+    private Filtre filtre;
+
+    /**
+     * HBox contenant les filtres appliqués
+     */
+    @FXML
+    private HBox hboxFiltresAppliques;
+
 
     /**
      * Listes observables contenant les objets de chaques types.
@@ -257,11 +287,10 @@ public class ControleurConsulterDonnees extends Controleur {
     private ObservableList<Activite> listeActivites;
     private ObservableList<Utilisateur> listeEmployes;
     private ObservableList<Reservation> listeReservations;
-    private final Utilisateur employeFiltre = null;
-    private Filtre filtre;
 
     /**
-     * Initialise le contrôleur et configure les tableaux.
+     * Initialise le contrôleur après le chargement de la vue FXML.
+     * Configure les filtres, les listes observables, et initialise les tableaux.
      */
     public void initialize() {
         filtre = new Filtre();
@@ -269,17 +298,24 @@ public class ControleurConsulterDonnees extends Controleur {
         listeActivites = FXCollections.observableArrayList();
         listeEmployes = FXCollections.observableArrayList();
         listeReservations = FXCollections.observableArrayList();
+        Filtres.setItems(FXCollections.observableArrayList(
+                "Salle",
+                "Activité",
+                "Employé"
+        ));
+        Filtres.getSelectionModel().selectFirst();
         initialiserTableaux();
         initialiserTableauSalles();
         initialiserTableauActivites();
         initialiserTableauEmployes();
         initialiserTableauReservations();
-
         clickBoutonNotification();
     }
 
+
     /**
-     * Méthode pour rafraîchir les tableaux après l'importation de nouvelles données.
+     * Rafraîchit les données affichées dans les tableaux.
+     * Recharge les données depuis la source et met à jour les tableaux liés.
      */
     public void rafraichirTableaux() {
         listeSalles.clear();
@@ -365,17 +401,24 @@ public class ControleurConsulterDonnees extends Controleur {
     }
 
     /**
-     * Affiche le tableau et la sélection spécifiés, tout en masquant les autres.
+     * Affiche uniquement le tableau et la sélection spécifiés.
+     * Masque les autres tableaux et sélections.
      *
-     * @param tableau   La référence au Node représentant le tableau à afficher.
-     * @param selection La référence au Node représentant la sélection à afficher.
+     * @param tableau   Le tableau a affiché.
+     * @param selection La sélection a affichée
      */
     @FXML
     private void afficherTableau(Node tableau, Node selection) {
         masquerTousLesTableauxEtSelections();
         tableau.setVisible(true);
         selection.setVisible(true);
+        boolean afficherFiltres = tableau == tableauReservations;
+        valeurFiltre.setVisible(afficherFiltres);
+        Filtres.setVisible(afficherFiltres);
+        boutonFiltrer.setVisible(afficherFiltres);
+        hboxFiltresAppliques.setVisible(afficherFiltres);
     }
+
 
     /**
      * Masque tous les tableaux et les sélections dans l'interface utilisateur.
@@ -435,174 +478,197 @@ public class ControleurConsulterDonnees extends Controleur {
     }
 
     /**
-     * Applique les filtres à l'aide de la classe Filtre et met à jour les tableaux.
+     * Gère le clic sur le bouton "Filtrer".
+     * Applique les filtres en fonction du critère et de la valeur sélectionnés.
      */
-    private void appliquerFiltres() {
-        Map<String, ObservableList<?>> resultatsFiltres = filtre.appliquerFiltres(Saltistique.gestionDonnees.getReservations());
-
-        tableauReservations.setItems((ObservableList<Reservation>) resultatsFiltres.get("reservations"));
-        tableauSalles.setItems((ObservableList<Salle>) resultatsFiltres.get("salles"));
-        tableauActivites.setItems((ObservableList<Activite>) resultatsFiltres.get("activites"));
-        tableauEmployes.setItems((ObservableList<Utilisateur>) resultatsFiltres.get("utilisateurs"));
-    }
-
     @FXML
-    private void clickFiltrer() {
-        String texteFiltre = valeurFiltre.getText().trim();
-        if (texteFiltre.isEmpty()) {
-            filtre.setEmployeFiltre(null);
-            rafraichirTableaux();
-            return;
-        }
-        Utilisateur employeTrouve = null;
-        for (Reservation reservation : tableauReservations.getItems()) {
-            Utilisateur utilisateur = reservation.getUtilisateur();
-            String[] motsFiltre = texteFiltre.toLowerCase().split(" ");
-            boolean trouve = true;
-            for (String mot : motsFiltre) {
-                if (!(utilisateur.getPrenom().toLowerCase().contains(mot) || utilisateur.getNom().toLowerCase().contains(mot))) {
-                    trouve = false;
+    void clickFiltrer() {
+        if (valeurFiltre != null && !valeurFiltre.getText().isEmpty()) {
+            String critere = Filtres.getValue();
+            String valeur = valeurFiltre.getText().toLowerCase();
+            boolean correspondanceTrouvee = false; // Vérifie si des éléments correspondent
+            boolean filtreDejaApplique = false; // Vérifie si le filtre est déjà appliqué
+
+            switch (critere) {
+                case "Salle":
+                    correspondanceTrouvee = listeSalles.stream()
+                            .anyMatch(salle -> salle.getNom() != null && salle.getNom().toLowerCase().equals(valeur));
+                    filtreDejaApplique = correspondanceTrouvee &&
+                            filtre.getSallesFiltrees().stream()
+                                    .anyMatch(salle -> salle.getNom() != null && salle.getNom().toLowerCase().equals(valeur));
+
+                    if (correspondanceTrouvee && !filtreDejaApplique) {
+                        listeSalles.stream()
+                                .filter(salle -> salle.getNom() != null && salle.getNom().toLowerCase().equals(valeur))
+                                .forEach(salle -> filtre.ajouterFiltreSalle(salle));
+                    }
                     break;
-                }
+
+                case "Employé":
+                    String[] motsRecherche = valeur.split("\\s+");
+                    if (motsRecherche.length > 1) {
+                        correspondanceTrouvee = listeEmployes.stream()
+                                .anyMatch(employe -> employe.getNom() != null && employe.getPrenom() != null &&
+                                        ((employe.getPrenom().toLowerCase() + " " + employe.getNom().toLowerCase()).equals(valeur) ||
+                                                (employe.getNom().toLowerCase() + " " + employe.getPrenom().toLowerCase()).equals(valeur)));
+
+                        filtreDejaApplique = correspondanceTrouvee &&
+                                filtre.getEmployesFiltres().stream()
+                                        .anyMatch(employe -> employe.getNom() != null && employe.getPrenom() != null &&
+                                                ((employe.getPrenom().toLowerCase() + " " + employe.getNom().toLowerCase()).equals(valeur) ||
+                                                        (employe.getNom().toLowerCase() + " " + employe.getPrenom().toLowerCase()).equals(valeur)));
+
+                        if (correspondanceTrouvee && !filtreDejaApplique) {
+                            listeEmployes.stream()
+                                    .filter(employe -> employe.getNom() != null && employe.getPrenom() != null &&
+                                            ((employe.getPrenom().toLowerCase() + " " + employe.getNom().toLowerCase()).equals(valeur) ||
+                                                    (employe.getNom().toLowerCase() + " " + employe.getPrenom().toLowerCase()).equals(valeur)))
+                                    .forEach(employe -> filtre.ajouterFiltreEmploye(employe));
+                        }
+                    } else {
+                        correspondanceTrouvee = listeEmployes.stream()
+                                .anyMatch(employe -> employe.getNom() != null && employe.getPrenom() != null &&
+                                        java.util.Arrays.stream(motsRecherche)
+                                                .anyMatch(mot -> employe.getNom().toLowerCase().contains(mot) ||
+                                                        employe.getPrenom().toLowerCase().contains(mot)));
+
+                        filtreDejaApplique = correspondanceTrouvee &&
+                                filtre.getEmployesFiltres().stream()
+                                        .anyMatch(employe -> employe.getNom() != null && employe.getPrenom() != null &&
+                                                java.util.Arrays.stream(motsRecherche)
+                                                        .anyMatch(mot -> employe.getNom().toLowerCase().contains(mot) ||
+                                                                employe.getPrenom().toLowerCase().contains(mot)));
+
+                        if (correspondanceTrouvee && !filtreDejaApplique) {
+                            listeEmployes.stream()
+                                    .filter(employe -> employe.getNom() != null && employe.getPrenom() != null &&
+                                            java.util.Arrays.stream(motsRecherche)
+                                                    .anyMatch(mot -> employe.getNom().toLowerCase().contains(mot) ||
+                                                            employe.getPrenom().toLowerCase().contains(mot)))
+                                    .forEach(employe -> filtre.ajouterFiltreEmploye(employe));
+                        }
+                    }
+                    break;
+
+
+
+                case "Activité":
+                    correspondanceTrouvee = listeActivites.stream()
+                            .anyMatch(activite -> activite.getNom() != null && activite.getNom().toLowerCase().equals(valeur));
+                    filtreDejaApplique = correspondanceTrouvee &&
+                            filtre.getActivitesFiltrees().stream()
+                                    .anyMatch(activite -> activite.getNom() != null && activite.getNom().toLowerCase().equals(valeur));
+
+                    if (correspondanceTrouvee && !filtreDejaApplique) {
+                        listeActivites.stream()
+                                .filter(activite -> activite.getNom() != null && activite.getNom().toLowerCase().equals(valeur))
+                                .forEach(activite -> filtre.ajouterFiltreActivite(activite));
+                    }
+                    break;
             }
-            if (trouve) {
-                employeTrouve = utilisateur;
-                break;
+
+            if (!correspondanceTrouvee) {
+                new Notification("Filtre inconnu", "Le filtre que vous avez rentré ne correspond à aucune donnée.");
+            } else if (filtreDejaApplique) {
+                new Notification("Filtre déjà appliqué", "Le filtre que vous tentez d'appliqué est déjà actif.");
+            } else {
+                appliquerFiltres();
+                afficherFiltresAppliques();
             }
-        }
-        if (employeTrouve != null) {
-            filtre.setEmployeFiltre(employeTrouve);
-            appliquerFiltres();
         } else {
-            System.out.println("Cet employé ne possède aucune réservation");
+            new Notification("Aucun filtre", "Vous n'avez rentré aucun filtre.");
         }
     }
 
+
+
+    /**
+     * Applique les filtres définis sur la liste des réservations.
+     * <p>
+     * Cette méthode récupère les filtres définis dans l'objet {@link Filtre},
+     * applique ces filtres à la liste des réservations originales,
+     * et met à jour la TableView des réservations avec les résultats filtrés.
+     */
+    @FXML
+    private void appliquerFiltres() {
+        tableauReservations.setItems(filtre.appliquerFiltres(new ArrayList<>(listeReservations)));
+    }
+
+    /**
+     * Affiche les filtres actuellement appliqués sous forme de boutons interactifs.
+     */
+    private void afficherFiltresAppliques() {
+        hboxFiltresAppliques.getChildren().clear();
+        hboxFiltresAppliques.setSpacing(10);
+
+        if (filtre.getSallesFiltrees() != null) {
+            for (Salle salle : filtre.getSallesFiltrees()) {
+                Button boutonSalle = creerBoutonFiltre("Salle : " + salle.getNom(), _ -> {
+                    filtre.supprimerFiltreSalle(salle);
+                    mettreAJourFiltres();
+                });
+                hboxFiltresAppliques.getChildren().add(boutonSalle);
+            }
+        }
+
+        if (filtre.getEmployesFiltres() != null) {
+            for (Utilisateur employe : filtre.getEmployesFiltres()) {
+                Button boutonEmploye = creerBoutonFiltre("Employé : " + employe.getPrenom() + " " + employe.getNom(), _ -> {
+                    filtre.supprimerFiltreEmploye(employe);
+                    mettreAJourFiltres();
+                });
+                hboxFiltresAppliques.getChildren().add(boutonEmploye);
+            }
+        }
+
+        if (filtre.getActivitesFiltrees() != null) {
+            for (Activite activite : filtre.getActivitesFiltrees()) {
+                Button boutonActivite = creerBoutonFiltre("Activité : " + activite.getNom(), _ -> {
+                    filtre.supprimerFiltreActivite(activite);
+                    mettreAJourFiltres();
+                });
+                hboxFiltresAppliques.getChildren().add(boutonActivite);
+            }
+        }
+    }
+
+    /**
+     * Crée un bouton de filtre avec un texte et un graphique (croix).
+     *
+     * @param texte  Le texte à afficher sur le bouton.
+     * @param action L'action à exécuter lors du clic sur le bouton.
+     * @return Le bouton créé.
+     */
+    private Button creerBoutonFiltre(String texte, EventHandler<ActionEvent> action) {
+        Button bouton = new Button(texte);
+        bouton.setOnAction(action);
+
+        Pane croix = new Pane();
+        croix.setPrefSize(6, 6);
+        croix.setMaxSize(6, 6);
+        croix.setMinSize(6, 6);
+        croix.getStyleClass().add("ico-close");
+
+        bouton.setGraphic(croix);
+        bouton.setContentDisplay(ContentDisplay.RIGHT);
+        bouton.getStyleClass().add("btn-filtre");
+        return bouton;
+    }
+
+    /**
+     * Met à jour la liste des réservations affichées en fonction des filtres appliqués.
+     *
+     * <p>Elle est utilisée chaque fois qu'un filtre est ajouté, supprimé ou modifié afin
+     * d'assurer que la TableView reflète correctement l'état actuel des filtres.</p>
+     */
+    private void mettreAJourFiltres() {
+        List<Reservation> reservationsFiltrees = filtre.appliquerFiltres(listeReservations);
+        tableauReservations.setItems(FXCollections.observableArrayList(reservationsFiltrees));
+        afficherFiltresAppliques();
+    }
 
     @FXML
     void clickGenererPDF() {
-        // Créer un FileChooser pour permettre à l'utilisateur de choisir où enregistrer le fichier PDF
-        FileChooser fileChooser = new FileChooser();
-        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Fichiers PDF", "*.pdf"));
-        File fichier = fileChooser.showSaveDialog(new Stage());
-
-        // Vérifier que le fichier n'est pas null (l'utilisateur a choisi un emplacement)
-        if (fichier != null) {
-            // Créer un PdfDocument pour générer le PDF
-            try (PdfDocument pdfDocument = new PdfDocument(new com.itextpdf.kernel.pdf.PdfWriter(fichier))) {
-                // Créer un document PDF
-                Document document = new Document(pdfDocument);
-
-                // Ajouter un titre au document
-                document.add(new com.itextpdf.layout.element.Paragraph("Rapport de données"));
-
-                // Ajouter les tableaux dans le document
-                ajouterTableauReservations(document);
-                ajouterTableauActivites(document);
-                ajouterTableauEmployes(document);
-                ajouterTableauSalles(document);
-
-                // Fermer le document
-                document.close();
-
-                // Afficher un message de confirmation
-                Alert alert = new Alert(AlertType.INFORMATION, "Le PDF a été généré avec succès!", ButtonType.OK);
-                alert.showAndWait();
-
-                // Ouvrir automatiquement le fichier PDF généré
-                Desktop.getDesktop().open(fichier);
-
-            } catch (IOException e) {
-                // Gestion des erreurs
-                Alert alert = new Alert(AlertType.ERROR, "Erreur lors de la génération du PDF: " + e.getMessage(), ButtonType.OK);
-                alert.showAndWait();
-            }
-        }
+        //TODO
     }
-
-    private void ajouterTableauReservations(Document document) {
-        // Créer une table pour les réservations
-        Table table = new Table(new float[]{1, 3, 3, 3, 2, 3, 3});
-        table.addCell(new Cell().add(new com.itextpdf.layout.element.Paragraph("Identifiant")));
-        table.addCell(new Cell().add(new com.itextpdf.layout.element.Paragraph("Date de début")));
-        table.addCell(new Cell().add(new com.itextpdf.layout.element.Paragraph("Date de fin")));
-        table.addCell(new Cell().add(new com.itextpdf.layout.element.Paragraph("Description")));
-        table.addCell(new Cell().add(new com.itextpdf.layout.element.Paragraph("Salle")));
-        table.addCell(new Cell().add(new com.itextpdf.layout.element.Paragraph("Activité")));
-        table.addCell(new Cell().add(new com.itextpdf.layout.element.Paragraph("Utilisateur")));
-
-        for (Reservation reservation : listeReservations) {
-            table.addCell(reservation.getIdentifiant());
-            table.addCell(reservation.getDateDebut().toString());
-            table.addCell(reservation.getDateFin().toString());
-            table.addCell(reservation.getDescription());
-            table.addCell(reservation.getSalle().getNom());
-            table.addCell(reservation.getActivite().getNom());
-            table.addCell(reservation.getUtilisateur().getNom() + " " + reservation.getUtilisateur().getPrenom());
-        }
-
-        // Ajouter la table de réservations au document
-        document.add(new com.itextpdf.layout.element.Paragraph("Réservations"));
-        document.add(table);
-    }
-
-    private void ajouterTableauActivites(Document document) {
-        // Créer une table pour les activités
-        Table table = new Table(new float[]{1, 3});
-        table.addCell(new Cell().add(new com.itextpdf.layout.element.Paragraph("Identifiant")));
-        table.addCell(new Cell().add(new com.itextpdf.layout.element.Paragraph("Nom")));
-
-        for (Activite activite : listeActivites) {
-            table.addCell(activite.getIdentifiant());
-            table.addCell(activite.getNom());
-        }
-
-        // Ajouter la table des activités au document
-        document.add(new com.itextpdf.layout.element.Paragraph("Activités"));
-        document.add(table);
-    }
-
-    private void ajouterTableauEmployes(Document document) {
-        // Créer une table pour les employés
-        Table table = new Table(new float[]{1, 3, 3, 3});
-        table.addCell(new Cell().add(new com.itextpdf.layout.element.Paragraph("Identifiant")));
-        table.addCell(new Cell().add(new com.itextpdf.layout.element.Paragraph("Nom")));
-        table.addCell(new Cell().add(new com.itextpdf.layout.element.Paragraph("Prénom")));
-        table.addCell(new Cell().add(new com.itextpdf.layout.element.Paragraph("Téléphone")));
-
-        for (Utilisateur employe : listeEmployes) {
-            table.addCell(employe.getIdentifiant());
-            table.addCell(employe.getNom());
-            table.addCell(employe.getPrenom());
-            table.addCell(employe.getNumeroTelephone());
-        }
-
-        // Ajouter la table des employés au document
-        document.add(new com.itextpdf.layout.element.Paragraph("Employés"));
-        document.add(table);
-    }
-
-    private void ajouterTableauSalles(Document document) {
-        // Créer une table pour les salles
-        Table table = new Table(new float[]{1, 3, 2, 2, 2, 2});
-        table.addCell(new Cell().add(new com.itextpdf.layout.element.Paragraph("Identifiant")));
-        table.addCell(new Cell().add(new com.itextpdf.layout.element.Paragraph("Nom")));
-        table.addCell(new Cell().add(new com.itextpdf.layout.element.Paragraph("Capacité")));
-        table.addCell(new Cell().add(new com.itextpdf.layout.element.Paragraph("Vidéo Projecteur")));
-        table.addCell(new Cell().add(new com.itextpdf.layout.element.Paragraph("Écran XXL")));
-        table.addCell(new Cell().add(new com.itextpdf.layout.element.Paragraph("Ordinateurs")));
-
-        for (Salle salle : listeSalles) {
-            table.addCell(salle.getIdentifiant());
-            table.addCell(salle.getNom());
-            table.addCell(String.valueOf(salle.getCapacite()));
-            table.addCell(String.valueOf(salle.isVideoProjecteur()));
-            table.addCell(String.valueOf(salle.isEcranXXL()));
-            table.addCell(String.valueOf(salle.getOrdinateurs()));
-        }
-
-        document.add(new com.itextpdf.layout.element.Paragraph("Salles"));
-        document.add(table);
-    }
-
 }

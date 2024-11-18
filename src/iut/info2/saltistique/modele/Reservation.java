@@ -94,6 +94,7 @@ public class Reservation implements Serializable {
      * @return La date de debut de la réservation.
      */
     public LocalDateTime getDateDebut() {
+
         return dateDebut;
     }
 
