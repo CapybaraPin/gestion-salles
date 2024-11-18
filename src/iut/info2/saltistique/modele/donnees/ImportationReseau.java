@@ -75,8 +75,9 @@ public class ImportationReseau extends Importation {
         System.out.println("Connexion avec le client...");
 
         String adresseIp = host.toString();
+        System.out.println(host.toString());
 
-        client = new Client(adresseIp, port);
+        client = new Client(adresseIp.toString().replace("/", ""), port);
         Thread clientThread = new Thread(client);
         clientThread.start();
     }
