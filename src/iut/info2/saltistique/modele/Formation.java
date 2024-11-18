@@ -21,7 +21,6 @@ public class Formation extends Reservation {
         /** Numéro de téléphone du Formateur */
         private String telephoneFormateur;
 
-
         /**
          * Constructeur de la classe Formation.
          * Ce constructeur initialise une réservation de formation en prenant en compte
