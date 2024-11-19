@@ -96,7 +96,7 @@ public class Client implements Runnable{
 
             // Préparation chiffrage avec la clé reçue
             chiffrage.calculeClePartager(receptionGrosEntier);
-            chiffrage.generateKeyFromDiffie();
+            chiffrage.genererCleVigenere();
 
             // Réception du nom et de la taille du fichier + Création de celui-ci
             nomFichier = dis.readUTF();
@@ -112,7 +112,7 @@ public class Client implements Runnable{
 
             // Déchiffrage du fichier
             chiffrage.setCheminFichier(sauvegardeFichier.getAbsolutePath());
-            cheminFichier = chiffrage.decrypter();
+            cheminFichier = chiffrage.dechiffrer();
 
             //Supression du fichier chiffrer
             sauvegardeFichier.delete();

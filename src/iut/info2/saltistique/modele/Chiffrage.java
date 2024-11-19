@@ -42,27 +42,27 @@ public class Chiffrage {
     /** Modulo public pour le calcul de Diffie-Hellman, entier premier. */
     private final BigInteger P = new BigInteger("162259276829213363391578010288127");
 
-    /** Clé partagée calculée via Diffie-Hellman. */
-    private BigInteger clePartager;
-
-    /** Clé publique générée pour le calcul de Diffie-Hellman. */
-    private BigInteger clePublic;
-
     /** Limite minimal pour la génération de l'exposant Diffie-Hellman. */
-    private final BigInteger PUISSANCE_MINI = new BigInteger("5000000000000000");
+    private final BigInteger EXPOSANT_MINIMUM = new BigInteger("5000000000000000");
 
     /** Limite maximale pour la génération de l'exposant Diffie-Hellman. */
-    private final BigInteger PUISSANCE_MAXI = new BigInteger("9999999999999999");
+    private final BigInteger EXPOSANT_MAXIMUM = new BigInteger("9999999999999999");
+
+    /** Alphabet personnalisé utilisé pour le chiffrement et le déchiffrement de Vigenère. */
+    private static final String ALPHABET_PERSONNALISE = "abcdefghijklmnopqrstuvwxyzABCDEFGH"
+            + "IJKLMNOPQRSTUVWXYZ&~\"#'({[-|`_\\^@)]}/*.!?,;:<>1234567890$% +=\n";
 
     /** Chemin du fichier à crypter ou décrypter. */
     private String cheminFichier;
 
     /** Clé secrète générée pour le chiffrement Vigenère. */
-    private String cle_vigenere;
+    private String cleVigenere;
 
-    /** Alphabet personnalisé utilisé pour le chiffrement et le déchiffrement de Vigenère. */
-    private static final String CUSTOM_ALPHABET = "abcdefghijklmnopqrstuvwxyzABCDEFGH"
-            + "IJKLMNOPQRSTUVWXYZ&~\"#'({[-|`_\\^@)]}/*.!?,;:<>1234567890$% +=\n";
+    /** Clé partagée calculée via Diffie-Hellman. */
+    private BigInteger clePartager;
+
+    /** Clé publique générée pour le calcul de Diffie-Hellman. */
+    private BigInteger clePublique;
 
     /**
      * Constructeur principal qui initialise le chemin du fichier et génère une clé publique Diffie-Hellman.
@@ -71,8 +71,8 @@ public class Chiffrage {
      */
     public Chiffrage(String cheminFichier) {
         this.cheminFichier = cheminFichier;
-        BigInteger exposant = generateExponent();
-        this.clePublic = modExponentiation(G, exposant, P);
+        BigInteger exposant = genererExposant();
+        this.clePublique = exponentiationModulaire(G, exposant, P);
     }
 
     /**
@@ -80,8 +80,8 @@ public class Chiffrage {
      * Génère une clé publique Diffie-Hellman.
      */
     public Chiffrage() {
-        BigInteger exposant = generateExponent();
-        this.clePublic = modExponentiation(G, exposant, P);
+        BigInteger exposant = genererExposant();
+        this.clePublique = exponentiationModulaire(G, exposant, P);
     }
 
     /**
@@ -95,9 +95,10 @@ public class Chiffrage {
      * @return le chemin du fichier chiffré.
      * @throws RuntimeException si une erreur d'entrée/sortie survient.
      */
-    public String crypter() {
+    public String chiffrer() throws IOException {
         try {
-            String cheminFichierCrypte = cheminFichier.replace(".csv", "-c.csv");
+            //Lecture du fichier à chiffrer
+            String cheminFichierChiffrer = cheminFichier.replace(".csv", "-c.csv");
             StringBuilder contenu = new StringBuilder();
             try (BufferedReader lecteur = new BufferedReader(new FileReader(cheminFichier))) {
                 String ligne;
@@ -107,30 +108,31 @@ public class Chiffrage {
             }
             String contenuFichier = contenu.toString();
 
-            try (BufferedWriter writer = new BufferedWriter(new FileWriter(cheminFichierCrypte))) {
-                StringBuilder ligneCrypter = new StringBuilder();
+            //Chiffrage du fichier
+            try (BufferedWriter writer = new BufferedWriter(new FileWriter(cheminFichierChiffrer))) {
+                StringBuilder textChiffer = new StringBuilder();
                 int k = 0;
                 for (int i = 0; i < contenuFichier.length(); i++) {
-                    int valeur_m = CUSTOM_ALPHABET.indexOf(contenuFichier.charAt(i));
-                    int valeur_c = CUSTOM_ALPHABET.indexOf(cle_vigenere.charAt(k));
+                    int valeur_m = ALPHABET_PERSONNALISE.indexOf(contenuFichier.charAt(i));
+                    int valeur_c = ALPHABET_PERSONNALISE.indexOf(cleVigenere.charAt(k));
                     if (valeur_m == -1) {
-                        ligneCrypter.append(contenuFichier.charAt(i));
+                        textChiffer.append(contenuFichier.charAt(i));
                     } else {
-                        if (k == cle_vigenere.length() - 1) {
+                        if (k == cleVigenere.length() - 1) {
                             k = 0;
                         } else {
                             k++;
                         }
-                        int valeur_total = valeur_m + valeur_c;
-                        ligneCrypter.append(CUSTOM_ALPHABET.charAt(valeur_total % CUSTOM_ALPHABET.length()));
+                        int valeurTotal = valeur_m + valeur_c;
+                        textChiffer.append(ALPHABET_PERSONNALISE.charAt(valeurTotal % ALPHABET_PERSONNALISE.length()));
                     }
                 }
-                writer.write(ligneCrypter.toString());
+                writer.write(textChiffer.toString());
             }
 
-            return cheminFichierCrypte;
+            return cheminFichierChiffrer;
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new IOException("Erreur lors du chiffrement : " + e.getMessage(), e);
         }
     }
 
@@ -145,9 +147,10 @@ public class Chiffrage {
      * @return le chemin du fichier déchiffré.
      * @throws RuntimeException si une erreur d'entrée/sortie survient.
      */
-    public String decrypter() {
+    public String dechiffrer() throws IOException {
         try {
-            String cheminFichierDecrypte = cheminFichier.replace("-c.csv", "-dc.csv");
+            //Lecture du fichier à déchiffrer
+            String cheminFichierDechiffrer = cheminFichier.replace("-c.csv", "-dc.csv");
             StringBuilder contenu = new StringBuilder();
             try (BufferedReader lecteur = new BufferedReader(new FileReader(cheminFichier))) {
                 String ligne;
@@ -157,47 +160,48 @@ public class Chiffrage {
             }
             String contenuFichier = contenu.toString();
 
-            try (BufferedWriter writer = new BufferedWriter(new FileWriter(cheminFichierDecrypte))) {
-                StringBuilder ligneDecrypter = new StringBuilder();
+            //Déchiffrage du fichier
+            try (BufferedWriter writer = new BufferedWriter(new FileWriter(cheminFichierDechiffrer))) {
+                StringBuilder textDechiffrer = new StringBuilder();
                 int k = 0;
                 for (int i = 0; i < contenuFichier.length() - 1; i++) {
-                    int valeur_m = CUSTOM_ALPHABET.indexOf(contenuFichier.charAt(i));
-                    int valeur_c = CUSTOM_ALPHABET.indexOf(cle_vigenere.charAt(k));
+                    int valeur_m = ALPHABET_PERSONNALISE.indexOf(contenuFichier.charAt(i));
+                    int valeur_c = ALPHABET_PERSONNALISE.indexOf(cleVigenere.charAt(k));
 
                     if (valeur_m == -1) {
-                        ligneDecrypter.append(contenuFichier.charAt(i));
+                        textDechiffrer.append(contenuFichier.charAt(i));
                     } else {
-                        if (k == cle_vigenere.length() - 1) {
+                        if (k == cleVigenere.length() - 1) {
                             k = 0;
                         } else {
                             k++;
                         }
 
-                        int valeur_total = (valeur_m - valeur_c) % CUSTOM_ALPHABET.length();
-                        if (valeur_total < 0) {
-                            valeur_total += CUSTOM_ALPHABET.length();
+                        int valeurTotal = (valeur_m - valeur_c) % ALPHABET_PERSONNALISE.length();
+                        if (valeurTotal < 0) {
+                            valeurTotal += ALPHABET_PERSONNALISE.length();
                         }
 
-                        ligneDecrypter.append(CUSTOM_ALPHABET.charAt(valeur_total));
+                        textDechiffrer.append(ALPHABET_PERSONNALISE.charAt(valeurTotal));
                     }
                 }
-                writer.write(ligneDecrypter.toString());
+                writer.write(textDechiffrer.toString());
             }
 
-            return cheminFichierDecrypte;
+            return cheminFichierDechiffrer;
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new IOException("Erreur lors du chiffrement : " + e.getMessage(), e);
         }
     }
 
     /**
      * Génère une puissance aléatoire utilisée comme exposant pour Diffie-Hellman.
      *
-     * @return une puissance aléatoire comprise entre {@link #PUISSANCE_MINI} et {@link #PUISSANCE_MAXI}.
+     * @return une puissance aléatoire comprise entre {@link #EXPOSANT_MINIMUM} et {@link #EXPOSANT_MAXIMUM}.
      */
-    private BigInteger generateExponent() {
-        return new BigInteger(PUISSANCE_MAXI.bitLength(), new SecureRandom())
-                .mod(PUISSANCE_MAXI.subtract(PUISSANCE_MINI)).add(PUISSANCE_MINI);
+    private BigInteger genererExposant() {
+        return new BigInteger(EXPOSANT_MAXIMUM.bitLength(), new SecureRandom())
+                .mod(EXPOSANT_MAXIMUM.subtract(EXPOSANT_MINIMUM)).add(EXPOSANT_MINIMUM);
     }
 
     /**
@@ -208,7 +212,7 @@ public class Chiffrage {
      * @param modulo le modulo.
      * @return le résultat de (base^exponent) mod modulo.
      */
-    private BigInteger modExponentiation(BigInteger base, BigInteger exponent, BigInteger modulo) {
+    private BigInteger exponentiationModulaire(BigInteger base, BigInteger exponent, BigInteger modulo) {
         if (modulo.equals(BigInteger.ONE)) {
             return BigInteger.ZERO; // Dans ce cas, tout nombre modulo 1 est 0
         }
@@ -222,7 +226,7 @@ public class Chiffrage {
      * @return la clé privée.
      */
     public BigInteger getClePublic() {
-        return clePublic;
+        return clePublique;
     }
 
     /**
@@ -240,20 +244,20 @@ public class Chiffrage {
      * @param cle clé publique de l'autre participant au protocole Diffie-Hellman.
      */
     public void calculeClePartager(BigInteger cle) {
-        this.clePartager = modExponentiation(G, clePublic.multiply(cle), P);
+        this.clePartager = exponentiationModulaire(G, clePublique.multiply(cle), P);
     }
 
     /**
      * Génère une clé de chiffrement Vigenère à partir de la clé partagée.
      */
-    public void generateKeyFromDiffie() {
+    public void genererCleVigenere() {
         StringBuilder secretKey = new StringBuilder();
         String gabString = clePartager.toString();
         for (int i = 0; i < gabString.length(); i++) {
-            int index = Character.getNumericValue(gabString.charAt(i)) % CUSTOM_ALPHABET.length();
-            secretKey.append(CUSTOM_ALPHABET.charAt(index));
+            int index = Character.getNumericValue(gabString.charAt(i)) % ALPHABET_PERSONNALISE.length();
+            secretKey.append(ALPHABET_PERSONNALISE.charAt(index));
         }
-        this.cle_vigenere = secretKey.toString();
+        this.cleVigenere = secretKey.toString();
     }
 
     /**

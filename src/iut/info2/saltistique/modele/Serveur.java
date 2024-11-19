@@ -140,8 +140,8 @@ public class Serveur implements Runnable {
 
             // Préparation chiffrage avec la clé reçue + Chiffrage
             chiffrage.calculeClePartager(receptionGrosEntier);
-            chiffrage.generateKeyFromDiffie();
-            cheminFichierCrypter = chiffrage.crypter();
+            chiffrage.genererCleVigenere();
+            cheminFichierCrypter = chiffrage.chiffrer();
 
             //Preparation envoie du fichier
             fichierExploite = new File(cheminFichierCrypter);
