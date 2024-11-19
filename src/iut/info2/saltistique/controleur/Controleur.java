@@ -249,4 +249,9 @@ public class Controleur {
             cadreNotification.setMouseTransparent(true);
         });
     }
+
+    @FXML
+    void clickGenererPDF() {
+        //TODO
+    }
 }

@@ -20,12 +20,13 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.shape.Line;
-import java.time.LocalDate;
+import javafx.scene.text.Text;
+
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 /**
  * Le contrôleur de la vue permettant de consulter les données.
@@ -262,11 +263,11 @@ public class ControleurConsulterDonnees extends Controleur {
      * Bouton pour filtrer les données
      */
     public Button boutonFiltrer;
+    public DatePicker filtreDateDebut;
+    public DatePicker filtreDateFin;
+    public Text deuxpoints;
+    public Text deuxpoints2;
 
-    /**
-     * Selection de date pour filtrer par dates
-     */
-    public DatePicker filtreDate;
 
     /**
      * Filtre contenant les différents filtres appliqués
@@ -292,6 +293,19 @@ public class ControleurConsulterDonnees extends Controleur {
     private ObservableList<Utilisateur> listeEmployes;
     private ObservableList<Reservation> listeReservations;
 
+    /** */
+    @FXML
+    Spinner<Integer> heuresDebut = new Spinner<>();
+    /** */
+    @FXML
+    Spinner<Integer> minutesDebut = new Spinner<>();
+    /** */
+    @FXML
+    Spinner<Integer> heuresFin = new Spinner<>();
+    /** */
+    @FXML
+    Spinner<Integer> minutesFin = new Spinner<>();
+
     /**
      * Initialise le contrôleur après le chargement de la vue FXML.
      * Configure les filtres, les listes observables, et initialise les tableaux.
@@ -307,6 +321,15 @@ public class ControleurConsulterDonnees extends Controleur {
                 "Activité",
                 "Employé"
         ));
+        SpinnerValueFactory<Integer> heuresValueFactoryDebut = new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 23);
+        heuresDebut.setValueFactory(heuresValueFactoryDebut);
+        SpinnerValueFactory<Integer> minutesValueFactoryDebut = new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 59);
+        minutesDebut.setValueFactory(minutesValueFactoryDebut);
+        SpinnerValueFactory<Integer> heuresValueFactoryFin = new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 23);
+        heuresFin.setValueFactory(heuresValueFactoryFin);
+        SpinnerValueFactory<Integer> minutesValueFactoryFin = new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 59);
+        minutesFin.setValueFactory(minutesValueFactoryFin);
+
         Filtres.getSelectionModel().selectFirst();
         initialiserTableaux();
         initialiserTableauSalles();
@@ -409,7 +432,7 @@ public class ControleurConsulterDonnees extends Controleur {
      * Masque les autres tableaux et sélections.
      *
      * @param tableau   Le tableau a affiché.
-     * @param selection La sélection a affichée
+     * @param selection La sélection a affiché.
      */
     @FXML
     private void afficherTableau(Node tableau, Node selection) {
@@ -421,9 +444,15 @@ public class ControleurConsulterDonnees extends Controleur {
         Filtres.setVisible(afficherFiltres);
         boutonFiltrer.setVisible(afficherFiltres);
         hboxFiltresAppliques.setVisible(afficherFiltres);
-        filtreDate.setVisible(afficherFiltres);
+        filtreDateDebut.setVisible(afficherFiltres);
+        filtreDateFin.setVisible(afficherFiltres);
+        heuresDebut.setVisible(afficherFiltres);
+        heuresFin.setVisible(afficherFiltres);
+        minutesFin.setVisible(afficherFiltres);
+        minutesDebut.setVisible(afficherFiltres);
+        deuxpoints.setVisible(afficherFiltres);
+        deuxpoints2.setVisible(afficherFiltres);
     }
-
 
     /**
      * Masque tous les tableaux et les sélections dans l'interface utilisateur.
@@ -488,7 +517,7 @@ public class ControleurConsulterDonnees extends Controleur {
      */
     @FXML
     void clickFiltrer() {
-        if (valeurFiltre != null && !valeurFiltre.getText().isEmpty() || filtreDate.equals(LocalDate.now())) {
+        if (valeurFiltre != null && !valeurFiltre.getText().isEmpty()) {
             String critere = Filtres.getValue();
             String valeur = valeurFiltre.getText().toLowerCase();
             boolean correspondanceTrouvee = false; // Vérifie si des éléments correspondent
@@ -556,7 +585,6 @@ public class ControleurConsulterDonnees extends Controleur {
                     break;
 
 
-
                 case "Activité":
                     correspondanceTrouvee = listeActivites.stream()
                             .anyMatch(activite -> activite.getNom() != null && activite.getNom().toLowerCase().equals(valeur));
@@ -585,37 +613,6 @@ public class ControleurConsulterDonnees extends Controleur {
         }
     }
 
-    @FXML
-    void clickFiltrerDate() {
-        LocalDate dateSelectionnee = filtreDate.getValue();
-        if (dateSelectionnee != null) {
-            // Vérifier si la date existe dans les réservations
-            boolean dateExiste = listeReservations.stream()
-                    .anyMatch(reservation -> reservation.getDateDebut().toLocalDate().equals(dateSelectionnee));
-
-            if (dateExiste) {
-                // Si la date existe, vérifier si elle est déjà filtrée
-                boolean filtreDejaApplique = filtre.estDateFiltree(dateSelectionnee);
-
-                if (!filtreDejaApplique) {
-                    filtre.ajouterFiltreDate(dateSelectionnee);
-                    appliquerFiltres();
-                    afficherFiltresAppliques();
-                } else {
-                    new Notification("Filtre déjà appliqué", "La date que vous tentez d'appliquer est déjà filtrée.");
-                }
-            } else {
-                // Si la date n'existe pas dans les réservations, affiche un message
-                new Notification("Date invalide", "La date que vous avez entrée n'existe pas dans les données.");
-            }
-        } else {
-            new Notification("Aucun filtre", "Vous n'avez rentré aucune date.");
-        }
-    }
-
-
-
-
     /**
      * Applique les filtres définis sur la liste des réservations.
      * <p>
@@ -625,19 +622,9 @@ public class ControleurConsulterDonnees extends Controleur {
      */
     @FXML
     private void appliquerFiltres() {
-        // Appliquer les filtres de date ainsi que les autres filtres
         List<Reservation> reservationsFiltrees = filtre.appliquerFiltres(new ArrayList<>(listeReservations));
-
-        if (!filtre.getDatesFiltrees().isEmpty()) {
-            // Filtrer les réservations en fonction des dates filtrées
-            reservationsFiltrees = reservationsFiltrees.stream()
-                    .filter(reservation -> filtre.getDatesFiltrees().contains(reservation.getDateDebut().toLocalDate()))
-                    .collect(Collectors.toList());
-        }
-
         tableauReservations.setItems(FXCollections.observableArrayList(reservationsFiltrees));
     }
-
 
     /**
      * Affiche les filtres actuellement appliqués sous forme de boutons interactifs.
@@ -645,8 +632,6 @@ public class ControleurConsulterDonnees extends Controleur {
     private void afficherFiltresAppliques() {
         hboxFiltresAppliques.getChildren().clear();
         hboxFiltresAppliques.setSpacing(10);
-
-        // Afficher les filtres de salle
         if (filtre.getSallesFiltrees() != null) {
             for (Salle salle : filtre.getSallesFiltrees()) {
                 Button boutonSalle = creerBoutonFiltre("Salle : " + salle.getNom(), _ -> {
@@ -657,7 +642,6 @@ public class ControleurConsulterDonnees extends Controleur {
             }
         }
 
-        // Afficher les filtres d'employé
         if (filtre.getEmployesFiltres() != null) {
             for (Utilisateur employe : filtre.getEmployesFiltres()) {
                 Button boutonEmploye = creerBoutonFiltre("Employé : " + employe.getPrenom() + " " + employe.getNom(), _ -> {
@@ -668,7 +652,6 @@ public class ControleurConsulterDonnees extends Controleur {
             }
         }
 
-        // Afficher les filtres d'activité
         if (filtre.getActivitesFiltrees() != null) {
             for (Activite activite : filtre.getActivitesFiltrees()) {
                 Button boutonActivite = creerBoutonFiltre("Activité : " + activite.getNom(), _ -> {
@@ -679,35 +662,33 @@ public class ControleurConsulterDonnees extends Controleur {
             }
         }
 
-        if (!filtre.getDatesFiltrees().isEmpty()) {
-            for (LocalDate dateFiltree : filtre.getDatesFiltrees()) {
-                Button boutonDate = creerBoutonFiltre("Date : " + dateFiltree, _ -> {
-                    filtre.supprimerFiltreDate(dateFiltree);
-                    mettreAJourFiltres();
-                });
-                hboxFiltresAppliques.getChildren().add(boutonDate);
-            }
+        LocalDateTime[] datesFiltrees = filtre.getFiltreDate();
+        if (datesFiltrees[0] != null && datesFiltrees[1] != null) {
+            String texteFiltreDate = "Période : " + datesFiltrees[0] + " - " + datesFiltrees[1];
+            Button boutonDate = creerBoutonFiltre(texteFiltreDate, _ -> {
+                filtre.supprimerFiltreDate();
+                mettreAJourFiltres();
+                afficherFiltresAppliques();
+            });
+            hboxFiltresAppliques.getChildren().add(boutonDate);
         }
     }
-
 
     /**
      * Crée un bouton de filtre avec un texte et un graphique (croix).
      *
-     * @param texte  Le texte à afficher sur le bouton.
-     * @param action L'action à exécuter lors du clic sur le bouton.
+     * @param texte  Le texte a affiché sur le bouton.
+     * @param action L'action a exécuté lors du clic sur le bouton.
      * @return Le bouton créé.
      */
     private Button creerBoutonFiltre(String texte, EventHandler<ActionEvent> action) {
         Button bouton = new Button(texte);
         bouton.setOnAction(action);
-
         Pane croix = new Pane();
         croix.setPrefSize(6, 6);
         croix.setMaxSize(6, 6);
         croix.setMinSize(6, 6);
         croix.getStyleClass().add("ico-close");
-
         bouton.setGraphic(croix);
         bouton.setContentDisplay(ContentDisplay.RIGHT);
         bouton.getStyleClass().add("btn-filtre");
@@ -726,8 +707,26 @@ public class ControleurConsulterDonnees extends Controleur {
         afficherFiltresAppliques();
     }
 
+    /**
+     * Gestionnaire d'événements appelé lorsque l'utilisateur clique sur le bouton pour filtrer les réservations par période.
+     * <p>
+     * Cette méthode récupère les dates et heures spécifiées dans les champs correspondants,
+     * crée des objets {@link LocalDateTime} pour la période de début et de fin,
+     * et applique un filtre sur les réservations en fonction de cette plage.
+     * Si l'une des dates est invalide ou non définie, une notification d'erreur est affichée.
+     * </p>
+     *
+     * @FXML Indique que cette méthode est liée à un élément de l'interface via JavaFX.
+     */
     @FXML
-    void clickGenererPDF() {
-        //TODO
+    void clickFiltrerDate() {
+        if (filtreDateDebut != null && filtreDateFin != null) {
+            LocalDateTime debut = LocalDateTime.of(filtreDateDebut.getValue(), LocalTime.of(heuresDebut.getValue(), minutesDebut.getValue()));
+            LocalDateTime fin = LocalDateTime.of(filtreDateFin.getValue(), LocalTime.of(heuresFin.getValue(), minutesFin.getValue()));
+            filtre.ajouterFiltreDate(debut,fin);
+            mettreAJourFiltres();
+        } else {
+            new Notification("Périodes invalides","Les périodes rentrées ne sont pas valides.");
+        }
     }
 }
