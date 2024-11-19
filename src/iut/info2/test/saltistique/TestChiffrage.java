@@ -1,95 +1,205 @@
 package iut.info2.test.saltistique;
 
-/*
- * TestChiffrage.java                                    21 nov. 2023
- * IUT de Rodez, info1 2022-2023, aucun copyright ni copyleft
- */
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import org.junit.jupiter.api.Test;
 import iut.info2.saltistique.modele.Chiffrage;
+import iut.info2.saltistique.modele.Fichier;
+import org.junit.jupiter.api.*;
+
+import java.io.*;
+import java.math.BigInteger;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 class TestChiffrage {
 
-    /**
-     * Test de la génération de clé Diffie-Hellman, de la création de clé Vigenère,
-     * ainsi que du chiffrement et déchiffrement d'un message.
-     */
-    @Test
-    void testDiffieHellmanToVigenereChiffrement() {
-        // Étape 1 : Simuler l'échange de clés Diffie-Hellman
-        int puissanceA = Chiffrage.genererPuissance();
-        int puissanceB = Chiffrage.genererPuissance();
+    private final String CHEMIN_FICHIER_TEST = "test.csv";
+    private final String CONTENUE_FICHIER_TEST = "Ident;Nom;Capacite;videoproj;ecranXXL;ordinateur;type;logiciels;imprimante\n";
 
-        int partieA = Chiffrage.exposantModulo(Chiffrage.G, puissanceA, Chiffrage.P);
-        int partieB = Chiffrage.exposantModulo(Chiffrage.G, puissanceB, Chiffrage.P);
+    private Chiffrage chiffrage;
 
-        Chiffrage.setGab(Chiffrage.exposantModulo(partieB, puissanceA, Chiffrage.P));
-        String cleSecrete = Chiffrage.cleDepuisDiffie();
+    int nbTestTotal;
+    int nbTestReussi;
 
-        // Étape 2 : Utiliser la clé Diffie-Hellman pour générer une clé Vigenère
-        String cleVigenere = Chiffrage.generationCle();
-
-        // Étape 3 : Chiffrer et déchiffrer un message de test
-        String messageOriginal = "Bonjour tout le monde!";
-        String messageChiffre = Chiffrage.chiffrement(messageOriginal, cleVigenere);
-        String messageDechiffre = Chiffrage.dechiffrement(messageChiffre, cleVigenere);
-
-        // Vérifier que le message déchiffré correspond au message original
-        assertEquals(messageOriginal, messageDechiffre, "Le message déchiffré devrait être identique au message original.");
+    @BeforeAll
+    static void setUpBeforeClass() throws IOException{
+        System.out.println("========== TEST DE LA CLASSE Chiffrage ==========\n");
     }
 
-    /**
-     * Test de la génération de clés Vigenère pour s'assurer qu'elles respectent
-     * la plage de longueur attendue.
-     */
-    @Test
-    void testGenerationCle() {
-        for (int i = 0; i < 10000; i++) {
-            String cle = Chiffrage.generationCle();
-            assertTrue(cle.length() >= 40 && cle.length() <= 60, "La longueur de la clé doit être entre 40 et 60.");
+    @AfterAll
+    static void tearDownAfterClass() {
+        System.out.println("\n========== FIN DE TEST DE LA CLASSE Chiffrage ==========");
+    }
+
+    @BeforeEach
+    void setUp() throws IOException {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(CHEMIN_FICHIER_TEST))) {
+            writer.write(CONTENUE_FICHIER_TEST);
         }
+        chiffrage = new Chiffrage(CHEMIN_FICHIER_TEST);
     }
 
-    /**
-     * Test du processus de chiffrement et déchiffrement spécifique
-     * pour s'assurer qu'ils fonctionnent correctement ensemble.
-     */
-    @Test
-    void testChiffrementDechiffrement() {
-        String cle = "SimpleKey";
-        String message = "TestMessage";
-
-        // Chiffrer puis déchiffrer le message
-        String messageChiffre = Chiffrage.chiffrement(message, cle);
-        String messageDechiffre = Chiffrage.dechiffrement(messageChiffre, cle);
-
-        // Vérifier que le message déchiffré correspond au message original
-        assertEquals(message, messageDechiffre, "Le message déchiffré devrait correspondre au message original.");
+    @AfterEach
+    void tearDown() {
     }
 
-    /**
-     * Test de la fonction d'exponentiation modulo utilisée dans l'algorithme
-     * Diffie-Hellman pour valider le comportement correct de cette fonction.
-     */
     @Test
-    void testExposantModulo() {
-        assertEquals(1, Chiffrage.exposantModulo(6, 0, 11));
-        assertEquals(6, Chiffrage.exposantModulo(6, 1, 11));
-        assertEquals(3, Chiffrage.exposantModulo(6, 2, 11));
-    }
+    void chiffrer() throws IOException {
+        System.out.println("====TEST DE LA METHODE chiffrer====");
+        nbTestReussi = 0;
+        nbTestTotal = 0;
 
-    /**
-     * Test de la génération de puissance pour s'assurer que les valeurs générées
-     * se situent dans la plage spécifiée pour l'échange de clés Diffie-Hellman.
-     */
-    @Test
-    void testGenererPuissance() {
-        for (int i = 0; i < 10000; i++) {
-            int puissance = Chiffrage.genererPuissance();
-            assertTrue(puissance >= 5000 && puissance <= 9999, "La puissance doit être entre 5000 et 9999.");
+        chiffrage.calculeClePartager(new Chiffrage().getClePublique());
+        chiffrage.genererCleVigenere();
+        String cheminFichierChiffre = chiffrage.chiffrer();
+
+        assertNotNull(cheminFichierChiffre, "Le chemin du fichier chiffré ne devrait pas être nul.");
+        nbTestTotal++;
+        if(cheminFichierChiffre != null) { nbTestReussi++; }
+
+        File fichierChiffre = new File(cheminFichierChiffre);
+        assertTrue(fichierChiffre.exists(), "Le fichier chiffré devrait exister.");
+        nbTestTotal++;
+        if(fichierChiffre.exists()) { nbTestReussi++; }
+        assertTrue(fichierChiffre.length() > 0, "Le fichier chiffré ne devrait pas être vide.");
+        nbTestTotal++;
+        if(fichierChiffre.length() > 0) { nbTestReussi++; }
+        assertTrue(!fichierIdentique(fichierChiffre, new File(CHEMIN_FICHIER_TEST)), "Les fichier ne sont pas identique");
+        nbTestTotal++;
+        if(!fichierIdentique(fichierChiffre, new File(CHEMIN_FICHIER_TEST))) { nbTestReussi++; }
+        assertDoesNotThrow(() -> chiffrage.chiffrer());
+        nbTestTotal++;
+        try {
+            nbTestReussi++;
+            chiffrage.chiffrer();
+        } catch (IOException e) {}
+
+        chiffrage = new Chiffrage(CHEMIN_FICHIER_TEST);
+        chiffrage.calculeClePartager(new Chiffrage().getClePublique());
+        assertThrows(NullPointerException.class, () -> chiffrage.chiffrer());
+        nbTestTotal++;
+        try {
+            chiffrage.chiffrer();
+        } catch (NullPointerException e) {
+            nbTestReussi++;
         }
+
+        System.out.println(nbTestReussi + " tests réussi sur " + nbTestTotal + " tests");
+    }
+
+    @Test
+    void dechiffrer() throws IOException {
+        System.out.println("====TEST DE LA METHODE dechiffrer====");
+        nbTestReussi = 0;
+        nbTestTotal = 0;
+        Chiffrage dechiffrer = new Chiffrage();
+
+        chiffrage.calculeClePartager(dechiffrer.getClePublique());
+        chiffrage.genererCleVigenere();
+        String cheminFichierChiffrer = chiffrage.chiffrer();
+        dechiffrer.setCheminFichier(cheminFichierChiffrer);
+        dechiffrer.calculeClePartager(chiffrage.getClePublique());
+        dechiffrer.genererCleVigenere();
+        String cheminFichierDechiffrer = dechiffrer.dechiffrer();
+
+        assertNotNull(cheminFichierDechiffrer, "Le chemin du fichier déchiffré ne devrait pas être nul.");
+        nbTestTotal++;
+        if(cheminFichierDechiffrer != null) { nbTestReussi++; }
+        File fichierDechiffrer = new File(cheminFichierDechiffrer);
+        assertTrue(fichierDechiffrer.exists(), "Le fichier déchiffré devrait exister.");
+        nbTestTotal++;
+        if(fichierDechiffrer.exists()) { nbTestReussi++; }
+        assertTrue(fichierDechiffrer.length() > 0, "Le fichier chiffré ne devrait pas être vide.");
+        nbTestTotal++;
+        if (fichierDechiffrer.length() > 0) { nbTestReussi++; }
+        assertTrue(fichierIdentique(fichierDechiffrer, new File(CHEMIN_FICHIER_TEST)), "Les fichier devraient être identique");
+        nbTestTotal++;
+        if (fichierIdentique(fichierDechiffrer, new File(CHEMIN_FICHIER_TEST))) { nbTestReussi++; }
+        assertDoesNotThrow(() -> chiffrage.dechiffrer());
+        nbTestTotal++;
+        try {
+            nbTestReussi++;
+            chiffrage.dechiffrer();
+        } catch (IOException e) {}
+
+        System.out.println(nbTestReussi + " tests réussi sur " + nbTestTotal + " tests");
+    }
+
+    @Test
+    void calculeClePartager() {
+        System.out.println("====TEST DE LA METHODE calculeClePartager====");
+        nbTestReussi = 0;
+        nbTestTotal = 0;
+
+        Chiffrage chiffrage1 = new Chiffrage();
+        chiffrage1.calculeClePartager(chiffrage.getClePublique());
+        chiffrage.calculeClePartager(chiffrage1.getClePublique());
+
+        assertTrue(chiffrage1.getClePartager().equals(chiffrage.getClePartager()), "Les clés partager devraient être identique");
+        nbTestTotal++;
+        if(chiffrage1.getClePartager().equals(chiffrage.getClePartager())) { nbTestReussi++; }
+
+        chiffrage = new Chiffrage();
+        assertThrows(IllegalArgumentException.class, () -> chiffrage.calculeClePartager(null));
+        nbTestTotal++;
+        try {
+            chiffrage.calculeClePartager(null);
+        } catch (IllegalArgumentException e) {
+            nbTestReussi++;
+        }
+
+        System.out.println(nbTestReussi + " tests réussi sur " + nbTestTotal + " tests");
+    }
+
+    @Test
+    void genererCleVigenere() {
+        System.out.println("====TEST DE LA METHODE genererCleVigenere====");
+        nbTestReussi = 0;
+        nbTestTotal = 0;
+
+        assertThrows(NullPointerException.class, () -> chiffrage.chiffrer());
+        nbTestTotal++;
+        try {
+            chiffrage.chiffrer();
+        } catch (NullPointerException | IOException e) {
+            nbTestReussi++;
+        }
+
+        chiffrage.calculeClePartager(new Chiffrage().getClePublique());
+        chiffrage.genererCleVigenere();
+        assertDoesNotThrow(() -> chiffrage.chiffrer());
+        nbTestTotal++;
+        try {
+            chiffrage.chiffrer();
+            nbTestReussi++;
+        } catch (IOException e) {}
+
+        System.out.println(nbTestReussi + " tests réussi sur " + nbTestTotal + " tests");
+
+    }
+
+    /**
+     * Test si 2 fichiers ont le même contenu.
+     * @param file1 fichier n°1
+     * @param file2 fichier n°2
+     * @return true, si les 2 fichiers ont le même contenu. False sinon.
+     * @throws IOException Erreur de lecture du/des fichier(s).
+     */
+    private boolean fichierIdentique(File file1, File file2) throws IOException {
+        // Vérifiez si les tailles des fichiers sont différentes
+        if (file1.length() != file2.length()) {
+            return false;
+        }
+
+        try (FileInputStream fis1 = new FileInputStream(file1);
+             FileInputStream fis2 = new FileInputStream(file2)) {
+
+            int byte1, byte2;
+
+            while ((byte1 = fis1.read()) != -1 && (byte2 = fis2.read()) != -1) {
+                if (byte1 != byte2) {
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 }
