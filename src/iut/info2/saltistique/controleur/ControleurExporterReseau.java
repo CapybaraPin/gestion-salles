@@ -68,6 +68,7 @@ public class ControleurExporterReseau extends Controleur {
             // Arrêt du serveur
             exporterDonnees.getServeur().arreter();
             exporterDonnees.setServeur(null);
+            exporterDonnees = null;
             btnStartStop.setText("Démarrer le serveur");
         } else {
             try {
@@ -85,6 +86,18 @@ public class ControleurExporterReseau extends Controleur {
                 new Notification("Erreur lors de l'exportation", e.getMessage());
             }
         }
+    }
+
+    @FXML
+    public void fermerFenetre() {
+        if (exporterDonnees != null) {
+            // Arrêt du serveur
+            exporterDonnees.getServeur().arreter();
+            exporterDonnees.setServeur(null);
+            exporterDonnees = null;
+            btnStartStop.setText("Démarrer le serveur");
+        }
+        super.fermerFenetre();
     }
 
 }
