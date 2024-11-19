@@ -14,7 +14,7 @@ import java.net.Socket;
  * La classe Client permet de se connecter à un serveur pour recevoir et sauvegarder
  * plusieurs fichiers CSV. Chaque fichier est sauvegardé dans un répertoire spécifié.
  *
- * @author Jules Vialas, Néo Bécogné, Dorian Adams, Hugo Robles, Tom Gutierrez
+ * @author Dorian Adams, Hugo Robles
  */
 public class Client implements Runnable{
 

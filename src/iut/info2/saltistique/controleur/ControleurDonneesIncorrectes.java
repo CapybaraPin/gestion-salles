@@ -2,7 +2,7 @@
  * ControleurConsulterDonnees.java 02/11/2024
  * IUT de RODEZ, tous les droits sont réservés
  *
- * @author Jules VIALAS & Tom GUTIERREZ
+ * @author Jules VIALAS, Tom GUTIERREZ
  */
 
 package iut.info2.saltistique.controleur;

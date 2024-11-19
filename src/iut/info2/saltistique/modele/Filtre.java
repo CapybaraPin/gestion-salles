@@ -1,8 +1,6 @@
 /*
  * Filtre.java 19/11/2024
  * IUT de RODEZ, tous les droits sont réservés
- *
- * @author Jules VIALAS
  */
 
 package iut.info2.saltistique.modele;
@@ -23,6 +21,7 @@ import java.util.List;
  * Cette classe offre des méthodes pour ajouter, supprimer et appliquer des filtres,
  * en garantissant que seuls les résultats correspondant aux critères définis sont affichés.
  * </p>
+ * @author Jules VIALAS
  */
 public class Filtre {
 

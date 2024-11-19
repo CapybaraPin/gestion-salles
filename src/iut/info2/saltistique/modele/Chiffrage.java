@@ -22,7 +22,7 @@ import java.util.HashMap;
  *   <li>Échange de clés sécurisé avec l'algorithme Diffie-Hellman</li>
  * </ul>
  *
- * @author Jules Vialas, Néo Bécogné, Dorian Adams, Hugo Robles, Tom Gutierrez
+ * @author Néo Bécogné, Dorian Adams, Hugo Robles
  */
 public class Chiffrage {
 

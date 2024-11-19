@@ -7,7 +7,7 @@ import java.time.LocalDateTime;
  *Cette classe implémente Reservation afin de pouvoir récupérer des information de
  * résevation liée a une formation
  *
- * @author Jules Vialas, Néo Bécogné, Dorian Adams, Hugo Robles, Tom Gutierrez
+ * @author Jules Vialas
  */
 
 public class Formation extends Reservation {

@@ -1,5 +1,5 @@
 /*
- * Serveur.java           SAE 3.A.01
+ * Serveur.java
  * IUT de RODEZ, tous les droits sont réservés
  */
 package iut.info2.saltistique.modele;

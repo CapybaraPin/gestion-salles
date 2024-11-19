@@ -28,7 +28,7 @@ import static org.junit.jupiter.api.Assertions.*;
  * l'ajout, la suppression et l'application des filtres.
  * </p>
  *
- * @author Jules Vialas, Néo Bécogné, Dorian Adams, Hugo Robles, Tom Gutierrez
+ * @author Jules VIALAS, Néo BECOGNE
  */
 class TestFiltre {
 

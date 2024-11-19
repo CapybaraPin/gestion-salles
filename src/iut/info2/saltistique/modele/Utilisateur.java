@@ -8,7 +8,7 @@ import java.io.Serializable;
  * Cette classe implémente l'interface Serializable afin de pouvoir être
  * sérialisée et désérialisée.
  *
- * @author Jules Vialas, Néo Bécogné, Dorian Adams, Hugo Robles, Tom Gutierrez
+ * @author Jules Vialas
  */
 public class Utilisateur implements Serializable {
 

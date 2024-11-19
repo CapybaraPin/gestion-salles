@@ -4,18 +4,18 @@ package iut.info2.saltistique.modele;
 /**
  * Représente un groupe d'ordinateur avec une quantité, un type et des logiciels.
  *
- * @author Jules Vialas, Néo Bécogné, Dorian Adams, Hugo Robles, Tom Gutierrez
+ * @author Jules Vialas
  */
 public class GroupeOrdinateurs {
 
     /** Quantité d'ordinateur */
-    private int quantite;
+    private final int quantite;
 
     /** Type d'ordinateur */
-    private String type;
+    private final String type;
 
     /** Logiciel disponible sur les ordinateurs*/
-    private String[] logiciels;
+    private final String[] logiciels;
 
     /**
      * * Constructeur de la classe GroupeOrdinateurs.
@@ -40,16 +40,16 @@ public class GroupeOrdinateurs {
     }
 
     /**
-     * Obtient les logiciels disponible sur les ordinateurs.
+     * Obtient les logiciels disponibles sur les ordinateurs.
      *
-     * @return Les logiciels disponible sur les ordinateurs.
+     * @return Les logiciels disponibles sur les ordinateurs.
      */
     public String getLogiciels() {
-        String logicielsRetour = "";
-        for (int i = 0; i < logiciels.length; i++) {
-            logicielsRetour += logiciels[i].toLowerCase() + ", ";
+        StringBuilder logicielsRetour = new StringBuilder();
+        for (String logiciel : logiciels) {
+            logicielsRetour.append(logiciel.toLowerCase()).append(", ");
         }
-        return logicielsRetour;
+        return logicielsRetour.toString();
     }
 
     /**

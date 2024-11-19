@@ -17,8 +17,8 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.VBox;
 import javafx.scene.shape.Line;
-import javafx.scene.text.Text;
 
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -38,6 +38,8 @@ import java.util.Map;
  *     <li>L'application et la gestion des filtres pour les données visibles.</li>
  *     <li>La gestion de la navigation entre les différentes catégories de données.</li>
  * </ul>
+ *
+ * @author Jules VIALAS
  */
 public class ControleurConsulterDonnees extends Controleur {
 
@@ -260,12 +262,62 @@ public class ControleurConsulterDonnees extends Controleur {
     /**
      * Bouton pour filtrer les données
      */
+    @FXML
     public Button boutonFiltrer;
-    public DatePicker filtreDateDebut;
-    public DatePicker filtreDateFin;
-    public Text deuxpoints;
-    public Text deuxpoints2;
 
+    /**
+     * Permet de selectionner la date de début de filtre
+     */
+    @FXML
+    public DatePicker filtreDateDebut;
+
+    /**
+     * Permet de selectionner la date de fin de filtre
+     */
+    @FXML
+    public DatePicker filtreDateFin;
+
+    /**
+     * Conteneur du champ de texte pour filtrer
+     */
+    @FXML
+    public HBox hboxFiltreTexte;
+
+    /**
+     * Conteneur de tous les filtres par périodes
+     */
+    @FXML
+    public VBox vboxFiltreDate;
+
+    /**
+     * Conteneur pour le changement de place du bouton Filtrer
+     */
+    @FXML
+    public HBox hboxPourBoutonFiltrer;
+
+    /**
+     * Selection de l'heure de début
+     */
+    @FXML
+    Spinner<Integer> heuresDebut = new Spinner<>();
+
+    /**
+     * Selection des minutes du début
+     */
+    @FXML
+    Spinner<Integer> minutesDebut = new Spinner<>();
+
+    /**
+     * Selection de l'heure de fin
+     */
+    @FXML
+    Spinner<Integer> heuresFin = new Spinner<>();
+
+    /**
+     * Selection des minutes de fin
+     */
+    @FXML
+    Spinner<Integer> minutesFin = new Spinner<>();
 
     /**
      * Filtre contenant les différents filtres appliqués
@@ -279,7 +331,6 @@ public class ControleurConsulterDonnees extends Controleur {
     @FXML
     private HBox hboxFiltresAppliques;
 
-
     /**
      * Listes observables contenant les objets de chaques types.
      * Ces listes sont utilisées pour afficher et gérer les types de données disponibles
@@ -290,19 +341,6 @@ public class ControleurConsulterDonnees extends Controleur {
     private ObservableList<Activite> listeActivites;
     private ObservableList<Utilisateur> listeEmployes;
     private ObservableList<Reservation> listeReservations;
-
-    /** */
-    @FXML
-    Spinner<Integer> heuresDebut = new Spinner<>();
-    /** */
-    @FXML
-    Spinner<Integer> minutesDebut = new Spinner<>();
-    /** */
-    @FXML
-    Spinner<Integer> heuresFin = new Spinner<>();
-    /** */
-    @FXML
-    Spinner<Integer> minutesFin = new Spinner<>();
 
     /**
      * Initialise le contrôleur après le chargement de la vue FXML.
@@ -317,17 +355,21 @@ public class ControleurConsulterDonnees extends Controleur {
         Filtres.setItems(FXCollections.observableArrayList(
                 "Salle",
                 "Activité",
-                "Employé"
+                "Employé",
+                "Période"
         ));
-        SpinnerValueFactory<Integer> heuresValueFactoryDebut = new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 23);
+        SpinnerValueFactory<Integer> heuresValueFactoryDebut =
+                new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 23);
         heuresDebut.setValueFactory(heuresValueFactoryDebut);
-        SpinnerValueFactory<Integer> minutesValueFactoryDebut = new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 59);
+        SpinnerValueFactory<Integer> minutesValueFactoryDebut =
+                new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 59);
         minutesDebut.setValueFactory(minutesValueFactoryDebut);
-        SpinnerValueFactory<Integer> heuresValueFactoryFin = new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 23);
+        SpinnerValueFactory<Integer> heuresValueFactoryFin =
+                new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 23);
         heuresFin.setValueFactory(heuresValueFactoryFin);
-        SpinnerValueFactory<Integer> minutesValueFactoryFin = new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 59);
+        SpinnerValueFactory<Integer> minutesValueFactoryFin =
+                new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 59);
         minutesFin.setValueFactory(minutesValueFactoryFin);
-
         Filtres.getSelectionModel().selectFirst();
         initialiserTableaux();
         initialiserTableauSalles();
@@ -336,6 +378,36 @@ public class ControleurConsulterDonnees extends Controleur {
         initialiserTableauReservations();
         clickBoutonNotification();
     }
+
+    /**
+     * Permet de changer l'affichage du bouton de filtrage en fonction de si l'affichage correspond aux périodes ou non
+     */
+    @FXML
+    void changerFiltre() {
+        boutonFiltrer.setOnAction(null);
+        if (Filtres.getSelectionModel().getSelectedItem().equals("Période")) {
+            vboxFiltreDate.setVisible(true);
+            hboxFiltreTexte.setVisible(false);
+            hboxFiltreTexte.setMouseTransparent(true);
+            vboxFiltreDate.setMouseTransparent(false);
+            hboxPourBoutonFiltrer.setMouseTransparent(false);
+            hboxFiltreTexte.getChildren().remove(boutonFiltrer);
+            hboxPourBoutonFiltrer.getChildren().remove(boutonFiltrer);
+            hboxPourBoutonFiltrer.getChildren().add(boutonFiltrer);
+            boutonFiltrer.setOnAction(_ -> clickFiltrerDate());
+        } else {
+            vboxFiltreDate.setVisible(false);
+            hboxFiltreTexte.setVisible(true);
+            vboxFiltreDate.setMouseTransparent(true);
+            hboxFiltreTexte.setMouseTransparent(false);
+            hboxPourBoutonFiltrer.setMouseTransparent(true);
+            hboxPourBoutonFiltrer.getChildren().remove(boutonFiltrer);
+            hboxFiltreTexte.getChildren().remove(boutonFiltrer);
+            hboxFiltreTexte.getChildren().add(boutonFiltrer);
+            boutonFiltrer.setOnAction(_ -> clickFiltrer());
+        }
+    }
+
 
 
     /**
@@ -442,14 +514,11 @@ public class ControleurConsulterDonnees extends Controleur {
         Filtres.setVisible(afficherFiltres);
         boutonFiltrer.setVisible(afficherFiltres);
         hboxFiltresAppliques.setVisible(afficherFiltres);
-        filtreDateDebut.setVisible(afficherFiltres);
-        filtreDateFin.setVisible(afficherFiltres);
-        heuresDebut.setVisible(afficherFiltres);
-        heuresFin.setVisible(afficherFiltres);
-        minutesFin.setVisible(afficherFiltres);
-        minutesDebut.setVisible(afficherFiltres);
-        deuxpoints.setVisible(afficherFiltres);
-        deuxpoints2.setVisible(afficherFiltres);
+        hboxFiltreTexte.setVisible(afficherFiltres);
+        if (!hboxFiltreTexte.isVisible()) {
+            vboxFiltreDate.setVisible(afficherFiltres);
+        }
+
     }
 
     /**
@@ -518,20 +587,23 @@ public class ControleurConsulterDonnees extends Controleur {
         if (valeurFiltre != null && !valeurFiltre.getText().isEmpty()) {
             String critere = Filtres.getValue();
             String valeur = valeurFiltre.getText().toLowerCase();
-            boolean correspondanceTrouvee = false; // Vérifie si des éléments correspondent
-            boolean filtreDejaApplique = false; // Vérifie si le filtre est déjà appliqué
+            boolean correspondanceTrouvee = false;
+            boolean filtreDejaApplique = false;
 
             switch (critere) {
                 case "Salle":
                     correspondanceTrouvee = listeSalles.stream()
-                            .anyMatch(salle -> salle.getNom() != null && salle.getNom().toLowerCase().equals(valeur));
+                            .anyMatch(salle -> salle.getNom() != null
+                                    && salle.getNom().toLowerCase().equals(valeur));
                     filtreDejaApplique = correspondanceTrouvee &&
                             filtre.getSallesFiltrees().stream()
-                                    .anyMatch(salle -> salle.getNom() != null && salle.getNom().toLowerCase().equals(valeur));
+                                    .anyMatch(salle -> salle.getNom() != null
+                                            && salle.getNom().toLowerCase().equals(valeur));
 
                     if (correspondanceTrouvee && !filtreDejaApplique) {
                         listeSalles.stream()
-                                .filter(salle -> salle.getNom() != null && salle.getNom().toLowerCase().equals(valeur))
+                                .filter(salle -> salle.getNom() != null
+                                        && salle.getNom().toLowerCase().equals(valeur))
                                 .forEach(salle -> filtre.ajouterFiltreSalle(salle));
                     }
                     break;
@@ -541,42 +613,51 @@ public class ControleurConsulterDonnees extends Controleur {
                     if (motsRecherche.length > 1) {
                         correspondanceTrouvee = listeEmployes.stream()
                                 .anyMatch(employe -> employe.getNom() != null && employe.getPrenom() != null &&
-                                        ((employe.getPrenom().toLowerCase() + " " + employe.getNom().toLowerCase()).equals(valeur) ||
-                                                (employe.getNom().toLowerCase() + " " + employe.getPrenom().toLowerCase()).equals(valeur)));
+                                        ((employe.getPrenom().toLowerCase() + " "
+                                                + employe.getNom().toLowerCase()).equals(valeur)
+                                                || (employe.getNom().toLowerCase() + " "
+                                                + employe.getPrenom().toLowerCase()).equals(valeur)));
 
                         filtreDejaApplique = correspondanceTrouvee &&
                                 filtre.getEmployesFiltres().stream()
-                                        .anyMatch(employe -> employe.getNom() != null && employe.getPrenom() != null &&
-                                                ((employe.getPrenom().toLowerCase() + " " + employe.getNom().toLowerCase()).equals(valeur) ||
-                                                        (employe.getNom().toLowerCase() + " " + employe.getPrenom().toLowerCase()).equals(valeur)));
+                                        .anyMatch(employe -> employe.getNom() != null
+                                                && employe.getPrenom() != null
+                                                && ((employe.getPrenom().toLowerCase() + " "
+                                                + employe.getNom().toLowerCase()).equals(valeur)
+                                                || (employe.getNom().toLowerCase() + " "
+                                                + employe.getPrenom().toLowerCase()).equals(valeur)));
 
                         if (correspondanceTrouvee && !filtreDejaApplique) {
                             listeEmployes.stream()
-                                    .filter(employe -> employe.getNom() != null && employe.getPrenom() != null &&
-                                            ((employe.getPrenom().toLowerCase() + " " + employe.getNom().toLowerCase()).equals(valeur) ||
-                                                    (employe.getNom().toLowerCase() + " " + employe.getPrenom().toLowerCase()).equals(valeur)))
+                                    .filter(employe -> employe.getNom() != null && employe.getPrenom() != null
+                                            && ((employe.getPrenom().toLowerCase() + " " + employe.getNom()
+                                            .toLowerCase()).equals(valeur)
+                                            || (employe.getNom().toLowerCase() + " " + employe
+                                            .getPrenom().toLowerCase()).equals(valeur)))
                                     .forEach(employe -> filtre.ajouterFiltreEmploye(employe));
                         }
                     } else {
                         correspondanceTrouvee = listeEmployes.stream()
-                                .anyMatch(employe -> employe.getNom() != null && employe.getPrenom() != null &&
-                                        java.util.Arrays.stream(motsRecherche)
-                                                .anyMatch(mot -> employe.getNom().toLowerCase().contains(mot) ||
-                                                        employe.getPrenom().toLowerCase().contains(mot)));
+                                .anyMatch(employe -> employe.getNom() != null && employe.getPrenom() != null
+                                        && java.util.Arrays.stream(motsRecherche)
+                                                .anyMatch(mot -> employe.getNom().toLowerCase().contains(mot)
+                                                        || employe.getPrenom().toLowerCase().contains(mot)));
 
                         filtreDejaApplique = correspondanceTrouvee &&
                                 filtre.getEmployesFiltres().stream()
-                                        .anyMatch(employe -> employe.getNom() != null && employe.getPrenom() != null &&
-                                                java.util.Arrays.stream(motsRecherche)
-                                                        .anyMatch(mot -> employe.getNom().toLowerCase().contains(mot) ||
-                                                                employe.getPrenom().toLowerCase().contains(mot)));
+                                        .anyMatch(employe -> employe.getNom() != null
+                                                && employe.getPrenom() != null
+                                                && java.util.Arrays.stream(motsRecherche)
+                                                        .anyMatch(mot -> employe.getNom()
+                                                                .toLowerCase().contains(mot)
+                                                                || employe.getPrenom().toLowerCase().contains(mot)));
 
                         if (correspondanceTrouvee && !filtreDejaApplique) {
                             listeEmployes.stream()
-                                    .filter(employe -> employe.getNom() != null && employe.getPrenom() != null &&
-                                            java.util.Arrays.stream(motsRecherche)
-                                                    .anyMatch(mot -> employe.getNom().toLowerCase().contains(mot) ||
-                                                            employe.getPrenom().toLowerCase().contains(mot)))
+                                    .filter(employe -> employe.getNom() != null && employe.getPrenom() != null
+                                            && java.util.Arrays.stream(motsRecherche)
+                                                    .anyMatch(mot -> employe.getNom().toLowerCase().contains(mot)
+                                                            || employe.getPrenom().toLowerCase().contains(mot)))
                                     .forEach(employe -> filtre.ajouterFiltreEmploye(employe));
                         }
                     }
@@ -585,23 +666,28 @@ public class ControleurConsulterDonnees extends Controleur {
 
                 case "Activité":
                     correspondanceTrouvee = listeActivites.stream()
-                            .anyMatch(activite -> activite.getNom() != null && activite.getNom().toLowerCase().equals(valeur));
+                            .anyMatch(activite -> activite.getNom() != null
+                                    && activite.getNom().toLowerCase().equals(valeur));
                     filtreDejaApplique = correspondanceTrouvee &&
                             filtre.getActivitesFiltrees().stream()
-                                    .anyMatch(activite -> activite.getNom() != null && activite.getNom().toLowerCase().equals(valeur));
+                                    .anyMatch(activite -> activite.getNom() != null
+                                            && activite.getNom().toLowerCase().equals(valeur));
 
                     if (correspondanceTrouvee && !filtreDejaApplique) {
                         listeActivites.stream()
-                                .filter(activite -> activite.getNom() != null && activite.getNom().toLowerCase().equals(valeur))
+                                .filter(activite -> activite.getNom() != null
+                                        && activite.getNom().toLowerCase().equals(valeur))
                                 .forEach(activite -> filtre.ajouterFiltreActivite(activite));
                     }
                     break;
             }
 
             if (!correspondanceTrouvee) {
-                new Notification("Filtre inconnu", "Le filtre que vous avez rentré ne correspond à aucune donnée.");
+                new Notification("Filtre inconnu", "Le filtre que vous avez rentré ne correspond à " +
+                        "aucune donnée.");
             } else if (filtreDejaApplique) {
-                new Notification("Filtre déjà appliqué", "Le filtre que vous tentez d'appliqué est déjà actif.");
+                new Notification("Filtre déjà appliqué", "Le filtre que vous tentez d'appliqué est " +
+                        "déjà actif.");
             } else {
                 appliquerFiltres();
                 afficherFiltresAppliques();
@@ -642,7 +728,8 @@ public class ControleurConsulterDonnees extends Controleur {
 
         if (filtre.getEmployesFiltres() != null) {
             for (Utilisateur employe : filtre.getEmployesFiltres()) {
-                Button boutonEmploye = creerBoutonFiltre("Employé : " + employe.getPrenom() + " " + employe.getNom(), _ -> {
+                Button boutonEmploye = creerBoutonFiltre("Employé : " + employe.getPrenom() + " "
+                        + employe.getNom(), _ -> {
                     filtre.supprimerFiltreEmploye(employe);
                     mettreAJourFiltres();
                 });
@@ -706,7 +793,8 @@ public class ControleurConsulterDonnees extends Controleur {
     }
 
     /**
-     * Gestionnaire d'événements appelé lorsque l'utilisateur clique sur le bouton pour filtrer les réservations par période.
+     * Gestionnaire d'événements appelé lorsque l'utilisateur clique sur le bouton pour filtrer les
+     * réservations par période.
      * <p>
      * Cette méthode récupère les dates et heures spécifiées dans les champs correspondants,
      * crée des objets {@link LocalDateTime} pour la période de début et de fin,
@@ -718,13 +806,16 @@ public class ControleurConsulterDonnees extends Controleur {
      */
     @FXML
     void clickFiltrerDate() {
-        if (filtreDateDebut != null && filtreDateFin != null) {
-            LocalDateTime debut = LocalDateTime.of(filtreDateDebut.getValue(), LocalTime.of(heuresDebut.getValue(), minutesDebut.getValue()));
-            LocalDateTime fin = LocalDateTime.of(filtreDateFin.getValue(), LocalTime.of(heuresFin.getValue(), minutesFin.getValue()));
-            filtre.ajouterFiltreDate(debut,fin);
+        if (filtreDateDebut.getValue() != null && filtreDateFin.getValue() != null
+                && filtreDateDebut.getValue().isBefore(filtreDateFin.getValue())) {
+            LocalDateTime debut = LocalDateTime.of(filtreDateDebut.getValue(), LocalTime.of(heuresDebut.getValue(),
+                    minutesDebut.getValue()));
+            LocalDateTime fin = LocalDateTime.of(filtreDateFin.getValue(), LocalTime.of(heuresFin.getValue(),
+                    minutesFin.getValue()));
+            filtre.ajouterFiltreDate(debut, fin);
             mettreAJourFiltres();
         } else {
-            new Notification("Périodes invalides","Les périodes rentrées ne sont pas valides.");
+            new Notification("Périodes invalides", "Les périodes rentrées ne sont pas valides.");
         }
     }
 }
