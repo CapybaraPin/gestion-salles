@@ -24,7 +24,7 @@ import java.io.IOException;
  * Contrôleur général, permet d'importer toutes
  * les méthodes généralistes qui pourraient se répéter dans les autres contrôleurs.
  *
- * @author Jules VIALAS, Dorian ADAMS 
+ * @author Jules VIALAS, Dorian ADAMS
  */
 public class Controleur {
 
@@ -248,5 +248,10 @@ public class Controleur {
             cadreNotification.setVisible(false);
             cadreNotification.setMouseTransparent(true);
         });
+    }
+
+    @FXML
+    void clickGenererPDF() {
+        //TODO
     }
 }
