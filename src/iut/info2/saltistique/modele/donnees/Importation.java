@@ -67,7 +67,7 @@ public class Importation {
      */
     public void importerDonnees(String[] cheminFichiers) throws IOException {
         donnees.viderDonnees();
-        ajouterFichier(cheminFichiers);
+        ajouterFichiers(cheminFichiers);
 
         donnees.setFichiers(fichiers);
 
@@ -146,7 +146,7 @@ public class Importation {
      * @throws IOException si une erreur survient lors de la lecture du fichier.
      * @author Tom Gutierrez
      */
-    public void ajouterFichier(String[] cheminFichiers) throws IOException { // TODO : renommer la méthode ajouterFichiers
+    private void ajouterFichiers(String[] cheminFichiers) throws IOException {
         String erreurSalles;
         String erreurActivites;
         String erreurReservations;

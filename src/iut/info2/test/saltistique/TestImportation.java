@@ -2,6 +2,7 @@ package iut.info2.test.saltistique;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import iut.info2.saltistique.modele.donnees.Importation;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -11,7 +12,9 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 
-class TestGestionDonnees {
+import iut.info2.saltistique.modele.donnees.GestionDonnees;
+
+class TestImportation {
 
     final String DELIMITEUR = ";";
 
@@ -148,27 +151,9 @@ class TestGestionDonnees {
 
     @Test
     void testImporterDonnees() {
-        GestionDonnees gestion = new GestionDonnees();
+        GestionDonnees donnees  = new GestionDonnees();
+        Importation importation = new Importation(donnees);
 
-        // test fonctionnel de la méthode importerDonnees
-        // à refaire entièrement avec les tests unitaires
-        try {
-            gestion.importerDonnees(CHEMINS_VALIDES);
-
-            // Vérification que chaque classe d'équivalence valide est bien remplie
-            assertNotNull(gestion.getSalles(), "Les salles doivent être importées.");
-            assertNotNull(gestion.getUtilisateurs(), "Les employés doivent être importés.");
-            assertNotNull(gestion.getActivites(), "Les activités doivent être importées.");
-            assertNotNull(gestion.getReservations(), "Les réservations doivent être importées.");
-
-            // Nombre d'éléments
-            assertEquals(9, gestion.getSalles().size(), "Nombre de salles incorrect.");
-            assertEquals(8, gestion.getUtilisateurs().size(), "Nombre d'employés incorrect.");
-            assertEquals(6, gestion.getActivites().size(), "Nombre d'activités incorrect.");
-            assertEquals(18, gestion.getReservations().size(), "Nombre de réservations incorrect.");
-        } catch (Exception e) {
-            fail("Erreur inattendue : " + e.getMessage());
-        }
     }
 
     /**
@@ -192,49 +177,49 @@ class TestGestionDonnees {
     @Test
     void testAjouterFichier() throws IOException {
         String[] cheminsFichierCourant;
-
-        // cas 1 : fichier valide
-        GestionDonnees gestion = new GestionDonnees();
+        Importation importation;
+                // cas 1 : fichier valide
+        importation = new Importation(new GestionDonnees());
         cheminsFichierCourant = listerFichiers(REPERTOIRE_CAS_VALIDE);
 
         try {
-            gestion.ajouterFichier(cheminsFichierCourant);
-            assertEquals(gestion.getFichierActivites().getFichierExploite(), new File(cheminsFichierCourant[0]), "Fichier activités incorrect");
-            assertEquals(gestion.getFichierUtilisateurs().getFichierExploite(), new File(cheminsFichierCourant[1]), "Fichier employés incorrect");
-            assertEquals(gestion.getFichierReservations().getFichierExploite(), new File(cheminsFichierCourant[2]), "Fichier réservations incorrect");
-            assertEquals(gestion.getFichierSalles().getFichierExploite(), new File(cheminsFichierCourant[3]), "Fichier salles incorrect");
+            importation.importerDonnees(cheminsFichierCourant);
+            assertEquals(importation.getFichierActivites().getFichierExploite(), new File(cheminsFichierCourant[0]), "Fichier activités incorrect");
+            assertEquals(importation.getFichierUtilisateurs().getFichierExploite(), new File(cheminsFichierCourant[1]), "Fichier employés incorrect");
+            assertEquals(importation.getFichierReservations().getFichierExploite(), new File(cheminsFichierCourant[2]), "Fichier réservations incorrect");
+            assertEquals(importation.getFichierSalles().getFichierExploite(), new File(cheminsFichierCourant[3]), "Fichier salles incorrect");
         } catch (Exception e) {
             fail("Erreur inattendue pour testAjouterFichier cas valide : " + e.getMessage());
         }
 
         // cas 2 : trop peu de fichiers
-        gestion = new GestionDonnees();
+        importation = new Importation(new GestionDonnees());
         cheminsFichierCourant = listerFichiers(REPERTOIRE_TROP_PEU_DE_FICHIERS);
 
         try {
-            gestion.ajouterFichier(cheminsFichierCourant);
+            importation.importerDonnees(cheminsFichierCourant);
             fail("Exception attendue pour testAjouterFichier cas nombre de fichiers incorrect");
         } catch (Exception e) {
             assertEquals("Le nombre de fichiers à fournir n'est pas respecté", e.getMessage(), "Message d'erreur incorrect");
         }
 
         // cas 3 : trop de fichiers
-        gestion = new GestionDonnees();
+        importation = new Importation(new GestionDonnees());
         cheminsFichierCourant = listerFichiers(REPERTOIRE_TROP_DE_FICHIERS);
 
         try {
-            gestion.ajouterFichier(cheminsFichierCourant);
+            importation.importerDonnees(cheminsFichierCourant);
             fail("Exception attendue pour testAjouterFichier cas nombre de fichiers incorrect");
         } catch (Exception e) {
             assertEquals("Le nombre de fichiers à fournir n'est pas respecté", e.getMessage(), "Message d'erreur incorrect");
         }
 
         // cas 4 : doublon de fichiers activités
-        gestion = new GestionDonnees();
+        importation = new Importation(new GestionDonnees());
         cheminsFichierCourant = listerFichiers(REPERTOIRE_DOUBLON_ACTIVITES);
 
         try {
-            gestion.ajouterFichier(cheminsFichierCourant);
+            importation.importerDonnees(cheminsFichierCourant);
             fail("Exception attendue pour testAjouterFichier cas doublon activités");
         } catch (Exception e) {
             String messageAttendu = "Vous avez fourni plusieurs fichiers d'activités : " +
@@ -244,11 +229,11 @@ class TestGestionDonnees {
         }
 
         // cas 5 : doublon de fichiers employés
-        gestion = new GestionDonnees();
+        importation = new Importation(new GestionDonnees());
         cheminsFichierCourant = listerFichiers(REPERTOIRE_DOUBLON_EMPLOYES);
 
         try {
-            gestion.ajouterFichier(cheminsFichierCourant);
+            importation.importerDonnees(cheminsFichierCourant);
             fail("Exception attendue pour testAjouterFichier cas doublon employés");
         } catch (Exception e) {
             String messageAttendu = "Vous avez fourni plusieurs fichiers d'employés : " +
@@ -258,11 +243,11 @@ class TestGestionDonnees {
         }
 
         // cas 6 : doublon de fichiers réservations
-        gestion = new GestionDonnees();
+        importation = new Importation(new GestionDonnees());
         cheminsFichierCourant = listerFichiers(REPERTOIRE_DOUBLON_RESERVATIONS);
 
         try {
-            gestion.ajouterFichier(cheminsFichierCourant);
+            importation.importerDonnees(cheminsFichierCourant);
             fail("Exception attendue pour testAjouterFichier cas doublon réservations");
         } catch (Exception e) {
             String messageAttendu = "Vous avez fourni plusieurs fichiers de réservations : " +
@@ -272,11 +257,11 @@ class TestGestionDonnees {
         }
 
         // cas 7 : doublon de fichiers salles
-        gestion = new GestionDonnees();
+        importation = new Importation(new GestionDonnees());
         cheminsFichierCourant = listerFichiers(REPERTOIRE_DOUBLON_SALLES);
 
         try {
-            gestion.ajouterFichier(cheminsFichierCourant);
+            importation.importerDonnees(cheminsFichierCourant);
             fail("Exception attendue pour testAjouterFichier cas doublon salles");
         } catch (Exception e) {
             String messageAttendu = "Vous avez fourni plusieurs fichiers de salles : " +
@@ -286,11 +271,11 @@ class TestGestionDonnees {
         }
 
         // cas 8 : format non reconnu
-        gestion = new GestionDonnees();
+        importation = new Importation(new GestionDonnees());
         cheminsFichierCourant = listerFichiers(REPERTOIRE_CAS_NON_RECONNU);
 
         try {
-            gestion.ajouterFichier(cheminsFichierCourant);
+            importation.importerDonnees(cheminsFichierCourant);
             fail("Exception attendue pour testAjouterFichier cas format non reconnu");
         } catch (Exception e) {
             String messageAttendu = "\"format_inconnu.csv\" non reconnu";
@@ -298,24 +283,23 @@ class TestGestionDonnees {
         }
 
         // cas 9 : fichier avec un fichier inexistant
-        gestion = new GestionDonnees();
+        importation = new Importation(new GestionDonnees());
         cheminsFichierCourant = listerFichiers(REPERTOIRE_CAS_EXCEPTION_IO);
         // ajout d'un fichier inexistant pour lever une exception
         String[] cheminsFichierInexistant = Arrays.copyOf(cheminsFichierCourant, cheminsFichierCourant.length + 1);
         cheminsFichierInexistant[cheminsFichierInexistant.length - 1] = REPERTOIRE_CAS_EXCEPTION_IO + "/fichier_inexistant.csv";
-
         try {
-            gestion.ajouterFichier(cheminsFichierInexistant);
-            fail("Exception attendue pour testAjouterFichier cas format non reconnu");
+            importation.importerDonnees(cheminsFichierInexistant);
+            fail("Exception attendue pour testAjouterFichier cas fichier non existant");
         } catch (IOException e) {
             String messageAttendu = "Erreur lors de l'ouverture du fichier : " + REPERTOIRE_CAS_EXCEPTION_IO + "/fichier_inexistant.csv";
             assertEquals(messageAttendu, e.getMessage(), "Message d'erreur incorrect");
         }
 
         // cas 10 : fichier vide
-        gestion = new GestionDonnees();
+        importation = new Importation(new GestionDonnees());
         try {
-            gestion.ajouterFichier(null);
+            importation.importerDonnees(null);
             fail("Exception attendue pour testAjouterFichier cas fichier vide");
         } catch (Exception e) {
             assertEquals("Les chemins des fichiers ne peuvent pas être nuls.", e.getMessage(), "Message d'erreur incorrect");
@@ -326,15 +310,16 @@ class TestGestionDonnees {
     @Test
     void testEstLigneComplete() {
         // cas 1 : le type de fichier est "activites" et la ligne est valide
+        Importation importation = new Importation(new GestionDonnees());
         try {
-            assertTrue(GestionDonnees.estLigneComplete(LIGNE_VALIDE_ACTIVITES, DELIMITEUR, TYPE_FICHIERS[0]), "Erreur cas 1 : ligne valide");
+            assertTrue(importation.estLigneComplete(LIGNE_VALIDE_ACTIVITES, TYPE_FICHIERS[0]), "Erreur cas 1 : ligne valide");
         } catch (Exception e) {
             fail("Erreur inattendue pour testEstLigneComplete cas 1 : " + e.getMessage());
         }
 
         // cas 2 : le type de fichier est "activites" et la ligne est invalide
         try {
-            assertFalse(GestionDonnees.estLigneComplete(LIGNE_INVALIDE_ACTIVITES, DELIMITEUR, TYPE_FICHIERS[0]), "Erreur cas 2 : ligne invalide");
+            assertFalse(importation.estLigneComplete(LIGNE_INVALIDE_ACTIVITES, TYPE_FICHIERS[0]), "Erreur cas 2 : ligne invalide");
         } catch (Exception e) {
             fail("Erreur inattendue pour testEstLigneComplete cas 2 : " + e.getMessage());
         }
@@ -342,14 +327,14 @@ class TestGestionDonnees {
         // cas 3 : le type de fichier est "employes" et la ligne est valide
         try {
             System.out.println(TYPE_FICHIERS[1]);
-            assertTrue(GestionDonnees.estLigneComplete(LIGNE_VALIDE_EMPLOYES, DELIMITEUR, TYPE_FICHIERS[1]), "Erreur cas 3 : ligne valide");
+            assertTrue(importation.estLigneComplete(LIGNE_VALIDE_EMPLOYES, TYPE_FICHIERS[1]), "Erreur cas 3 : ligne valide");
         } catch (Exception e) {
             fail("Erreur inattendue pour testEstLigneComplete cas 3 : " + e.getMessage());
         }
 
         // cas 4 : le type de fichier est "employes" et la ligne est invalide
         try {
-            assertFalse(GestionDonnees.estLigneComplete(LIGNE_INVALIDE_EMPLOYES, DELIMITEUR, TYPE_FICHIERS[1]), "Erreur cas 4 : ligne invalide");
+            assertFalse(importation.estLigneComplete(LIGNE_INVALIDE_EMPLOYES, TYPE_FICHIERS[1]), "Erreur cas 4 : ligne invalide");
         } catch (Exception e) {
             fail("Erreur inattendue pour testEstLigneComplete cas 4 : " + e.getMessage());
         }
@@ -357,7 +342,7 @@ class TestGestionDonnees {
         // cas 5 : le type de fichier est "reservations" et la ligne est valide
         // et la date de début est inférieure à la date de fin
         try {
-            assertTrue(GestionDonnees.estLigneComplete(LIGNE_DATE_VALIDE_RESERVATIONS, DELIMITEUR, TYPE_FICHIERS[2]), "Erreur cas 7 : ligne valide");
+            assertTrue(importation.estLigneComplete(LIGNE_DATE_VALIDE_RESERVATIONS, TYPE_FICHIERS[2]), "Erreur cas 7 : ligne valide");
         } catch (Exception e) {
             fail("Erreur inattendue pour testEstLigneComplete cas 5 : " + e.getMessage());
         }
@@ -365,35 +350,35 @@ class TestGestionDonnees {
         // cas 6 : le type de fichier est "reservations" et la ligne est invalide
         // et la date de début est supérieure à la date de fin
         try {
-            assertFalse(GestionDonnees.estLigneComplete(LIGNE_DATE_INVALIDE_RESERVATIONS, DELIMITEUR, TYPE_FICHIERS[2]), "Erreur cas 8 : ligne invalide");
+            assertFalse(importation.estLigneComplete(LIGNE_DATE_INVALIDE_RESERVATIONS, TYPE_FICHIERS[2]), "Erreur cas 8 : ligne invalide");
         } catch (Exception e) {
             fail("Erreur inattendue pour testEstLigneComplete cas 6 : " + e.getMessage());
         }
 
         // cas 7 : le type de fichier est "reservations" et la ligne est invalide
         try {
-            assertFalse(GestionDonnees.estLigneComplete(LIGNE_INVALIDE_RESERVATIONS, DELIMITEUR, TYPE_FICHIERS[2]), "Erreur cas 6 : ligne invalide");
+            assertFalse(importation.estLigneComplete(LIGNE_INVALIDE_RESERVATIONS, TYPE_FICHIERS[2]), "Erreur cas 6 : ligne invalide");
         } catch (Exception e) {
             fail("Erreur inattendue pour testEstLigneComplete cas 7 : " + e.getMessage());
         }
 
         // cas 8 : le type de fichier est "salles" et la ligne est valide
         try {
-            assertTrue(GestionDonnees.estLigneComplete(LIGNE_VALIDE_SALLES, DELIMITEUR, TYPE_FICHIERS[3]), "Erreur cas 5 : ligne valide");
+            assertTrue(importation.estLigneComplete(LIGNE_VALIDE_SALLES, TYPE_FICHIERS[3]), "Erreur cas 5 : ligne valide");
         } catch (Exception e) {
             fail("Erreur inattendue pour testEstLigneComplete cas 8 : " + e.getMessage());
         }
 
         // cas 9 : le type de fichier est "salles" et la ligne est invalide
         try {
-            assertFalse(GestionDonnees.estLigneComplete(LIGNE_INVALIDE_SALLES, DELIMITEUR, TYPE_FICHIERS[3]), "Erreur cas 6 : ligne invalide");
+            assertFalse(importation.estLigneComplete(LIGNE_INVALIDE_SALLES, TYPE_FICHIERS[3]), "Erreur cas 6 : ligne invalide");
         } catch (Exception e) {
             fail("Erreur inattendue pour testEstLigneComplete cas 9 : " + e.getMessage());
         }
 
         // cas 10 : le type de fichier est inconnu
         try {
-            GestionDonnees.estLigneComplete("ligne", DELIMITEUR, "inconnu");
+            importation.estLigneComplete("ligne", "inconnu");
             fail("Exception attendue pour testEstLigneComplete cas 10 : type de fichier inconnu");
         } catch (Exception e) {
             assertEquals("Type de fichier inconnu : inconnu", e.getMessage(), "Message d'erreur incorrect");
@@ -401,7 +386,7 @@ class TestGestionDonnees {
 
         // cas 11 : un des paramètres est null
         try {
-            GestionDonnees.estLigneComplete(null, DELIMITEUR, TYPE_FICHIERS[0]);
+            importation.estLigneComplete(null, TYPE_FICHIERS[0]);
             fail("Exception attendue pour testEstLigneComplete cas 11 : ligne null");
         } catch (Exception e) {
             assertEquals("Les arguments ne peuvent pas être nuls.", e.getMessage(), "Message d'erreur incorrect");
@@ -412,93 +397,13 @@ class TestGestionDonnees {
     void testConstruireDate() {
         // Cas valides
         for (String[] date : DATE_VALIDE) {
-            LocalDateTime d = GestionDonnees.construireDate(date[0], date[1]);
+            LocalDateTime d = Importation.construireDate(date[0], date[1]);
             assertNotNull(d);
         }
 
         // Cas invalides
         for (String[] date : DATE_INVALIDE) {
-            assertThrows(IllegalArgumentException.class, () -> GestionDonnees.construireDate(date[0], date[1]));
-        }
-    }
-
-    @Test
-    void testImporterDonneesAvecFichiersValides() {
-        GestionDonnees gestion = new GestionDonnees();
-
-        try {
-            gestion.importerDonnees(CHEMINS_VALIDES);
-
-            // Vérification que chaque classe d'équivalence valide est bien remplie
-            assertNotNull(gestion.getSalles(), "Les salles doivent être importées.");
-            assertNotNull(gestion.getUtilisateurs(), "Les employés doivent être importés.");
-            assertNotNull(gestion.getActivites(), "Les activités doivent être importées.");
-            assertNotNull(gestion.getReservations(), "Les réservations doivent être importées.");
-
-            // Nombre d'éléments (utiliser des valeurs ajustées selon le contenu de chaque fichier)
-            assertEquals(2, gestion.getSalles().size(), "Nombre de salles incorrect.");
-            assertEquals(2, gestion.getUtilisateurs().size(), "Nombre d'employés incorrect.");
-            assertEquals(2, gestion.getActivites().size(), "Nombre d'activités incorrect.");
-            assertEquals(2, gestion.getReservations().size(), "Nombre de réservations incorrect.");
-        } catch (Exception e) {
-            fail("Exception pour fichiers valides : " + e.getMessage());
-        }
-    }
-
-    @Test
-    void testImporterDonneesAvecFichiersInvalides() {
-        GestionDonnees gestion = new GestionDonnees();
-
-        try {
-            gestion.importerDonnees(CHEMINS_INVALIDES);
-
-            // Vérifie que les fichiers invalides n'ont pas ajouté de données
-            assertEquals(0, gestion.getSalles().size(), "Pas de salles pour fichier invalide.");
-            assertEquals(0, gestion.getUtilisateurs().size(), "Pas d'employés pour fichier invalide.");
-            assertEquals(0, gestion.getActivites().size(), "Pas d'activités pour fichier invalide.");
-            assertEquals(0, gestion.getReservations().size(), "Pas de réservations pour fichier invalide.");
-
-        } catch (Exception e) {
-            fail("Erreur inattendue avec fichiers invalides : " + e.getMessage());
-        }
-    }
-
-    @Test
-    void testImporterDonneesFichierInexistant() {
-        GestionDonnees gestion = new GestionDonnees();
-        String[] cheminInexistant = { "src/test/resources/inexistant.csv" };
-
-        assertThrows(Exception.class, () -> {
-            gestion.importerDonnees(cheminInexistant);
-        }, "Une exception doit être levée pour un fichier inexistant.");
-    }
-
-    @Test
-    void testImporterDonneesMixtes() {
-        GestionDonnees gestion = new GestionDonnees();
-        String[] cheminsMixtes = {
-                CHEMINS_VALIDES[0],
-                CHEMINS_INVALIDES[0],
-                CHEMINS_VALIDES[1]
-        };
-
-        try {
-            gestion.importerDonnees(cheminsMixtes);
-
-            // Les fichiers valides doivent être importés
-            assertNotNull(gestion.getSalles(), "Les salles doivent être importées.");
-            assertNotNull(gestion.getUtilisateurs(), "Les employés doivent être importés.");
-
-            // Vérification du nombre d'éléments importés
-            assertEquals(2, gestion.getSalles().size(), "Nombre de salles incorrect.");
-            assertEquals(2, gestion.getUtilisateurs().size(), "Nombre d'employés incorrect.");
-
-            // Vérification des catégories non affectées
-            assertEquals(0, gestion.getActivites().size(), "Aucune activité ne doit être importée.");
-            assertEquals(0, gestion.getReservations().size(), "Aucune réservation ne doit être importée.");
-
-        } catch (Exception e) {
-            fail("Erreur inattendue pour fichiers mixtes : " + e.getMessage());
+            assertThrows(IllegalArgumentException.class, () -> Importation.construireDate(date[0], date[1]));
         }
     }
 }
