@@ -980,4 +980,32 @@ public class Importation {
     public Fichier[] getFichiers() {
         return fichiers;
     }
+
+    /**
+     * Récupère l'instance de fichier des utilisateurs
+     */
+    public Fichier getFichierUtilisateurs() {
+        return fichierUtilisateurs;
+    }
+
+    /**
+     * Récupère l'instance de fichier des salles
+     */
+    public Fichier getFichierSalles() {
+        return fichierSalles;
+    }
+
+    /**
+     * Récupère l'instance de fichier des activités
+     */
+    public Fichier getFichierActivites() {
+        return fichierActivites;
+    }
+
+    /**
+     * Récupère l'instance de fichier des réservations
+     */
+    public Fichier getFichierReservations() {
+        return fichierReservations;
+    }
 }
