@@ -65,6 +65,22 @@ class TestChiffrage {
         assertTrue(!fichierIdentique(fichierChiffre, new File(CHEMIN_FICHIER_TEST)), "Les fichier ne sont pas identique");
         nbTestTotal++;
         if(!fichierIdentique(fichierChiffre, new File(CHEMIN_FICHIER_TEST))) { nbTestReussi++; }
+        assertDoesNotThrow(() -> chiffrage.chiffrer());
+        nbTestTotal++;
+        try {
+            nbTestReussi++;
+            chiffrage.chiffrer();
+        } catch (IOException e) {}
+
+        chiffrage = new Chiffrage(CHEMIN_FICHIER_TEST);
+        chiffrage.calculeClePartager(new Chiffrage().getClePublique());
+        assertThrows(NullPointerException.class, () -> chiffrage.chiffrer());
+        nbTestTotal++;
+        try {
+            chiffrage.chiffrer();
+        } catch (NullPointerException e) {
+            nbTestReussi++;
+        }
 
         System.out.println(nbTestReussi + " tests réussi sur " + nbTestTotal + " tests");
     }
@@ -97,6 +113,12 @@ class TestChiffrage {
         assertTrue(fichierIdentique(fichierDechiffrer, new File(CHEMIN_FICHIER_TEST)), "Les fichier devraient être identique");
         nbTestTotal++;
         if (fichierIdentique(fichierDechiffrer, new File(CHEMIN_FICHIER_TEST))) { nbTestReussi++; }
+        assertDoesNotThrow(() -> chiffrage.dechiffrer());
+        nbTestTotal++;
+        try {
+            nbTestReussi++;
+            chiffrage.dechiffrer();
+        } catch (IOException e) {}
 
         System.out.println(nbTestReussi + " tests réussi sur " + nbTestTotal + " tests");
     }

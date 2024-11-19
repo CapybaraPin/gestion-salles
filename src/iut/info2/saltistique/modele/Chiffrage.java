@@ -96,6 +96,9 @@ public class Chiffrage {
      * @throws RuntimeException si une erreur d'entrée/sortie survient.
      */
     public String chiffrer() throws IOException {
+        if (cleVigenere == null) {
+            throw new NullPointerException("La clé de Vigenère doit d'abord être calculée.");
+        }
         try {
             //Lecture du fichier à chiffrer
             String cheminFichierChiffrer = cheminFichier.replace(".csv", "-c.csv");
@@ -148,6 +151,9 @@ public class Chiffrage {
      * @throws RuntimeException si une erreur d'entrée/sortie survient.
      */
     public String dechiffrer() throws IOException {
+        if (cleVigenere == null) {
+            throw new NullPointerException("La clé de Vigenère doit d'abord être calculée.");
+        }
         try {
             //Lecture du fichier à déchiffrer
             String cheminFichierDechiffrer = cheminFichier.replace("-c.csv", "-dc.csv");
