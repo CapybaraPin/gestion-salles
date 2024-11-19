@@ -89,7 +89,7 @@ public class Client implements Runnable{
             dos = new DataOutputStream(bos);
 
             // Envoi d'un BigInteger
-            envoiGrosEntier = chiffrage.getClePublic();
+            envoiGrosEntier = chiffrage.getClePublique();
             dos.writeInt(envoiGrosEntier.toByteArray().length);
             dos.write(envoiGrosEntier.toByteArray());
             dos.flush();

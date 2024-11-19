@@ -67,7 +67,9 @@ public class Serveur implements Runnable {
                 }
             }
         } catch (IOException e) {
-            throw new RuntimeException("Erreur lors du démarrage du serveur.");
+            if (!serverSocket.isClosed()) {
+                throw new RuntimeException("Erreur lors du démarrage du serveur.");
+            }
         }
     }
 
@@ -124,7 +126,7 @@ public class Serveur implements Runnable {
             chiffrage = new Chiffrage(fichier.getFichierExploite().getAbsolutePath());
 
             // Envoi d'un BigInteger
-            envoiGrosEntier = chiffrage.getClePublic();
+            envoiGrosEntier = chiffrage.getClePublique();
             dos.writeInt(envoiGrosEntier.toByteArray().length);
             dos.write(envoiGrosEntier.toByteArray());
             dos.flush();

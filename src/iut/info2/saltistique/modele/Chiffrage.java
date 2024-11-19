@@ -225,17 +225,8 @@ public class Chiffrage {
      *
      * @return la clé privée.
      */
-    public BigInteger getClePublic() {
+    public BigInteger getClePublique() {
         return clePublique;
-    }
-
-    /**
-     * Retourne la clé partagée de Diffie-Hellman.
-     *
-     * @return la clé partagée.
-     */
-    public BigInteger getClePartager() {
-        return clePartager;
     }
 
     /**
@@ -267,5 +258,9 @@ public class Chiffrage {
      */
     public void setCheminFichier(String cheminFichier) {
         this.cheminFichier = cheminFichier;
+    }
+
+    public BigInteger getClePartager() {
+        return clePartager;
     }
 }
