@@ -115,6 +115,15 @@ class TestChiffrage {
         nbTestTotal++;
         if(chiffrage1.getClePartager().equals(chiffrage.getClePartager())) { nbTestReussi++; }
 
+        chiffrage = new Chiffrage();
+        assertThrows(IllegalArgumentException.class, () -> chiffrage.calculeClePartager(null));
+        nbTestTotal++;
+        try {
+            chiffrage.calculeClePartager(null);
+        } catch (IllegalArgumentException e) {
+            nbTestReussi++;
+        }
+
         System.out.println(nbTestReussi + " tests réussi sur " + nbTestTotal + " tests");
     }
 
@@ -145,6 +154,13 @@ class TestChiffrage {
 
     }
 
+    /**
+     * Test si 2 fichiers ont le même contenu.
+     * @param file1 fichier n°1
+     * @param file2 fichier n°2
+     * @return true, si les 2 fichiers ont le même contenu. False sinon.
+     * @throws IOException Erreur de lecture du/des fichier(s).
+     */
     private boolean fichierIdentique(File file1, File file2) throws IOException {
         // Vérifiez si les tailles des fichiers sont différentes
         if (file1.length() != file2.length()) {
@@ -156,15 +172,12 @@ class TestChiffrage {
 
             int byte1, byte2;
 
-            // Comparez les octets un par un
             while ((byte1 = fis1.read()) != -1 && (byte2 = fis2.read()) != -1) {
                 if (byte1 != byte2) {
-                    return false; // Contenu différent
+                    return false;
                 }
             }
         }
-
-        // Les fichiers sont identiques
         return true;
     }
 }

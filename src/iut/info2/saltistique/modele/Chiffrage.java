@@ -235,20 +235,28 @@ public class Chiffrage {
      * @param cle clé publique de l'autre participant au protocole Diffie-Hellman.
      */
     public void calculeClePartager(BigInteger cle) {
-        this.clePartager = exponentiationModulaire(G, clePublique.multiply(cle), P);
+        if(cle != null) {
+            this.clePartager = exponentiationModulaire(G, clePublique.multiply(cle), P);
+        } else {
+            throw new IllegalArgumentException("Le gros entier ne peut être nul.");
+        }
     }
 
     /**
      * Génère une clé de chiffrement Vigenère à partir de la clé partagée.
      */
     public void genererCleVigenere() {
-        StringBuilder secretKey = new StringBuilder();
-        String gabString = clePartager.toString();
-        for (int i = 0; i < gabString.length(); i++) {
-            int index = Character.getNumericValue(gabString.charAt(i)) % ALPHABET_PERSONNALISE.length();
-            secretKey.append(ALPHABET_PERSONNALISE.charAt(index));
+        if(clePartager != null) {
+            StringBuilder secretKey = new StringBuilder();
+            String gabString = clePartager.toString();
+            for (int i = 0; i < gabString.length(); i++) {
+                int index = Character.getNumericValue(gabString.charAt(i)) % ALPHABET_PERSONNALISE.length();
+                secretKey.append(ALPHABET_PERSONNALISE.charAt(index));
+            }
+            this.cleVigenere = secretKey.toString();
+        } else {
+            throw new NullPointerException("La clé partagée doit d'abord être calculée.");
         }
-        this.cleVigenere = secretKey.toString();
     }
 
     /**
