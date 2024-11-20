@@ -2,10 +2,7 @@ package iut.info2.test.saltistique;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import iut.info2.saltistique.modele.Activite;
-import iut.info2.saltistique.modele.GroupeOrdinateurs;
-import iut.info2.saltistique.modele.Salle;
-import iut.info2.saltistique.modele.Utilisateur;
+import iut.info2.saltistique.modele.*;
 import iut.info2.saltistique.modele.donnees.Importation;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -198,12 +195,12 @@ class TestImportation {
      * Resultat attendus pour lignesIncorrectesActivites
      */
     public static final String[][] LIGNES_INCORRECTES_ACTIVITES_AJOUTERRESERVATION = {
-            {"R000004;1;E000001;autre;07/10/2024;17h00;19h00;doublon;", "Identifiant déjà utilisé"},
-            {"R000005;2;E000001;autre;07/10/2024;17h00;19h00;salle incorrect;", "Ligne incorrecte"},
-            {"R000006;1;E000002;autre;07/10/2024;17h00;19h00;employe incorrect;", "Ligne incorrecte"},
-            {"R000007;1;E000001;incorrect;07/10/2024;17h00;19h00;actvité incorrect;", "Ligne incorrecte"},
-            {"R000008;1;E000001;incorrect;07/10/2024;20h00;19h00;date incorrect;", "Ligne incorrecte"},
-            {"R00000neuf;1;E000001;incorrect;07/10/2024;20h00;19h00;ligne incorrecte;", "Ligne incorrecte"}
+            {"R000004;00000001;E000001;autre;07/10/2024;17h00;19h00;doublon;;;;", "Identifiant déjà utilisé"},
+            {"R000005;00000002;E000001;autre;07/10/2024;17h00;19h00;salle incorrecte;;;;", "Erreur lors de la création de la réservation"},
+            {"R000006;00000001;E000002;autre;07/10/2024;17h00;19h00;employe incorrect;;;;", "Erreur lors de la création de la réservation"},
+            {"R000007;00000001;E000001;incorrect;07/10/2024;17h00;19h00;activité incorrecte;;;;", "Erreur lors de la création de la réservation"},
+            {"R000008;00000001;E000001;incorrect;07/10/2024;20h00;19h00;date incorrecte;;;;", "Ligne incorrecte"},
+            {"R00000neuf;00000001;E000001;incorrect;07/10/2024;20h00;19h00;ligne incorrecte;;;;", "Ligne incorrecte"}
     };
 
     /**
@@ -217,13 +214,25 @@ class TestImportation {
     };
 
     /**
+     * Salles à ajouter pour le test ajouterReservation
+     */
+    public static final Salle SALLES_AJOUTERRESERVATION = new Salle("00000001", "valide", 18, true, true, false, null);
+
+    /**
      * Utilisateurs à ajouter pour le test ajouterReservation
      */
     public static final Utilisateur UTILISATEUR_AJOUTERRESERVATION = new Utilisateur("E000001", "valide", "Pierre", "2614");
 
     /**
-     * Salles à ajouter pour le test ajouterReservation
+     * Réservation à ajouter pour le test ajouterReservation
      */
+    public static final Reservation[] RESERVATIONS_AJOUTERRESERVATION = {
+            new Location("R000001", LocalDateTime.parse("2024-10-07T17:00"), LocalDateTime.parse("2024-10-07T19:00"), "reunion", SALLES_AJOUTERRESERVATION, ACTIVITES_AJOUTERRESERVATION[0], UTILISATEUR_AJOUTERRESERVATION, "club gym", "Legendre", "Noémie", "0600000000"),
+            new Formation("R000002", LocalDateTime.parse("2024-10-07T17:00"), LocalDateTime.parse("2024-10-07T19:00"), "Bureautique", SALLES_AJOUTERRESERVATION, ACTIVITES_AJOUTERRESERVATION[1], UTILISATEUR_AJOUTERRESERVATION, "Leroux", "Jacques", "0600000001"),
+            new Location("R000003", LocalDateTime.parse("2024-10-07T17:00"), LocalDateTime.parse("2024-10-07T19:00"), "", SALLES_AJOUTERRESERVATION, ACTIVITES_AJOUTERRESERVATION[2], UTILISATEUR_AJOUTERRESERVATION, "Département", "Tournefeuille", "Michel", "0655555555"),
+            new Reservation("R000004", LocalDateTime.parse("2024-10-07T17:00"), LocalDateTime.parse("2024-10-07T19:00"), "tests candidats", SALLES_AJOUTERRESERVATION, ACTIVITES_AJOUTERRESERVATION[3], UTILISATEUR_AJOUTERRESERVATION)
+    };
+
 
 
     @BeforeAll
@@ -242,6 +251,28 @@ class TestImportation {
         testAjouterActivite();
         testAjouterSalle();
         testAjouterUtilisateur();
+        testAjouterReservation();
+    }
+
+    private void testAjouterReservation() {
+        GestionDonnees donnees = new GestionDonnees();
+        Importation importation = new Importation(donnees);
+        try {
+            importation.importerDonnees(listerFichiers(REPERTOIRE_AJOUTERRESERVATION));
+            for (int i = 0; i < RESERVATIONS_AJOUTERRESERVATION.length; i++) {
+                assertEquals(RESERVATIONS_AJOUTERRESERVATION[i].toString(), donnees.getReservations().get(i+1).toString(), "Erreur pour testAjouterReservation");
+            }
+
+            for (int i = 0; i < LIGNES_INCORRECTES_ACTIVITES_AJOUTERRESERVATION.length; i++) {
+                assertArrayEquals(LIGNES_INCORRECTES_ACTIVITES_AJOUTERRESERVATION[i], donnees.getLignesIncorrectesReservations().get(i), "Erreur pour testAjouterReservation");
+            }
+
+            // Vérification de la taille de la liste des lignes incorrectes pour le cas vide (";").
+            assertEquals(4, donnees.getReservations().size(), "Erreur pour testAjouterReservation");
+            assertEquals(6, donnees.getLignesIncorrectesReservations().size(), "Erreur pour testAjouterReservation");
+        } catch (Exception e) {
+            fail("Erreur inattendue pour testAjouterReservation : " + e.getMessage());
+        }
     }
 
     private void testAjouterUtilisateur() {
@@ -250,8 +281,8 @@ class TestImportation {
         try {
             importation.importerDonnees(listerFichiers(REPERTOIRE_AJOUTERUTILISATEUR));
             for (int i = 0; i < UTILISATEURS_AJOUTERUTILISATEUR.length; i++) {
-                assertNotEquals(UTILISATEURS_AJOUTERUTILISATEUR[i].toString(), donnees.getUtilisateurs().get(i+1).toString(), "Erreur pour testAjouterUtilisateur");
-            } // FIXME
+                assertEquals(UTILISATEURS_AJOUTERUTILISATEUR[i].toString(), donnees.getUtilisateurs().get(i+1).toString(), "Erreur pour testAjouterUtilisateur");
+            }
 
             for (int i = 0; i < LIGNES_INCORRECTES_ACTIVITES_AJOUTERUTILISATEUR.length; i++) {
                 assertArrayEquals(LIGNES_INCORRECTES_ACTIVITES_AJOUTERUTILISATEUR[i], donnees.getLignesIncorrectesUtilisateurs().get(i), "Erreur pour testAjouterUtilisateur");
@@ -269,11 +300,14 @@ class TestImportation {
         GestionDonnees donnees = new GestionDonnees();
         Importation importation = new Importation(donnees);
         try {
+            // Importation de tout le jeu de données
             importation.importerDonnees(listerFichiers(REPERTOIRE_AJOUTERACTIVITE));
+            // Vérification des activités ajoutées
             for (int i = 0; i < ACTIVITES_AJOUTERACTIVITE.length; i++) {
                 assertEquals(ACTIVITES_AJOUTERACTIVITE[i].toString(), donnees.getActivites().get(i+1).toString(), "Erreur pour testAjouterActivite");
-            } // FIXME et tout le reste
+            }
 
+            // Vérification des lignes incorrectes
             for (int i = 0; i < LIGNES_INCORRECTES_ACTIVITES_AJOUTERACTIVITE.length; i++) {
                 assertArrayEquals(LIGNES_INCORRECTES_ACTIVITES_AJOUTERACTIVITE[i], donnees.getLignesIncorrectesActivites().get(i), "Erreur pour testAjouterActivite");
             }
@@ -328,7 +362,6 @@ class TestImportation {
 
         // cas 3 : le type de fichier est "employes" et la ligne est valide
         try {
-            System.out.println(TYPE_FICHIERS[1]);
             assertTrue(importation.estLigneComplete(LIGNE_VALIDE_EMPLOYES, TYPE_FICHIERS[1]), "Erreur cas 3 : ligne valide");
         } catch (Exception e) {
             fail("Erreur inattendue pour testEstLigneComplete cas 3 : " + e.getMessage());
