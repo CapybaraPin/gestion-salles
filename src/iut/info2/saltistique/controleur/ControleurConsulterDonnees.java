@@ -513,11 +513,14 @@ public class ControleurConsulterDonnees extends Controleur {
         valeurFiltre.setVisible(afficherFiltres);
         Filtres.setVisible(afficherFiltres);
         boutonFiltrer.setVisible(afficherFiltres);
-        hboxFiltresAppliques.setVisible(afficherFiltres);
-        hboxFiltreTexte.setVisible(afficherFiltres);
-        if (!hboxFiltreTexte.isVisible()) {
+        if (Filtres.getSelectionModel().getSelectedItem().equals("Période")) {
             vboxFiltreDate.setVisible(afficherFiltres);
+        } else {
+            hboxFiltreTexte.setVisible(afficherFiltres);
         }
+
+        hboxFiltresAppliques.setVisible(afficherFiltres);
+
 
     }
 
