@@ -20,11 +20,14 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.shape.Line;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+
+import iut.info2.saltistique.modele.GenerePDF;
 
 /**
  * Le contrôleur de la vue permettant de consulter les données.
@@ -816,6 +819,30 @@ public class ControleurConsulterDonnees extends Controleur {
             mettreAJourFiltres();
         } else {
             new Notification("Périodes invalides", "Les périodes rentrées ne sont pas valides.");
+        }
+    }
+
+    /**
+     *
+     *
+     */
+    @FXML
+    void clickGenererPDF() {
+        // Assurez-vous d'utiliser votre TableView réel ici
+        TableView<?> myTableView = tableauReservations;
+
+        try {
+            // Vérifiez que le TableView contient des données
+            if (myTableView == null || myTableView.getItems().isEmpty()) {
+                throw new IllegalArgumentException("Le TableView est vide ou non initialisé.");
+            }
+
+            // Appeler la méthode pour générer et ouvrir le PDF
+            GenerePDF.generateAndOpenPdf(myTableView);
+        } catch (IOException e) {
+            e.printStackTrace(); // Gérer les exceptions liées au fichier ou à l'écriture
+        } catch (IllegalArgumentException e) {
+            System.err.println(e.getMessage()); // Affiche un message clair en cas de problème
         }
     }
 }
