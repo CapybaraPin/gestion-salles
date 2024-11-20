@@ -18,8 +18,7 @@ import iut.info2.saltistique.modele.donnees.GestionDonnees;
 class TestImportation {
 
     /**
-     * Résultats attendus pour les ENTETES_VALIDES
-     * Correspond aussi aux types de fichiers
+     * Tableau contenant les types de fichiers attendus.
      */
     final String[] TYPE_FICHIERS = {
             "activites",
@@ -216,7 +215,7 @@ class TestImportation {
     /**
      * Salles à ajouter pour le test ajouterReservation
      */
-    public static final Salle SALLES_AJOUTERRESERVATION = new Salle("00000001", "valide", 18, true, true, false, null);
+    public static final Salle SALLE_AJOUTERRESERVATION = new Salle("00000001", "valide", 18, true, true, false, null);
 
     /**
      * Utilisateurs à ajouter pour le test ajouterReservation
@@ -227,10 +226,10 @@ class TestImportation {
      * Réservation à ajouter pour le test ajouterReservation
      */
     public static final Reservation[] RESERVATIONS_AJOUTERRESERVATION = {
-            new Location("R000001", LocalDateTime.parse("2024-10-07T17:00"), LocalDateTime.parse("2024-10-07T19:00"), "reunion", SALLES_AJOUTERRESERVATION, ACTIVITES_AJOUTERRESERVATION[0], UTILISATEUR_AJOUTERRESERVATION, "club gym", "Legendre", "Noémie", "0600000000"),
-            new Formation("R000002", LocalDateTime.parse("2024-10-07T17:00"), LocalDateTime.parse("2024-10-07T19:00"), "Bureautique", SALLES_AJOUTERRESERVATION, ACTIVITES_AJOUTERRESERVATION[1], UTILISATEUR_AJOUTERRESERVATION, "Leroux", "Jacques", "0600000001"),
-            new Location("R000003", LocalDateTime.parse("2024-10-07T17:00"), LocalDateTime.parse("2024-10-07T19:00"), "", SALLES_AJOUTERRESERVATION, ACTIVITES_AJOUTERRESERVATION[2], UTILISATEUR_AJOUTERRESERVATION, "Département", "Tournefeuille", "Michel", "0655555555"),
-            new Reservation("R000004", LocalDateTime.parse("2024-10-07T17:00"), LocalDateTime.parse("2024-10-07T19:00"), "tests candidats", SALLES_AJOUTERRESERVATION, ACTIVITES_AJOUTERRESERVATION[3], UTILISATEUR_AJOUTERRESERVATION)
+            new Location("R000001", LocalDateTime.parse("2024-10-07T17:00"), LocalDateTime.parse("2024-10-07T19:00"), "reunion", SALLE_AJOUTERRESERVATION, ACTIVITES_AJOUTERRESERVATION[0], UTILISATEUR_AJOUTERRESERVATION, "club gym", "Legendre", "Noémie", "0600000000"),
+            new Formation("R000002", LocalDateTime.parse("2024-10-07T17:00"), LocalDateTime.parse("2024-10-07T19:00"), "Bureautique", SALLE_AJOUTERRESERVATION, ACTIVITES_AJOUTERRESERVATION[1], UTILISATEUR_AJOUTERRESERVATION, "Leroux", "Jacques", "0600000001"),
+            new Location("R000003", LocalDateTime.parse("2024-10-07T17:00"), LocalDateTime.parse("2024-10-07T19:00"), "", SALLE_AJOUTERRESERVATION, ACTIVITES_AJOUTERRESERVATION[2], UTILISATEUR_AJOUTERRESERVATION, "Département", "Tournefeuille", "Michel", "0655555555"),
+            new Reservation("R000004", LocalDateTime.parse("2024-10-07T17:00"), LocalDateTime.parse("2024-10-07T19:00"), "tests candidats", SALLE_AJOUTERRESERVATION, ACTIVITES_AJOUTERRESERVATION[3], UTILISATEUR_AJOUTERRESERVATION)
     };
 
 
