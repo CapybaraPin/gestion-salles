@@ -1,0 +1,6 @@
+Ident;Nom;Capacite;videoproj;ecranXXL;ordinateur;type;logiciels;imprimante
+00000001;valide;18;oui;oui;;;;
+00000002;valide;18;oui;oui;1;type;logiciel;oui
+00000002;doublon;18;oui;oui;;;;
+00000003;incorrect;;;;;;;
+;;;;;;;;

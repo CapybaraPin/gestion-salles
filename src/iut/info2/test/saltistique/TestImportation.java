@@ -2,6 +2,10 @@ package iut.info2.test.saltistique;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import iut.info2.saltistique.modele.Activite;
+import iut.info2.saltistique.modele.GroupeOrdinateurs;
+import iut.info2.saltistique.modele.Salle;
+import iut.info2.saltistique.modele.Utilisateur;
 import iut.info2.saltistique.modele.donnees.Importation;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -15,8 +19,6 @@ import java.util.Arrays;
 import iut.info2.saltistique.modele.donnees.GestionDonnees;
 
 class TestImportation {
-
-    final String DELIMITEUR = ";";
 
     /**
      * Résultats attendus pour les ENTETES_VALIDES
@@ -78,233 +80,233 @@ class TestImportation {
             {"15-08-2023", "10h30"},   // Format de la date incorrect
             {"", "10h30"}              // Date vide
     };
-
-    private static final String[] CHEMINS_VALIDES = {
-            "src/iut/info2/test/ressources/salles.csv",
-            "src/iut/info2/test/ressources/employes.csv",
-            "src/iut/info2/test/ressources/activites.csv",
-            "src/iut/info2/test/ressources/reservations.csv"
-    };
-
-    private static final String[] CHEMINS_INVALIDES = {
-            "src/iut/info2/test/ressources/fichier_invalide.csv", // Données incorrectes
-            "src/iut/info2/test/ressources/fichier_vide.csv", // Fichier vide
-            "src/iut/info2/test/ressources/format_inconnu.csv" // Format non reconnu
-    };
+    
 
     /**
      * Répertoire contenant les fichiers de test pour un cas valide :
      * 4 fichiers différents (employes, salles, activites, reservations).
      */
-    public static final String REPERTOIRE_CAS_VALIDE = "src/iut/info2/test/ressources/GestionDonnees/cas_valide";
+    public static final String REPERTOIRE_CAS_VALIDE_AJOUTERFICHIERS= "src/iut/info2/test/ressources/Importation/AjouterFichiers/cas_valide";
 
     /**
      * Répertoire contenant les fichiers de test pour le cas où le nombre de fichiers fournis est inférieur à 4.
      */
-    public static final String REPERTOIRE_TROP_PEU_DE_FICHIERS = "src/iut/info2/test/ressources/GestionDonnees/cas_nombre_fichiers_incorrect/moins";
+    public static final String REPERTOIRE_TROP_PEU_DE_FICHIERS_AJOUTERFICHIERS= "src/iut/info2/test/ressources/Importation/AjouterFichiers/cas_nombre_fichiers_incorrect/moins";
 
     /**
      * Répertoire contenant les fichiers de test pour le cas où le nombre de fichiers fournis est supérieur à 4.
      */
-    public static final String REPERTOIRE_TROP_DE_FICHIERS = "src/iut/info2/test/ressources/GestionDonnees/cas_nombre_fichiers_incorrect/plus";
+    public static final String REPERTOIRE_TROP_DE_FICHIERS_AJOUTERFICHIERS= "src/iut/info2/test/ressources/Importation/AjouterFichiers/cas_nombre_fichiers_incorrect/plus";
 
     /**
      * Répertoire contenant les fichiers de test pour le cas d’un doublon de fichiers employés.
      */
-    public static final String REPERTOIRE_DOUBLON_EMPLOYES = "src/iut/info2/test/ressources/GestionDonnees/cas_doublon/doublon_employes";
+    public static final String REPERTOIRE_DOUBLON_EMPLOYES_AJOUTERFICHIERS= "src/iut/info2/test/ressources/Importation/AjouterFichiers/cas_doublon/doublon_employes";
 
     /**
      * Répertoire contenant les fichiers de test pour le cas d’un doublon de fichiers salles.
      */
-    public static final String REPERTOIRE_DOUBLON_SALLES = "src/iut/info2/test/ressources/GestionDonnees/cas_doublon/doublon_salles";
+    public static final String REPERTOIRE_DOUBLON_SALLES_AJOUTERFICHIERS= "src/iut/info2/test/ressources/Importation/AjouterFichiers/cas_doublon/doublon_salles";
 
     /**
      * Répertoire contenant les fichiers de test pour le cas d’un doublon de fichiers activités.
      */
-    public static final String REPERTOIRE_DOUBLON_ACTIVITES = "src/iut/info2/test/ressources/GestionDonnees/cas_doublon/doublon_activites";
+    public static final String REPERTOIRE_DOUBLON_ACTIVITES_AJOUTERFICHIERS= "src/iut/info2/test/ressources/Importation/AjouterFichiers/cas_doublon/doublon_activites";
 
     /**
      * Répertoire contenant les fichiers de test pour le cas d’un doublon de fichiers réservations.
      */
-    public static final String REPERTOIRE_DOUBLON_RESERVATIONS = "src/iut/info2/test/ressources/GestionDonnees/cas_doublon/doublon_reservations";
+    public static final String REPERTOIRE_DOUBLON_RESERVATIONS_AJOUTERFICHIERS= "src/iut/info2/test/ressources/Importation/AjouterFichiers/cas_doublon/doublon_reservations";
 
     /**
      * Répertoire contenant les fichiers de test pour le cas où un fichier a un format non reconnu.
      */
-    public static final String REPERTOIRE_CAS_NON_RECONNU = "src/iut/info2/test/ressources/GestionDonnees/cas_non_reconnu";
+    public static final String REPERTOIRE_CAS_NON_RECONNU_AJOUTERFICHIERS= "src/iut/info2/test/ressources/Importation/AjouterFichiers/cas_non_reconnu";
 
     /**
      * Répertoire contenant 3 fichiers de tests un 4ème inexistant est ajouté pour lever une exception.
      */
-    public static final String REPERTOIRE_CAS_EXCEPTION_IO = "src/iut/info2/test/ressources/GestionDonnees/cas_exception_io";
+    public static final String REPERTOIRE_CAS_EXCEPTION_IO_AJOUTERFICHIERS= "src/iut/info2/test/ressources/Importation/AjouterFichiers/cas_exception_io";
+
+    /**
+     * Répertoire contenant les fichiers de test pour tester ajouterActivite.
+     */
+    public static final String REPERTOIRE_AJOUTERACTIVITE= "src/iut/info2/test/ressources/Importation/AjouterActivite";
+
+    /**
+     * Resultat attendus pour lignesIncorrectesActivites
+     */
+    public static final String[][] LIGNES_INCORRECTES_ACTIVITES_AJOUTERACTIVITE = {
+            {"A0000001;duplication", "Identifiant déjà utilisé"},
+            {"A0000003a;erreur", "Ligne incorrecte"}
+    };
+
+    /**
+     * Activités à ajouter pour le test ajouterActivite
+     */
+    public static final Activite[] ACTIVITES_AJOUTERACTIVITE = {
+            new Activite("A0000001", "valide"),
+    };
+
+    /**
+     * Répertoire contenant les fichiers de test pour tester ajouterSalle.
+     */
+    public static final String REPERTOIRE_AJOUTERSALLE= "src/iut/info2/test/ressources/Importation/AjouterSalle";
+
+    /**
+     * Resultat attendus pour lignesIncorrectesActivites
+     */
+    public static final String[][] LIGNES_INCORRECTES_ACTIVITES_AJOUTERSALLE = {
+            {"00000002;doublon;18;oui;oui;;;;", "Identifiant déjà utilisé"},
+            {"00000003;incorrect;;;;;;;", "Ligne incorrecte"}
+    };
+
+    /**
+     * Activités à ajouter pour le test ajouterSalle
+     */
+    public static final Salle[] ACTIVITES_AJOUTERSALLE = {
+            new Salle("00000001", "valide", 18, true, true, false, null),
+            new Salle("00000002", "valide", 18, true, true, false, new GroupeOrdinateurs(1, "type", null)),
+    };
+
+    /**
+     * Répertoire contenant les fichiers de test pour tester ajouterUtilisateur.
+     */
+    public static final String REPERTOIRE_AJOUTERUTILISATEUR= "src/iut/info2/test/ressources/Importation/AjouterUtilisateur";
+
+    /**
+     * Resultat attendus pour lignesIncorrectesActivites
+     */
+    public static final String[][] LIGNES_INCORRECTES_ACTIVITES_AJOUTERUTILISATEUR = {
+            {"E000001;doublon;Pierre;2614", "Identifiant déjà utilisé"},
+            {"E000002;incorrect;Pierre;2614a", "Ligne incorrecte"}
+    };
+
+    /**
+     * Utilisateurs à ajouter pour le test ajouterUtilisateur
+     */
+    public static final Utilisateur[] UTILISATEURS_AJOUTERUTILISATEUR = {
+            new Utilisateur("E000001", "valide", "Pierre", "2614"),
+    };
+
+    /**
+     * Répertoire contenant les fichiers de test pour tester ajouterReservation.
+     */
+    public static final String REPERTOIRE_AJOUTERRESERVATION= "src/iut/info2/test/ressources/Importation/AjouterReservation";
+
+    /**
+     * Resultat attendus pour lignesIncorrectesActivites
+     */
+    public static final String[][] LIGNES_INCORRECTES_ACTIVITES_AJOUTERRESERVATION = {
+            {"R000004;1;E000001;autre;07/10/2024;17h00;19h00;doublon;", "Identifiant déjà utilisé"},
+            {"R000005;2;E000001;autre;07/10/2024;17h00;19h00;salle incorrect;", "Ligne incorrecte"},
+            {"R000006;1;E000002;autre;07/10/2024;17h00;19h00;employe incorrect;", "Ligne incorrecte"},
+            {"R000007;1;E000001;incorrect;07/10/2024;17h00;19h00;actvité incorrect;", "Ligne incorrecte"},
+            {"R000008;1;E000001;incorrect;07/10/2024;20h00;19h00;date incorrect;", "Ligne incorrecte"},
+            {"R00000neuf;1;E000001;incorrect;07/10/2024;20h00;19h00;ligne incorrecte;", "Ligne incorrecte"}
+    };
+
+    /**
+     * Activités à ajouter pour le test ajouterReservation
+     */
+    public static final Activite[] ACTIVITES_AJOUTERRESERVATION = {
+            new Activite("00000001", "prêt"),
+            new Activite("00000002", "formation"),
+            new Activite("00000003", "location"),
+            new Activite("00000004", "autre")
+    };
+
+    /**
+     * Utilisateurs à ajouter pour le test ajouterReservation
+     */
+    public static final Utilisateur UTILISATEUR_AJOUTERRESERVATION = new Utilisateur("E000001", "valide", "Pierre", "2614");
+
+    /**
+     * Salles à ajouter pour le test ajouterReservation
+     */
 
 
     @BeforeAll
-    static void setUpBeforeClass() throws Exception {
+    static void setUpBeforeClass() {
         System.out.println("====== TEST DE LA CLASSE GestionDonnees ======");
     }
 
     @AfterAll
-    static void tearDownAfterClass() throws Exception {
+    static void tearDownAfterClass() {
         System.out.println("======= TEST DE GestionDonnees TERMINE =======");
     }
 
     @Test
-    void testImporterDonnees() {
-        GestionDonnees donnees  = new GestionDonnees();
+    void testImporterDonnees() throws IOException {
+        testAjouterFichier();
+        testAjouterActivite();
+        testAjouterSalle();
+        testAjouterUtilisateur();
+    }
+
+    private void testAjouterUtilisateur() {
+        GestionDonnees donnees = new GestionDonnees();
         Importation importation = new Importation(donnees);
+        try {
+            importation.importerDonnees(listerFichiers(REPERTOIRE_AJOUTERUTILISATEUR));
+            for (int i = 0; i < UTILISATEURS_AJOUTERUTILISATEUR.length; i++) {
+                assertNotEquals(UTILISATEURS_AJOUTERUTILISATEUR[i].toString(), donnees.getUtilisateurs().get(i+1).toString(), "Erreur pour testAjouterUtilisateur");
+            } // FIXME
 
+            for (int i = 0; i < LIGNES_INCORRECTES_ACTIVITES_AJOUTERUTILISATEUR.length; i++) {
+                assertArrayEquals(LIGNES_INCORRECTES_ACTIVITES_AJOUTERUTILISATEUR[i], donnees.getLignesIncorrectesUtilisateurs().get(i), "Erreur pour testAjouterUtilisateur");
+            }
+
+            // Vérification de la taille de la liste des lignes incorrectes pour le cas vide (";").
+            assertEquals(1, donnees.getUtilisateurs().size(), "Erreur pour testAjouterUtilisateur");
+            assertEquals(2, donnees.getLignesIncorrectesUtilisateurs().size(), "Erreur pour testAjouterUtilisateur");
+        } catch (Exception e) {
+            fail("Erreur inattendue pour testAjouterUtilisateur : " + e.getMessage());
+        }
     }
 
-    /**
-     * Permet de lister les fichiers CSV dans un répertoire.
-     * @param repertoire le répertoire à explorer
-     * @return un tableau de chaînes de caractères contenant les chemins des fichiers CSV
-     */
-    private String[] listerFichiers(String repertoire) {
-        File dir = new File(repertoire);
-        String[] fichiers;
-        if (!dir.exists() || !dir.isDirectory()) {
-            return new String[]{};
+    void testAjouterActivite() {
+        GestionDonnees donnees = new GestionDonnees();
+        Importation importation = new Importation(donnees);
+        try {
+            importation.importerDonnees(listerFichiers(REPERTOIRE_AJOUTERACTIVITE));
+            for (int i = 0; i < ACTIVITES_AJOUTERACTIVITE.length; i++) {
+                assertEquals(ACTIVITES_AJOUTERACTIVITE[i].toString(), donnees.getActivites().get(i+1).toString(), "Erreur pour testAjouterActivite");
+            } // FIXME et tout le reste
+
+            for (int i = 0; i < LIGNES_INCORRECTES_ACTIVITES_AJOUTERACTIVITE.length; i++) {
+                assertArrayEquals(LIGNES_INCORRECTES_ACTIVITES_AJOUTERACTIVITE[i], donnees.getLignesIncorrectesActivites().get(i), "Erreur pour testAjouterActivite");
+            }
+
+            // Vérification de la taille de la liste des lignes incorrectes pour le cas vide (";").
+            assertEquals(1, donnees.getActivites().size(), "Erreur pour testAjouterActivite");
+            assertEquals(2, donnees.getLignesIncorrectesActivites().size(), "Erreur pour testAjouterActivite");
+        } catch (Exception e) {
+            fail("Erreur inattendue pour testAjouterActivite : " + e.getMessage());
         }
-        fichiers = dir.list();
-        for (int i = 0; i < fichiers.length; i++) {
-            fichiers[i] = repertoire + "/" + fichiers[i];
-        }
-        return fichiers;
     }
 
-    @Test
-    void testAjouterFichier() throws IOException {
-        String[] cheminsFichierCourant;
-        Importation importation;
-                // cas 1 : fichier valide
-        importation = new Importation(new GestionDonnees());
-        cheminsFichierCourant = listerFichiers(REPERTOIRE_CAS_VALIDE);
-
+    void testAjouterSalle() {
+        GestionDonnees donnees = new GestionDonnees();
+        Importation importation = new Importation(donnees);
         try {
-            importation.importerDonnees(cheminsFichierCourant);
-            assertEquals(importation.getFichierActivites().getFichierExploite(), new File(cheminsFichierCourant[0]), "Fichier activités incorrect");
-            assertEquals(importation.getFichierUtilisateurs().getFichierExploite(), new File(cheminsFichierCourant[1]), "Fichier employés incorrect");
-            assertEquals(importation.getFichierReservations().getFichierExploite(), new File(cheminsFichierCourant[2]), "Fichier réservations incorrect");
-            assertEquals(importation.getFichierSalles().getFichierExploite(), new File(cheminsFichierCourant[3]), "Fichier salles incorrect");
+            importation.importerDonnees(listerFichiers(REPERTOIRE_AJOUTERSALLE));
+            for (int i = 0; i < ACTIVITES_AJOUTERSALLE.length; i++) {
+                assertEquals(ACTIVITES_AJOUTERSALLE[i].toString(), donnees.getSalles().get(i+1).toString(), "Erreur pour testAjouterSalle");
+            }
+
+            for (int i = 0; i < LIGNES_INCORRECTES_ACTIVITES_AJOUTERSALLE.length; i++) {
+                assertArrayEquals(LIGNES_INCORRECTES_ACTIVITES_AJOUTERSALLE[i], donnees.getLignesIncorrectesSalles().get(i), "Erreur pour testAjouterSalle");
+            }
+
+            // Vérification de la taille de la liste des lignes incorrectes pour le cas vide (";").
+            assertEquals(2, donnees.getSalles().size(), "Erreur pour testAjouterSalle");
+            assertEquals(2, donnees.getLignesIncorrectesSalles().size(), "Erreur pour testAjouterSalle");
         } catch (Exception e) {
-            fail("Erreur inattendue pour testAjouterFichier cas valide : " + e.getMessage());
-        }
-
-        // cas 2 : trop peu de fichiers
-        importation = new Importation(new GestionDonnees());
-        cheminsFichierCourant = listerFichiers(REPERTOIRE_TROP_PEU_DE_FICHIERS);
-
-        try {
-            importation.importerDonnees(cheminsFichierCourant);
-            fail("Exception attendue pour testAjouterFichier cas nombre de fichiers incorrect");
-        } catch (Exception e) {
-            assertEquals("Le nombre de fichiers à fournir n'est pas respecté", e.getMessage(), "Message d'erreur incorrect");
-        }
-
-        // cas 3 : trop de fichiers
-        importation = new Importation(new GestionDonnees());
-        cheminsFichierCourant = listerFichiers(REPERTOIRE_TROP_DE_FICHIERS);
-
-        try {
-            importation.importerDonnees(cheminsFichierCourant);
-            fail("Exception attendue pour testAjouterFichier cas nombre de fichiers incorrect");
-        } catch (Exception e) {
-            assertEquals("Le nombre de fichiers à fournir n'est pas respecté", e.getMessage(), "Message d'erreur incorrect");
-        }
-
-        // cas 4 : doublon de fichiers activités
-        importation = new Importation(new GestionDonnees());
-        cheminsFichierCourant = listerFichiers(REPERTOIRE_DOUBLON_ACTIVITES);
-
-        try {
-            importation.importerDonnees(cheminsFichierCourant);
-            fail("Exception attendue pour testAjouterFichier cas doublon activités");
-        } catch (Exception e) {
-            String messageAttendu = "Vous avez fourni plusieurs fichiers d'activités : " +
-                    "activites2.csv et activites1.csv";
-
-            assertEquals(messageAttendu, e.getMessage(), "Message d'erreur incorrect");
-        }
-
-        // cas 5 : doublon de fichiers employés
-        importation = new Importation(new GestionDonnees());
-        cheminsFichierCourant = listerFichiers(REPERTOIRE_DOUBLON_EMPLOYES);
-
-        try {
-            importation.importerDonnees(cheminsFichierCourant);
-            fail("Exception attendue pour testAjouterFichier cas doublon employés");
-        } catch (Exception e) {
-            String messageAttendu = "Vous avez fourni plusieurs fichiers d'employés : " +
-                    "employes2.csv et employes1.csv";
-
-            assertEquals(messageAttendu, e.getMessage(), "Message d'erreur incorrect");
-        }
-
-        // cas 6 : doublon de fichiers réservations
-        importation = new Importation(new GestionDonnees());
-        cheminsFichierCourant = listerFichiers(REPERTOIRE_DOUBLON_RESERVATIONS);
-
-        try {
-            importation.importerDonnees(cheminsFichierCourant);
-            fail("Exception attendue pour testAjouterFichier cas doublon réservations");
-        } catch (Exception e) {
-            String messageAttendu = "Vous avez fourni plusieurs fichiers de réservations : " +
-                    "reservations2.csv et reservations1.csv";
-
-            assertEquals(messageAttendu, e.getMessage(), "Message d'erreur incorrect");
-        }
-
-        // cas 7 : doublon de fichiers salles
-        importation = new Importation(new GestionDonnees());
-        cheminsFichierCourant = listerFichiers(REPERTOIRE_DOUBLON_SALLES);
-
-        try {
-            importation.importerDonnees(cheminsFichierCourant);
-            fail("Exception attendue pour testAjouterFichier cas doublon salles");
-        } catch (Exception e) {
-            String messageAttendu = "Vous avez fourni plusieurs fichiers de salles : " +
-                    "salles2.csv et salles1.csv";
-
-            assertEquals(messageAttendu, e.getMessage(), "Message d'erreur incorrect");
-        }
-
-        // cas 8 : format non reconnu
-        importation = new Importation(new GestionDonnees());
-        cheminsFichierCourant = listerFichiers(REPERTOIRE_CAS_NON_RECONNU);
-
-        try {
-            importation.importerDonnees(cheminsFichierCourant);
-            fail("Exception attendue pour testAjouterFichier cas format non reconnu");
-        } catch (Exception e) {
-            String messageAttendu = "\"format_inconnu.csv\" non reconnu";
-            assertEquals(messageAttendu, e.getMessage(), "Message d'erreur incorrect");
-        }
-
-        // cas 9 : fichier avec un fichier inexistant
-        importation = new Importation(new GestionDonnees());
-        cheminsFichierCourant = listerFichiers(REPERTOIRE_CAS_EXCEPTION_IO);
-        // ajout d'un fichier inexistant pour lever une exception
-        String[] cheminsFichierInexistant = Arrays.copyOf(cheminsFichierCourant, cheminsFichierCourant.length + 1);
-        cheminsFichierInexistant[cheminsFichierInexistant.length - 1] = REPERTOIRE_CAS_EXCEPTION_IO + "/fichier_inexistant.csv";
-        try {
-            importation.importerDonnees(cheminsFichierInexistant);
-            fail("Exception attendue pour testAjouterFichier cas fichier non existant");
-        } catch (IOException e) {
-            String messageAttendu = "Erreur lors de l'ouverture du fichier : " + REPERTOIRE_CAS_EXCEPTION_IO + "/fichier_inexistant.csv";
-            assertEquals(messageAttendu, e.getMessage(), "Message d'erreur incorrect");
-        }
-
-        // cas 10 : fichier vide
-        importation = new Importation(new GestionDonnees());
-        try {
-            importation.importerDonnees(null);
-            fail("Exception attendue pour testAjouterFichier cas fichier vide");
-        } catch (Exception e) {
-            assertEquals("Les chemins des fichiers ne peuvent pas être nuls.", e.getMessage(), "Message d'erreur incorrect");
+            fail("Erreur inattendue pour testAjouterSalle : " + e.getMessage());
         }
     }
+
 
 
     @Test
@@ -404,6 +406,156 @@ class TestImportation {
         // Cas invalides
         for (String[] date : DATE_INVALIDE) {
             assertThrows(IllegalArgumentException.class, () -> Importation.construireDate(date[0], date[1]));
+        }
+    }
+
+    /**
+     * Permet de lister les fichiers CSV dans un répertoire.
+     * @param repertoire le répertoire à explorer
+     * @return un tableau de chaînes de caractères contenant les chemins des fichiers CSV
+     */
+    private String[] listerFichiers(String repertoire) {
+        File dir = new File(repertoire);
+        String[] fichiers;
+        if (!dir.exists() || !dir.isDirectory()) {
+            return new String[]{};
+        }
+        fichiers = dir.list();
+        for (int i = 0; i < fichiers.length; i++) {
+            fichiers[i] = repertoire + "/" + fichiers[i];
+        }
+        return fichiers;
+    }
+
+    /** Test de la méthode privée grâce à la méthode publique importerDonnees. */
+    void testAjouterFichier() throws IOException {
+        String[] cheminsFichierCourant;
+            Importation importation;
+                // cas 1 : fichier valide
+        importation = new Importation(new GestionDonnees());
+        cheminsFichierCourant = listerFichiers(REPERTOIRE_CAS_VALIDE_AJOUTERFICHIERS);
+
+        try {
+            importation.importerDonnees(cheminsFichierCourant);
+            assertEquals(importation.getFichierActivites().getFichierExploite(), new File(cheminsFichierCourant[0]), "Fichier activités incorrect");
+            assertEquals(importation.getFichierUtilisateurs().getFichierExploite(), new File(cheminsFichierCourant[1]), "Fichier employés incorrect");
+            assertEquals(importation.getFichierReservations().getFichierExploite(), new File(cheminsFichierCourant[2]), "Fichier réservations incorrect");
+            assertEquals(importation.getFichierSalles().getFichierExploite(), new File(cheminsFichierCourant[3]), "Fichier salles incorrect");
+        } catch (Exception e) {
+            fail("Erreur inattendue pour testAjouterFichier cas valide : " + e.getMessage());
+        }
+
+        // cas 2 : trop peu de fichiers
+        importation = new Importation(new GestionDonnees());
+        cheminsFichierCourant = listerFichiers(REPERTOIRE_TROP_PEU_DE_FICHIERS_AJOUTERFICHIERS);
+
+        try {
+            importation.importerDonnees(cheminsFichierCourant);
+            fail("Exception attendue pour testAjouterFichier cas nombre de fichiers incorrect");
+        } catch (Exception e) {
+            assertEquals("Le nombre de fichiers à fournir n'est pas respecté", e.getMessage(), "Message d'erreur incorrect");
+        }
+
+        // cas 3 : trop de fichiers
+        importation = new Importation(new GestionDonnees());
+        cheminsFichierCourant = listerFichiers(REPERTOIRE_TROP_DE_FICHIERS_AJOUTERFICHIERS);
+
+        try {
+            importation.importerDonnees(cheminsFichierCourant);
+            fail("Exception attendue pour testAjouterFichier cas nombre de fichiers incorrect");
+        } catch (Exception e) {
+            assertEquals("Le nombre de fichiers à fournir n'est pas respecté", e.getMessage(), "Message d'erreur incorrect");
+        }
+
+        // cas 4 : doublon de fichiers activités
+        importation = new Importation(new GestionDonnees());
+        cheminsFichierCourant = listerFichiers(REPERTOIRE_DOUBLON_ACTIVITES_AJOUTERFICHIERS);
+
+        try {
+            importation.importerDonnees(cheminsFichierCourant);
+            fail("Exception attendue pour testAjouterFichier cas doublon activités");
+        } catch (Exception e) {
+            String messageAttendu = "Vous avez fourni plusieurs fichiers d'activités : " +
+                    "activites2.csv et activites1.csv";
+
+            assertEquals(messageAttendu, e.getMessage(), "Message d'erreur incorrect");
+        }
+
+        // cas 5 : doublon de fichiers employés
+        importation = new Importation(new GestionDonnees());
+        cheminsFichierCourant = listerFichiers(REPERTOIRE_DOUBLON_EMPLOYES_AJOUTERFICHIERS);
+
+        try {
+            importation.importerDonnees(cheminsFichierCourant);
+            fail("Exception attendue pour testAjouterFichier cas doublon employés");
+        } catch (Exception e) {
+            String messageAttendu = "Vous avez fourni plusieurs fichiers d'employés : " +
+                    "employes2.csv et employes1.csv";
+
+            assertEquals(messageAttendu, e.getMessage(), "Message d'erreur incorrect");
+        }
+
+        // cas 6 : doublon de fichiers réservations
+        importation = new Importation(new GestionDonnees());
+        cheminsFichierCourant = listerFichiers(REPERTOIRE_DOUBLON_RESERVATIONS_AJOUTERFICHIERS);
+
+        try {
+            importation.importerDonnees(cheminsFichierCourant);
+            fail("Exception attendue pour testAjouterFichier cas doublon réservations");
+        } catch (Exception e) {
+            String messageAttendu = "Vous avez fourni plusieurs fichiers de réservations : " +
+                    "reservations2.csv et reservations1.csv";
+
+            assertEquals(messageAttendu, e.getMessage(), "Message d'erreur incorrect");
+        }
+
+        // cas 7 : doublon de fichiers salles
+        importation = new Importation(new GestionDonnees());
+        cheminsFichierCourant = listerFichiers(REPERTOIRE_DOUBLON_SALLES_AJOUTERFICHIERS);
+
+        try {
+            importation.importerDonnees(cheminsFichierCourant);
+            fail("Exception attendue pour testAjouterFichier cas doublon salles");
+        } catch (Exception e) {
+            String messageAttendu = "Vous avez fourni plusieurs fichiers de salles : " +
+                    "salles2.csv et salles1.csv";
+
+            assertEquals(messageAttendu, e.getMessage(), "Message d'erreur incorrect");
+        }
+
+        // cas 8 : format non reconnu
+        importation = new Importation(new GestionDonnees());
+        cheminsFichierCourant = listerFichiers(REPERTOIRE_CAS_NON_RECONNU_AJOUTERFICHIERS);
+
+        try {
+            importation.importerDonnees(cheminsFichierCourant);
+            fail("Exception attendue pour testAjouterFichier cas format non reconnu");
+        } catch (Exception e) {
+            String messageAttendu = "\"format_inconnu.csv\" non reconnu";
+            assertEquals(messageAttendu, e.getMessage(), "Message d'erreur incorrect");
+        }
+
+        // cas 9 : fichier avec un fichier inexistant
+        importation = new Importation(new GestionDonnees());
+        cheminsFichierCourant = listerFichiers(REPERTOIRE_CAS_EXCEPTION_IO_AJOUTERFICHIERS);
+        // ajout d'un fichier inexistant pour lever une exception
+        String[] cheminsFichierInexistant = Arrays.copyOf(cheminsFichierCourant, cheminsFichierCourant.length + 1);
+        cheminsFichierInexistant[cheminsFichierInexistant.length - 1] = REPERTOIRE_CAS_EXCEPTION_IO_AJOUTERFICHIERS + "/fichier_inexistant.csv";
+        try {
+            importation.importerDonnees(cheminsFichierInexistant);
+            fail("Exception attendue pour testAjouterFichier cas fichier non existant");
+        } catch (IOException e) {
+            String messageAttendu = "Erreur lors de l'ouverture du fichier : " + REPERTOIRE_CAS_EXCEPTION_IO_AJOUTERFICHIERS + "/fichier_inexistant.csv";
+            assertEquals(messageAttendu, e.getMessage(), "Message d'erreur incorrect");
+        }
+
+        // cas 10 : fichier vide
+        importation = new Importation(new GestionDonnees());
+        try {
+            importation.importerDonnees(null);
+            fail("Exception attendue pour testAjouterFichier cas fichier vide");
+        } catch (Exception e) {
+            assertEquals("Les chemins des fichiers ne peuvent pas être nuls.", e.getMessage(), "Message d'erreur incorrect");
         }
     }
 }
