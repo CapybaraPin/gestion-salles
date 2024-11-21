@@ -256,14 +256,14 @@ class TestImportation {
 
     @Test
     void testImporterDonnees() throws IOException {
-        testAjouterFichier();
+        testAjouterFichiers();
         testAjouterActivite();
         testAjouterSalle();
         testAjouterUtilisateur();
         testAjouterReservation();
     }
 
-    private void testAjouterReservation() {
+    void testAjouterReservation() {
         GestionDonnees donnees = new GestionDonnees();
         Importation importation = new Importation(donnees);
         try {
@@ -284,7 +284,7 @@ class TestImportation {
         }
     }
 
-    private void testAjouterUtilisateur() {
+    void testAjouterUtilisateur() {
         GestionDonnees donnees = new GestionDonnees();
         Importation importation = new Importation(donnees);
         try {
@@ -473,7 +473,7 @@ class TestImportation {
     }
 
     /** Test de la méthode privée grâce à la méthode publique importerDonnees. */
-    void testAjouterFichier() throws IOException {
+    void testAjouterFichiers() throws IOException {
         String[] cheminsFichierCourant;
             Importation importation;
                 // cas 1 : fichier valide
