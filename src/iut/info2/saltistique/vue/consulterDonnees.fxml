@@ -257,6 +257,8 @@
                   <TableColumn fx:id="Type" prefWidth="75" text="Type" />
                   <TableColumn fx:id="Logiciels" prefWidth="75" text="Logiciels" />
                   <TableColumn fx:id="Imprimante" prefWidth="75" text="Imprimante" />
+                  <TableColumn fx:id="Actions" prefWidth="75" text="Actions" />
+
                </columns>
                <columnResizePolicy>
                   <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />

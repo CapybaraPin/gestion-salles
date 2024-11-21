@@ -1,6 +1,8 @@
 package iut.info2.saltistique.modele;
 
 import java.io.Serializable;
+import java.util.List;
+import javafx.collections.ObservableList;
 
 /**
  * Représente une salle avec un identifiant unique, un nom, une capacité, un vidéoprojecteur,
@@ -8,7 +10,7 @@ import java.io.Serializable;
  * Cette classe implémente l'interface Serializable afin de pouvoir être
  * sérialisée et désérialisée.
  *
- * @author Jules Vialas
+ * @author Jules Vialas, Néo Bécogné, Dorian Adams, Hugo Robles, Tom Gutierrez
  */
 public class Salle implements Serializable {
 
@@ -34,6 +36,8 @@ public class Salle implements Serializable {
 
     /** Ordinateur présent dans la salle */
     private GroupeOrdinateurs ordinateurs;
+
+
 
     /**
      * Constructeur de la classe salle.
@@ -158,6 +162,45 @@ public class Salle implements Serializable {
     @Override
     public String toString() {
         return nom;
+    }
+
+    /**
+     * Calcule le temps total des réservations pour une salle spécifique à partir d'une liste de réservations.
+     * Le temps total est calculé en additionnant la durée de chaque réservation associée à la salle actuelle
+     * (la salle pour laquelle la méthode est appelée) et exprimé en heures et minutes.
+     *
+     * @param listeReservations La liste des réservations à analyser. Chaque élément de cette liste est une réservation
+     *                          contenant des informations sur la salle, la date de début et la date de fin.
+     * @return Une chaîne de caractères représentant le temps total des réservations pour la salle, au format "Xh Ymin",
+     *         où X est le nombre d'heures et Y le nombre de minutes.
+     */
+    public String getTempsTotalReservations(ObservableList<Reservation> listeReservations) {
+        long totalMinutes = listeReservations.stream()
+                .filter(reservation -> reservation.getSalle().equals(this))
+                .mapToLong(reservation -> java.time.Duration.between(reservation.getDateDebut(), reservation.getDateFin()).toMinutes())
+                .sum();
+        long heures = totalMinutes / 60;
+        long minutes = totalMinutes % 60;
+        return heures + "h " + minutes + "min";
+    }
+
+    /**
+     * TODO JAVADOC
+     * @param listeReservations
+     * @return
+     */
+    public String getTempsMoyenReservations(ObservableList<Reservation> listeReservations) {
+        List<Reservation> reservations = listeReservations.filtered(reservation -> reservation.getSalle().equals(this));
+        if (reservations.isEmpty()) {
+            return "0h 0min";
+        }
+        long totalMinutes = reservations.stream()
+                .mapToLong(reservation -> java.time.Duration.between(reservation.getDateDebut(), reservation.getDateFin()).toMinutes())
+                .sum();
+        long moyenneMinutes = totalMinutes / reservations.size();
+        long heures = moyenneMinutes / 60;
+        long minutes = moyenneMinutes % 60;
+        return heures + "h " + minutes + "min";
     }
 
 }
