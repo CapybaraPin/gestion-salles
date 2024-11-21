@@ -1,10 +1,10 @@
 package iut.info2.saltistique.controleur;
 
-import iut.info2.saltistique.modele.Reservation;
+import iut.info2.saltistique.modele.*;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
-import iut.info2.saltistique.modele.Salle;
 
 public class ControleurConsultationSalle extends Controleur {
 
@@ -21,7 +21,6 @@ public class ControleurConsultationSalle extends Controleur {
      * Configure les informations spécifiques à la salle sélectionnée.
      *
      * @param salle             La salle à afficher.
-     * @param listeReservations
      */
     public void setSalle(Salle salle, ObservableList<Reservation> listeReservations) {
         if (salle != null) {
@@ -32,4 +31,59 @@ public class ControleurConsultationSalle extends Controleur {
             dureeMoyenneReservation.setText(salle.getTempsMoyenReservations(listeReservations) + " par jours");
         }
     }
+
+    Filtre filtre;
+
+    /**
+     * Listes observables contenant les objets de chaques types.
+     * Ces listes sont utilisées pour afficher et gérer les types de données disponibles
+     * dans l'application, permettant la liaison de données pour des composants
+     * de l'interface utilisateur, tels que des tableaux ou des listes.
+     */
+    private ObservableList<Salle> listeSalles;
+    private ObservableList<Activite> listeActivites;
+    private ObservableList<Utilisateur> listeEmployes;
+    private ObservableList<Reservation> listeReservations;
+
+    /**
+     * Initialise le contrôleur après le chargement de la vue FXML.
+     * Configure les filtres, les listes observables, et initialise les tableaux.
+     */
+    public void initialize() {
+        listeSalles = FXCollections.observableArrayList();
+        listeActivites = FXCollections.observableArrayList();
+        listeEmployes = FXCollections.observableArrayList();
+        listeReservations = FXCollections.observableArrayList();
+
+        // Initialisation des filtres
+        filtre = new Filtre();
+        setFiltre(filtre);
+        actualiserFiltres();
+        initialiserFiltres();
+    }
+
+
+    /**
+         * Gère le clic sur le bouton "Filtrer".
+         * Applique les filtres en fonction du critère et de la valeur sélectionnés.
+         */
+    @FXML
+    void clickFiltrer() {
+        actualiserFiltres();
+        creationFiltres();
+    }
+
+    /**
+     * Permet l'actualisation des données dans le contrôleur
+     * de gestion des filtres.
+     */
+    void actualiserFiltres() {
+        setListeSalles(listeSalles);
+        setListeActivites(listeActivites);
+        setListeEmployes(listeEmployes);
+        setListeReservations(listeReservations);
+    }
+
+
+
 }
