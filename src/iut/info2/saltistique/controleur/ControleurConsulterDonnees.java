@@ -24,6 +24,7 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -642,7 +643,7 @@ public class ControleurConsulterDonnees extends Controleur {
                     } else {
                         correspondanceTrouvee = listeEmployes.stream()
                                 .anyMatch(employe -> employe.getNom() != null && employe.getPrenom() != null
-                                        && java.util.Arrays.stream(motsRecherche)
+                                        && Arrays.stream(motsRecherche)
                                                 .anyMatch(mot -> employe.getNom().toLowerCase().contains(mot)
                                                         || employe.getPrenom().toLowerCase().contains(mot)));
 
@@ -650,7 +651,7 @@ public class ControleurConsulterDonnees extends Controleur {
                                 filtre.getEmployesFiltres().stream()
                                         .anyMatch(employe -> employe.getNom() != null
                                                 && employe.getPrenom() != null
-                                                && java.util.Arrays.stream(motsRecherche)
+                                                && Arrays.stream(motsRecherche)
                                                         .anyMatch(mot -> employe.getNom()
                                                                 .toLowerCase().contains(mot)
                                                                 || employe.getPrenom().toLowerCase().contains(mot)));
@@ -658,7 +659,7 @@ public class ControleurConsulterDonnees extends Controleur {
                         if (correspondanceTrouvee && !filtreDejaApplique) {
                             listeEmployes.stream()
                                     .filter(employe -> employe.getNom() != null && employe.getPrenom() != null
-                                            && java.util.Arrays.stream(motsRecherche)
+                                            && Arrays.stream(motsRecherche)
                                                     .anyMatch(mot -> employe.getNom().toLowerCase().contains(mot)
                                                             || employe.getPrenom().toLowerCase().contains(mot)))
                                     .forEach(employe -> filtre.ajouterFiltreEmploye(employe));
@@ -836,21 +837,26 @@ public class ControleurConsulterDonnees extends Controleur {
     @FXML
     void clickGenererPDF() {
         TableView<?> myTableView = null;
+        String nom = "";
 
         if (tableauReservations.isVisible()) {
             myTableView = tableauReservations;
+            nom="Reservations";
         } else if (tableauSalles.isVisible()) {
             myTableView = tableauSalles;
+            nom="Salles";
         } else if (tableauEmployes.isVisible()) {
             myTableView = tableauEmployes;
+            nom="Employes";
         } else if (tableauActivites.isVisible()) {
             myTableView = tableauActivites;
+            nom="Activites";
         }
         try {
             if (myTableView == null || myTableView.getItems().isEmpty()) {
                 throw new IllegalArgumentException("Aucun TableView visible ou les données sont vides.");
             }
-            GenerePDF.generateAndOpenPdf(myTableView);
+            GenerePDF.generateAndOpenPdf(myTableView,nom);
         } catch (IOException e) {
             e.printStackTrace();
         } catch (IllegalArgumentException e) {

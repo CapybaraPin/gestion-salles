@@ -11,17 +11,15 @@ import com.itextpdf.layout.property.TextAlignment;
 import com.itextpdf.layout.property.UnitValue;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TableColumn;
+
 import java.io.File;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
-
 /**
  * Cette classe permet de générer un fichier PDF à partir d'un {@link TableView}
  * en y incluant des informations générales, un tableau dynamique et un en-tête personnalisé.
- *
- * @author Néo Bécogné
  */
 public class GenerePDF {
 
@@ -29,27 +27,42 @@ public class GenerePDF {
      * Génère un fichier PDF à partir d'un {@link TableView} donné et l'ouvre automatiquement.
      *
      * @param tableView Le {@link TableView} contenant les données à exporter au format PDF.
-     *                  Les colonnes du tableau définissent les en-têtes,
-     *                  et les lignes fournissent les données du tableau.
+     * @param pdfName   Le nom du fichier PDF (sans l'extension .pdf).
      * @param <T>       Le type des éléments contenus dans les lignes du {@link TableView}.
      * @throws IOException              Si une erreur survient lors de l'écriture du fichier PDF.
-     * @throws IllegalArgumentException Si le {@link TableView} est null ou vide.
+     * @throws IllegalArgumentException Si le {@link TableView} est null ou vide, ou si le nom du fichier est vide.
      */
-    public static <T> void generateAndOpenPdf(TableView<T> tableView) throws IOException {
+    public static <T> void generateAndOpenPdf(TableView<T> tableView, String pdfName) throws IOException {
         if (tableView == null || tableView.getItems().isEmpty()) {
             throw new IllegalArgumentException("Le tableau est vide ou null.");
         }
-        String downloadsDir = System.getProperty("user.home") + File.separator + "Downloads";
-        String dest = downloadsDir + File.separator + "Saltistique.pdf";
 
+        if (pdfName == null || pdfName.trim().isEmpty()) {
+            throw new IllegalArgumentException("Le nom du fichier PDF ne peut pas être vide.");
+        }
+
+        // Format pour le nom de fichier
+        LocalDate currentDate = LocalDate.now();
+        DateTimeFormatter fileDateFormatter = DateTimeFormatter.ofPattern("ddMMyyyy");
+        String formattedFileDate = currentDate.format(fileDateFormatter);
+
+        // Format pour l'affichage dans le PDF
+        DateTimeFormatter displayDateFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+        String formattedDisplayDate = currentDate.format(displayDateFormatter);
+
+        // Construire le chemin complet du fichier PDF
+        String downloadsDir = System.getProperty("user.home") + File.separator + "Downloads";
+        String fileName = pdfName.trim() + formattedFileDate + ".pdf";
+        String dest = downloadsDir + File.separator + fileName;
+
+        // Création du PDF
         PdfWriter writer = new PdfWriter(dest);
         PdfDocument pdf = new PdfDocument(writer);
         Document document = new Document(pdf, PageSize.A4.rotate());
         document.setMargins(20, 20, 20, 20);
 
         addHeader(document);
-
-        addDocumentInfo(document);
+        addDocumentInfo(document, pdfName, formattedFileDate, formattedDisplayDate);
 
         Table pdfTable = createTableFromTableView(tableView);
         document.add(pdfTable);
@@ -61,13 +74,8 @@ public class GenerePDF {
 
     /**
      * Crée un tableau PDF à partir des données et des colonnes d'un {@link TableView}.
-     *
-     * @param tableView Le {@link TableView} contenant les données à convertir en tableau PDF.
-     * @param <T>       Le type des éléments contenus dans le {@link TableView}.
-     * @return Un tableau PDF ({@link Table}) construit à partir du contenu du {@link TableView}.
      */
     public static <T> Table createTableFromTableView(TableView<T> tableView) {
-
         int numColumns = tableView.getColumns().size();
         Table table = new Table(UnitValue.createPercentArray(numColumns));
         table.setWidth(UnitValue.createPercentValue(100));
@@ -88,9 +96,6 @@ public class GenerePDF {
 
     /**
      * Ajoute un en-tête contenant un logo et un titre au document PDF.
-     *
-     * @param document Le document PDF où l'en-tête sera ajouté.
-     * @throws IOException Si une erreur survient lors du chargement de l'image du logo.
      */
     private static void addHeader(Document document) throws IOException {
         Table headerTable = new Table(UnitValue.createPercentArray(new float[]{2, 5}));
@@ -110,22 +115,24 @@ public class GenerePDF {
     }
 
     /**
-     * Ajoute des informations générales au document PDF (nom du document, date, etc.).
+     * Ajoute des informations générales au document PDF.
      *
-     * @param document Le document PDF où les informations seront ajoutées.
+     * @param document          Le document PDF où les informations seront ajoutées.
+     * @param pdfName           Le nom du fichier PDF sans l'extension.
+     * @param formattedFileDate La date formatée pour le fichier.
+     * @param formattedDisplayDate La date formatée pour l'affichage dans le PDF.
      */
-    private static void addDocumentInfo(Document document) {
+    private static void addDocumentInfo(Document document, String pdfName, String formattedFileDate, String formattedDisplayDate) {
         Table infoTable = new Table(UnitValue.createPercentArray(new float[]{2, 5}));
         infoTable.setWidth(UnitValue.createPercentValue(100));
 
-        LocalDate currentDate = LocalDate.now();
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
-        String formattedDate = currentDate.format(formatter);
+        // Générer le nom du document à partir du nom du fichier et de la date
+        String documentName = pdfName + formattedFileDate;
 
         infoTable.addCell(new Cell().add(new Paragraph("Nom du Document")).setBold());
-        infoTable.addCell(new Cell().add(new Paragraph("R1320240687042732")));
+        infoTable.addCell(new Cell().add(new Paragraph(documentName)));
         infoTable.addCell(new Cell().add(new Paragraph("Date")).setBold());
-        infoTable.addCell(new Cell().add(new Paragraph(formattedDate)));
+        infoTable.addCell(new Cell().add(new Paragraph(formattedDisplayDate)));
 
         document.add(infoTable);
         document.add(new Paragraph("\n"));
@@ -133,8 +140,6 @@ public class GenerePDF {
 
     /**
      * Ouvre automatiquement un fichier PDF dans le système d'exploitation par défaut.
-     *
-     * @param filePath Le chemin du fichier PDF à ouvrir.
      */
     public static void openPdf(String filePath) {
         String os = System.getProperty("os.name").toLowerCase();
