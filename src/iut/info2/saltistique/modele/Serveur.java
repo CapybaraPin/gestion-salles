@@ -6,6 +6,7 @@ package iut.info2.saltistique.modele;
 
 import java.io.*;
 import java.math.BigInteger;
+import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 
@@ -29,14 +30,17 @@ public class Serveur implements Runnable {
     /** Taille du buffer pour la lecture et l'envoi de fichiers (4096 octets) */
     private static final int BUFFER_SIZE = 1024;
 
+    InetAddress localIP;
+
     /**
      * Constructeur de la classe Serveur.
      *
      * @param port        le port d'écoute du serveur (doit être entre 1024 et 65535).
+     * @param localIP
      * @param fichiersCSV la liste des fichiers CSV à envoyer.
      * @throws IllegalArgumentException si le port est hors limites ou si la liste de fichiers est vide.
      */
-    public Serveur(int port, Fichier[] fichiersCSV) {
+    public Serveur(int port, InetAddress localIP, Fichier[] fichiersCSV) {
         if (port < 1024 || port > 65535) {
             throw new IllegalArgumentException("Le numéro de port doit être compris entre 1024 et 65535.");
         }
@@ -45,6 +49,8 @@ public class Serveur implements Runnable {
         }
         this.port = port;
         this.fichiersCSV = fichiersCSV;
+        this.localIP = localIP;
+
     }
 
     /**
@@ -53,7 +59,7 @@ public class Serveur implements Runnable {
     @Override
     public void run() {
         try {
-            serverSocket = new ServerSocket(port);
+            serverSocket = new ServerSocket(port, 1, localIP);
             new Notification("Exportation des données", "Serveur démarré sur le port : " + port);
 
             while (!serverSocket.isClosed()) {

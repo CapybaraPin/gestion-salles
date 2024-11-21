@@ -12,7 +12,9 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 
+import java.io.IOException;
 import java.net.InetAddress;
+import java.net.Socket;
 import java.net.UnknownHostException;
 
 /**
@@ -45,17 +47,23 @@ public class ControleurExporterReseau extends Controleur {
      */
     private ExportationReseau exporterDonnees;
 
+    private InetAddress localIP;
+
     /**
      * Initialise différents éléments de la vue d'accueil.
      */
     @FXML
     void initialize() {
         try {
-            String localIP = InetAddress.getLocalHost().getHostAddress();
-            adresseIp.setText(localIP);
+            Socket socket = new Socket("8.8.8.8", 443);
+            localIP = socket.getLocalAddress();
+            adresseIp.setText(localIP.getHostAddress());
+            socket.close();
         } catch (UnknownHostException e) {
             adresseIp.setText("Erreur : IP non trouvée");
             e.printStackTrace();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
     }
 
@@ -76,7 +84,7 @@ public class ControleurExporterReseau extends Controleur {
 
                 if (exporterDonnees == null) {
                     javafx.application.Platform.runLater(() -> {
-                        exporterDonnees = new ExportationReseau(numeroPort, Saltistique.gestionDonnees.getFichiers());
+                        exporterDonnees = new ExportationReseau(numeroPort, Saltistique.gestionDonnees.getFichiers(), localIP);
                         new Notification("Exportation des données", "Vous avez bien exporté les données sur le réseau.");
                     });
                 }
