@@ -1,5 +1,7 @@
 package iut.info2.saltistique.modele;
 
+import javafx.collections.ObservableList;
+
 import java.io.Serializable;
 
 /**
@@ -86,6 +88,14 @@ public class Utilisateur implements Serializable {
     @Override
     public String toString() {
         return prenom + " " + nom;
+    }
+
+    public long getTempsTotalReservation(ObservableList<Reservation> listeReservations) {
+        long totalMinutes = listeReservations.stream()
+                .filter(reservation -> reservation.getUtilisateur().equals(this))
+                .mapToLong(reservation -> java.time.Duration.between(reservation.getDateDebut(), reservation.getDateFin()).toMinutes())
+                .sum();
+        return totalMinutes;
     }
 
 }

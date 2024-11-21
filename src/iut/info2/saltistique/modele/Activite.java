@@ -1,5 +1,7 @@
 package iut.info2.saltistique.modele;
 
+import javafx.collections.ObservableList;
+
 import java.io.Serializable;
 
 /**
@@ -54,5 +56,13 @@ public class Activite implements Serializable {
     @Override
     public String toString() {
         return nom;
+    }
+
+    public long getTempsTotalReservation(ObservableList<Reservation> listeReservations) {
+        long totalMinutes = listeReservations.stream()
+                .filter(reservation -> reservation.getActivite().equals(this))
+                .mapToLong(reservation -> java.time.Duration.between(reservation.getDateDebut(), reservation.getDateFin()).toMinutes())
+                .sum();
+        return totalMinutes;
     }
 }

@@ -1,5 +1,7 @@
 package iut.info2.saltistique.modele;
 
+import javafx.collections.ObservableList;
+
 import java.io.Serializable;
 import java.time.LocalDateTime;
 

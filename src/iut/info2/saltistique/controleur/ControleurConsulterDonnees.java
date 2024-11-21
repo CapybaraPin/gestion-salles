@@ -23,6 +23,7 @@ import javafx.scene.shape.Line;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
@@ -325,6 +326,17 @@ public class ControleurConsulterDonnees extends Controleur {
     @FXML
     private Filtre filtre;
 
+    @FXML
+    private CheckBox checkTriSalles;
+
+    @FXML
+    private CheckBox checkTriEmployes;
+
+    @FXML
+    private CheckBox checkTriActivites;
+
+    private Classement classement;
+
     /**
      * HBox contenant les filtres appliqués
      */
@@ -352,12 +364,12 @@ public class ControleurConsulterDonnees extends Controleur {
         listeActivites = FXCollections.observableArrayList();
         listeEmployes = FXCollections.observableArrayList();
         listeReservations = FXCollections.observableArrayList();
-        Filtres.setItems(FXCollections.observableArrayList(
+        /*Filtres.setItems(FXCollections.observableArrayList(
                 "Salle",
                 "Activité",
                 "Employé",
                 "Période"
-        ));
+        ));*/
         SpinnerValueFactory<Integer> heuresValueFactoryDebut =
                 new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 23);
         heuresDebut.setValueFactory(heuresValueFactoryDebut);
@@ -370,13 +382,16 @@ public class ControleurConsulterDonnees extends Controleur {
         SpinnerValueFactory<Integer> minutesValueFactoryFin =
                 new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 59);
         minutesFin.setValueFactory(minutesValueFactoryFin);
-        Filtres.getSelectionModel().selectFirst();
+        //Filtres.getSelectionModel().selectFirst();
         initialiserTableaux();
         initialiserTableauSalles();
         initialiserTableauActivites();
         initialiserTableauEmployes();
         initialiserTableauReservations();
         clickBoutonNotification();
+
+        this.classement = new Classement(listeReservations);
+
     }
 
     /**
@@ -510,14 +525,14 @@ public class ControleurConsulterDonnees extends Controleur {
         tableau.setVisible(true);
         selection.setVisible(true);
         boolean afficherFiltres = tableau == tableauReservations;
-        valeurFiltre.setVisible(afficherFiltres);
-        Filtres.setVisible(afficherFiltres);
-        boutonFiltrer.setVisible(afficherFiltres);
-        hboxFiltresAppliques.setVisible(afficherFiltres);
-        hboxFiltreTexte.setVisible(afficherFiltres);
-        if (!hboxFiltreTexte.isVisible()) {
-            vboxFiltreDate.setVisible(afficherFiltres);
-        }
+        //valeurFiltre.setVisible(afficherFiltres);
+        //Filtres.setVisible(afficherFiltres);
+        //boutonFiltrer.setVisible(afficherFiltres);
+        //hboxFiltresAppliques.setVisible(afficherFiltres);
+        //hboxFiltreTexte.setVisible(afficherFiltres);
+        //if (!hboxFiltreTexte.isVisible()) {
+        //    vboxFiltreDate.setVisible(afficherFiltres);
+        //}
 
     }
 
@@ -546,6 +561,8 @@ public class ControleurConsulterDonnees extends Controleur {
     @FXML
     void afficherTableauSalles() {
         afficherTableau(tableauSalles, SelectionSalles);
+        masquerToutTri();
+        checkTriSalles.setVisible(true);
     }
 
     /**
@@ -556,6 +573,7 @@ public class ControleurConsulterDonnees extends Controleur {
     @FXML
     void afficherTableauReservations() {
         afficherTableau(tableauReservations, SelectionReservations);
+        masquerToutTri();
     }
 
     /**
@@ -566,6 +584,8 @@ public class ControleurConsulterDonnees extends Controleur {
     @FXML
     void afficherTableauActivites() {
         afficherTableau(tableauActivites, SelectionActivites);
+        masquerToutTri();
+        checkTriActivites.setVisible(true);
     }
 
     /**
@@ -576,6 +596,14 @@ public class ControleurConsulterDonnees extends Controleur {
     @FXML
     void afficherTableauEmployes() {
         afficherTableau(tableauEmployes, SelectionEmployes);
+        masquerToutTri();
+        checkTriEmployes.setVisible(true);
+    }
+
+    private void masquerToutTri() {
+        checkTriEmployes.setVisible(false);
+        checkTriSalles.setVisible(false);
+        checkTriActivites.setVisible(false);
     }
 
     /**
@@ -816,6 +844,23 @@ public class ControleurConsulterDonnees extends Controleur {
             mettreAJourFiltres();
         } else {
             new Notification("Périodes invalides", "Les périodes rentrées ne sont pas valides.");
+        }
+    }
+
+    @FXML
+    public void changementTri() {
+        if(checkTriEmployes.isVisible()) {
+            boolean isChecked = checkTriEmployes.isSelected();
+            tableauEmployes.setItems(null);
+            tableauEmployes.setItems(classement.appliquerClassementEmployees(isChecked, listeEmployes));
+        } else if(checkTriActivites.isVisible()) {
+            boolean isChecked = checkTriActivites.isSelected();
+            tableauActivites.setItems(null);
+            tableauActivites.setItems(classement.appliquerClassementActivites(isChecked, listeActivites));
+        } else if(checkTriSalles.isVisible()) {
+            boolean isChecked = checkTriSalles.isSelected();
+            tableauSalles.setItems(null);
+            tableauSalles.setItems(classement.appliquerClassementSalles(isChecked, listeSalles));
         }
     }
 }
