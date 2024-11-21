@@ -825,38 +825,36 @@ public class ControleurConsulterDonnees extends Controleur {
 
     /**
      * Méthode appelée lorsqu'on clique sur le bouton "Générer PDF".
-     * <p>
-     * Cette méthode génère un fichier PDF à partir des données d'un {@link TableView} (dans ce cas, {@code tableauReservations}),
-     * en s'assurant que le tableau contient des données valides. Si le tableau est vide ou non initialisé, une exception est levée
-     * et un message d'erreur est affiché.
-     * </p>
-     *
-     * @throws IllegalArgumentException Si le {@link TableView} est null ou vide.
-     * @throws IOException              Si une erreur survient lors de l'écriture du fichier PDF.
+     * Cette méthode génère un fichier PDF à partir des données du {@link TableView} visible,
+     * ou affiche un message d'erreur si aucun tableau valide n'est détecté.
      */
     @FXML
     void clickGenererPDF() {
-        TableView<?> myTableView = null;
-        String nom = "";
+        Map<TableView<?>, String> tableViewToNameMap = Map.of(
+                tableauReservations, "Reservations",
+                tableauSalles, "Salles",
+                tableauEmployes, "Employes",
+                tableauActivites, "Activites"
+        );
 
-        if (tableauReservations.isVisible()) {
-            myTableView = tableauReservations;
-            nom="Reservations";
-        } else if (tableauSalles.isVisible()) {
-            myTableView = tableauSalles;
-            nom="Salles";
-        } else if (tableauEmployes.isVisible()) {
-            myTableView = tableauEmployes;
-            nom="Employes";
-        } else if (tableauActivites.isVisible()) {
-            myTableView = tableauActivites;
-            nom="Activites";
+        // Trouver le tableau visible et son nom correspondant
+        TableView<?> selectedTableView = null;
+        String pdfName = "";
+
+        for (Map.Entry<TableView<?>, String> entry : tableViewToNameMap.entrySet()) {
+            if (entry.getKey().isVisible()) {
+                selectedTableView = entry.getKey();
+                pdfName = entry.getValue();
+                break;
+            }
         }
+
+        // Générer le PDF ou afficher un message d'erreur
         try {
-            if (myTableView == null || myTableView.getItems().isEmpty()) {
+            if (selectedTableView == null || selectedTableView.getItems().isEmpty()) {
                 throw new IllegalArgumentException("Aucun TableView visible ou les données sont vides.");
             }
-            GenerePDF.generateAndOpenPdf(myTableView,nom);
+            GenerePDF.generateAndOpenPdf(selectedTableView, pdfName);
         } catch (IOException e) {
             e.printStackTrace();
         } catch (IllegalArgumentException e) {
