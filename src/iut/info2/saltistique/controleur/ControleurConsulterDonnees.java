@@ -823,26 +823,39 @@ public class ControleurConsulterDonnees extends Controleur {
     }
 
     /**
+     * Méthode appelée lorsqu'on clique sur le bouton "Générer PDF".
+     * <p>
+     * Cette méthode génère un fichier PDF à partir des données d'un {@link TableView} (dans ce cas, {@code tableauReservations}),
+     * en s'assurant que le tableau contient des données valides. Si le tableau est vide ou non initialisé, une exception est levée
+     * et un message d'erreur est affiché.
+     * </p>
      *
-     *
+     * @throws IllegalArgumentException Si le {@link TableView} est null ou vide.
+     * @throws IOException              Si une erreur survient lors de l'écriture du fichier PDF.
      */
     @FXML
     void clickGenererPDF() {
-        // Assurez-vous d'utiliser votre TableView réel ici
-        TableView<?> myTableView = tableauReservations;
+        TableView<?> myTableView = null;
 
+        if (tableauReservations.isVisible()) {
+            myTableView = tableauReservations;
+        } else if (tableauSalles.isVisible()) {
+            myTableView = tableauSalles;
+        } else if (tableauEmployes.isVisible()) {
+            myTableView = tableauEmployes;
+        } else if (tableauActivites.isVisible()) {
+            myTableView = tableauActivites;
+        }
         try {
-            // Vérifiez que le TableView contient des données
             if (myTableView == null || myTableView.getItems().isEmpty()) {
-                throw new IllegalArgumentException("Le TableView est vide ou non initialisé.");
+                throw new IllegalArgumentException("Aucun TableView visible ou les données sont vides.");
             }
-
-            // Appeler la méthode pour générer et ouvrir le PDF
             GenerePDF.generateAndOpenPdf(myTableView);
         } catch (IOException e) {
-            e.printStackTrace(); // Gérer les exceptions liées au fichier ou à l'écriture
+            e.printStackTrace();
         } catch (IllegalArgumentException e) {
-            System.err.println(e.getMessage()); // Affiche un message clair en cas de problème
+            System.err.println(e.getMessage());
         }
     }
+
 }
