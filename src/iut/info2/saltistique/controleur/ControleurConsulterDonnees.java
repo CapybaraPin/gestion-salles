@@ -2,7 +2,6 @@
  * ControleurConsulterDonnees.java 02/11/2024
  * IUT de RODEZ, tous les droits sont réservés
  */
-
 package iut.info2.saltistique.controleur;
 
 import iut.info2.saltistique.Saltistique;

@@ -1,3 +1,7 @@
+/*
+ * ControleurConsultationSalle.java 20/10/2024
+ * IUT de RODEZ, tous les droits sont réservés
+ */
 package iut.info2.saltistique.controleur;
 
 import iut.info2.saltistique.modele.*;
@@ -6,14 +10,20 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 
+/**
+ * Contrôleur de la vue de consultation des salles.
+ */
 public class ControleurConsultationSalle extends Controleur {
 
+    /** Label indiquant le nom de la salle */
     @FXML
     public Label nomSalle;
 
+    /** Label indiquant la durée totale des réservations de la salle */
     @FXML
     public Label dureeReservation;
 
+    /** Label indiquant la durée moyenne des réservations de la salle */
     @FXML
     public Label dureeMoyenneReservation;
 
