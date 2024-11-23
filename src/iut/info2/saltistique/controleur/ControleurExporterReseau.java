@@ -47,6 +47,7 @@ public class ControleurExporterReseau extends Controleur {
      */
     private ExportationReseau exporterDonnees;
 
+    /** Adresse utilisée pour le socket du serveur */
     private InetAddress localIP;
 
     /**
@@ -67,6 +68,9 @@ public class ControleurExporterReseau extends Controleur {
         }
     }
 
+    /**
+     * Permet l'arrêt du serveur.
+     */
     public void arreterServeur() {
         if (exporterDonnees != null) {
             // Arrêt du serveur
@@ -83,11 +87,7 @@ public class ControleurExporterReseau extends Controleur {
     @FXML
     void clickStartStop() {
         if (exporterDonnees != null) {
-            // Arrêt du serveur
-            exporterDonnees.getServeur().arreter();
-            exporterDonnees.setServeur(null);
-            exporterDonnees = null;
-            btnStartStop.setText("Démarrer le serveur");
+            arreterServeur();
         } else {
             try {
                 int numeroPort = Integer.parseInt(port.getText());

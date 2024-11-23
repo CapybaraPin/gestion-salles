@@ -16,6 +16,7 @@ public class ExportationReseau {
     /** Liste des fichiers transmis lors de la communication réseau */
     private Fichier[] fichiers;
 
+    /** Adresse utilisée pour le socket du serveur */
     InetAddress localIP;
 
     /**
@@ -23,7 +24,7 @@ public class ExportationReseau {
      *
      * @param port     Port de communication entre les deux machines
      * @param fichiers Liste des fichiers transmis lors de la communication réseau
-     * @param localIP
+     * @param localIP  Adresse utilisée pour le socket du serveur
      */
     public ExportationReseau(int port, Fichier[] fichiers, InetAddress localIP){
         if (port < 1024 || port > 65535) {
