@@ -59,6 +59,7 @@ public class ControleurConsultationSalle extends Controleur {
      * Initialise le contrôleur après le chargement de la vue FXML.
      * Configure les filtres, les listes observables, et initialise les tableaux.
      */
+    @FXML
     public void initialize() {
         listeSalles = FXCollections.observableArrayList();
         listeActivites = FXCollections.observableArrayList();

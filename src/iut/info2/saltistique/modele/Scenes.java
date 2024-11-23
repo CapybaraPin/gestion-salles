@@ -20,7 +20,8 @@ public enum Scenes {
     EXPORTER_RESEAU("/iut/info2/saltistique/vue/exporterReseau.fxml"),
     CONSULTER_DONNEES("/iut/info2/saltistique/vue/consulterDonnees.fxml"),
     CONSULTER_DONNEES_INCORRECTES("/iut/info2/saltistique/vue/consulterDonneesIncorrectes.fxml"),
-    CONSULTER_SALLE("/iut/info2/saltistique/vue/consulterSalle.fxml");
+    CONSULTER_SALLE("/iut/info2/saltistique/vue/consulterSalle.fxml"),
+    CONSULTER_STATISTIQUES("/iut/info2/saltistique/vue/consulterStatistiques.fxml");
 
     /** Le chemin du fichier FXML correspondant à la scène. */
     private String chemin;

@@ -36,5 +36,11 @@ public class ControleurConsulterStatistiques extends Controleur{
         tableauSalle.setVisible(true);
     }
 
+    @FXML
+    void clickFiltrer() {
+        actualiserFiltres();
+        creationFiltres();
+    }
 
+    void actualiserFiltres() {}
 }

@@ -222,12 +222,20 @@
                   </StackPane.margin>
                </HBox>
             </StackPane>
+            <Button alignment="CENTER" maxHeight="28.0" mnemonicParsing="false" onAction="#clickStatistiques" styleClass="btn-primary" text="Statistiques" textFill="WHITE">
+               <font>
+                  <Font size="13.0" />
+               </font>
+               <HBox.margin>
+                  <Insets left="422.0" />
+               </HBox.margin>
+            </Button>
             <Button alignment="CENTER" maxHeight="28.0" mnemonicParsing="false" onAction="#clickGenererPDF" styleClass="btn-primary" text="Générer un rapport PDF" textFill="WHITE">
                <font>
                   <Font size="13.0" />
                </font>
                <HBox.margin>
-                  <Insets left="525.0" />
+                  <Insets left="15.0" />
                </HBox.margin>
             </Button>
             <VBox.margin>

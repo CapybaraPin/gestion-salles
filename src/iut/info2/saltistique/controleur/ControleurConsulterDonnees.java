@@ -452,4 +452,9 @@ public class ControleurConsulterDonnees extends Controleur {
     void afficherTableauEmployes() {
         afficherTableau(tableauEmployes, SelectionEmployes);
     }
+
+    @FXML
+    void clickStatistiques() {
+        Saltistique.changeScene(Scenes.CONSULTER_STATISTIQUES);
+    }
 }
