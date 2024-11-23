@@ -19,6 +19,7 @@ import javafx.scene.shape.Line;
 
 import java.time.LocalDateTime;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * Le contrôleur de la vue permettant de consulter les données.
@@ -289,7 +290,7 @@ public class ControleurConsulterDonnees extends Controleur {
         Logiciels.setCellValueFactory(new PropertyValueFactory<>("logiciels"));
         Imprimante.setCellValueFactory(new PropertyValueFactory<>("imprimante"));
 
-        Actions.setCellFactory(column -> new TableCell<>() {
+        Actions.setCellFactory(_ -> new TableCell<>() {
             @Override
             protected void updateItem(Void item, boolean empty) {
                 super.updateItem(item, empty);
@@ -298,7 +299,7 @@ public class ControleurConsulterDonnees extends Controleur {
                     setGraphic(null);
                 } else {
                     // Charger l'icône
-                    ImageView svgIcon = new ImageView(new Image(getClass().getResourceAsStream("/ressources/icons/chart.png")));
+                    ImageView svgIcon = new ImageView(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/ressources/icons/chart.png"))));
                     svgIcon.setFitWidth(16); // Ajuster la largeur de l'icône
                     svgIcon.setFitHeight(16); // Ajuster la hauteur de l'icône
 
@@ -310,7 +311,7 @@ public class ControleurConsulterDonnees extends Controleur {
                     btnAction.setGraphic(svgIcon);
 
                     // Ajouter une action au bouton
-                    btnAction.setOnAction(event -> {
+                    btnAction.setOnAction(_ -> {
                         // Récupérer la salle sélectionnée
                         Salle salleSelectionnee = getTableView().getItems().get(getIndex());
 

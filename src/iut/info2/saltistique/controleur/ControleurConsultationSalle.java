@@ -62,7 +62,6 @@ public class ControleurConsultationSalle extends Controleur {
         initialiserFiltres();
     }
 
-
     /**
          * Gère le clic sur le bouton "Filtrer".
          * Applique les filtres en fonction du critère et de la valeur sélectionnés.
@@ -83,7 +82,4 @@ public class ControleurConsultationSalle extends Controleur {
         setListeEmployes(listeEmployes);
         setListeReservations(listeReservations);
     }
-
-
-
 }
