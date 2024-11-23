@@ -36,7 +36,7 @@ public enum Regex {
                                                                     // suivi de tout caractère sauf le délimiteur
                     + "([onON][^" + delimiteur + "]*)" + delimiteur // ecranXXL : commence par 'o' ou 'n'
                                                                     // suivi de tout caractère sauf le délimiteur
-                    + "([0-9]*)"  + delimiteur // Délimiteur
+                    + "([0-9]*)"  + delimiteur // Nombre d'ordinateurs : un ou plusieurs chiffres ou vide
                     + "([^" + delimiteur + "]*)" + delimiteur // Type : tout caractère sauf le délimiteur
                     + "([^" + delimiteur + "]*)" + delimiteur // Logiciels : tout caractère sauf le délimiteur
                     + "([onON][^" + delimiteur + "]*|)$"; // Imprimante : commence par 'o' ou 'n'
@@ -52,7 +52,7 @@ public enum Regex {
         @Override
         public String getRegex(String delimiteur) {
             return "^A[0-9]{7}" + delimiteur // Identifiant : commence par 'A' suivi de 7 chiffres
-                    + "[^" + delimiteur + "]+$"; // Nom de l'activité : tout caractère sauf le délimiteur
+                    + "(?!\\s*$)(?!.*" + delimiteur + ").*$"; // Nom de l'activité : tout caractère sauf le délimiteur
         }
     },
     RESERVATIONS {
@@ -75,7 +75,7 @@ public enum Regex {
                     + "(?:[^" + delimiteur + "]*)" + delimiteur // Nom de l'employé : tout sauf le délimiteur ou vide
                     + "(?:[^" + delimiteur + "]*)" + delimiteur // Prénom de l'employé : tout sauf le délimiteur ou vide
                     + "(?:\\d{10}|)" + delimiteur // Téléphone de l'employé : 10 chiffres ou vide
-                    + "(?:[^" + delimiteur + "]*)$"; // Activité : tout sauf le délimiteur ou vide
+                    + "(?:[^" + delimiteur + "]*)$"; // Sujet de location : tout sauf le délimiteur ou vide
         }
     },
     ORDINATEURS {

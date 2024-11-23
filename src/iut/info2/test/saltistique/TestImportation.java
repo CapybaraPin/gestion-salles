@@ -351,7 +351,6 @@ class TestImportation {
     }
 
 
-
     @Test
     void testEstLigneComplete() {
         // cas 1 : le type de fichier est "activites" et la ligne est valide
