@@ -67,6 +67,16 @@ public class ControleurExporterReseau extends Controleur {
         }
     }
 
+    public void arreterServeur() {
+        if (exporterDonnees != null) {
+            // Arrêt du serveur
+            exporterDonnees.getServeur().arreter();
+            exporterDonnees.setServeur(null);
+            exporterDonnees = null;
+            btnStartStop.setText("Démarrer le serveur");
+        }
+    }
+
     /**
      * Permet la gestion du click sur le bouton de démarage de l'importation
      */

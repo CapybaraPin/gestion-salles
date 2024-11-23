@@ -4,6 +4,9 @@
  */
 package iut.info2.saltistique.modele;
 
+import iut.info2.saltistique.Saltistique;
+import iut.info2.saltistique.controleur.ControleurExporterReseau;
+
 import java.io.*;
 import java.math.BigInteger;
 import java.net.InetAddress;
@@ -61,16 +64,16 @@ public class Serveur implements Runnable {
         try {
             serverSocket = new ServerSocket(port, 1, localIP);
             new Notification("Exportation des données", "Serveur démarré sur le port : " + port);
+            try{
+                Socket clientSocket = serverSocket.accept();
+                new Notification("Serveur", "Client connecté. Envoi des fichiers...");
 
-            while (!serverSocket.isClosed()) {
-                try{
-                    Socket clientSocket = serverSocket.accept();
-                    System.out.println("Client connecté. Envoi des fichiers...");
-
-                    envoyerFichiers(clientSocket);
-                } catch (IOException e) {
-                    throw new IOException("Erreur lors de la connexion avec un client.");
-                }
+                envoyerFichiers(clientSocket);
+                new Notification("Serveur", "Les données ont bien été transmises. Fermeture du serveur...");
+                ControleurExporterReseau controleurExporterReseau = Saltistique.getController(Scenes.EXPORTER_RESEAU);
+                controleurExporterReseau.arreterServeur();
+            } catch (IOException e) {
+                throw new IOException("Erreur lors de la connexion avec un client.");
             }
         } catch (IOException e) {
             if (!serverSocket.isClosed()) {
