@@ -190,7 +190,7 @@ class TestRegex {
     public static String[][] RESERVATION_HEURE_FIN_INVALIDE = {
             {"R000000", "00000000", "E000000", "A", "00/00/0000", "00h00", "01h1", "", "", "", "", ""},
             {"R999999", "99999999", "E999999", "Réunion", "99/99/9999", "0h00", "01h123", " ", " ", " ", " ", " "},
-            {"R000000", "00000000", "E000000", "A", "00/00/0000", "99h99", "99h99", "C", "N", "P", "0000000000", "S"},
+            {"R000000", "00000000", "E000000", "A", "00/00/0000", "99h99", "01hH2", "C", "N", "P", "0000000000", "S"},
             {"R999999", "99999999", "E999999", "Réunion", "99/99/9999", "00h00", "unhun", "Commentaire", "Nom", "Prenom", "9999999999", "Sujet"},
     };
 
@@ -329,25 +329,25 @@ class TestRegex {
     @Test
     void testRegexOrdinateur() {
         for (String[] s : ORDINATEUR_VALIDE) {
-            String ligne = ";;"; // TODO vérifier le nombre de ; à ajouter
+            String ligne = ";;;;;";
             ligne += String.join(";", s);
             assertTrue(ligne.matches(Regex.ORDINATEURS.getRegex(";")));
         }
 
         for (String[] s : ORDINATEUR_NB_INVALIDE) {
-            String ligne = ";;"; // TODO vérifier le nombre de ; à ajouter
+            String ligne = ";;;;;";
             ligne += String.join(";", s);
             assertFalse(ligne.matches(Regex.ORDINATEURS.getRegex(";")));
         }
 
         for (String[] s : ORDINATEUR_TYPE_INVALIDE) {
-            String ligne = ";;"; // TODO vérifier le nombre de ; à ajouter
+            String ligne = ";;;;;";
             ligne += String.join(";", s);
             assertFalse(ligne.matches(Regex.ORDINATEURS.getRegex(";")));
         }
 
         for (String[] s : ORDINATEUR_IMPRIMANTE_INVALIDE) {
-            String ligne = ";;"; // TODO vérifier le nombre de ; à ajouter
+            String ligne = ";;;;;";
             ligne += String.join(";", s);
             assertFalse(ligne.matches(Regex.ORDINATEURS.getRegex(";")));
         }
