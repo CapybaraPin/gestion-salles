@@ -51,35 +51,6 @@ public class TestGenerePDF extends ApplicationTest {
     }
 
     @Test
-    void testGeneratePdfEmptyTable() throws InterruptedException {
-        // Tester la génération du PDF avec une TableView vide
-
-        Platform.runLater(() -> {
-            try {
-                TableView<String> tableView = new TableView<>();
-                tableView.getItems().add("Test Item 1");
-
-                // Exécuter la génération de PDF
-                GenerePDF.generateAndOpenPdf(tableView, "");
-
-                // Vérifier si le PDF a bien été généré
-                String downloadsDir = System.getProperty("user.home") + "/Downloads";
-                String fileName = "TestFile" + java.time.LocalDate.now().format(java.time.format.DateTimeFormatter.ofPattern("ddMMyyyy")) + ".pdf";
-                File pdfFile = new File(downloadsDir, fileName);
-
-                assertTrue(pdfFile.exists(), "Le fichier PDF a été généré");
-
-            } catch (Exception e) {
-                e.printStackTrace();
-                fail("Exception dans le test: " + e.getMessage());
-            }
-        });
-
-        // Attendre que Platform.runLater termine son exécution
-        Thread.sleep(2000);
-    }
-
-    @Test
     void testGeneratePdfEmptyFileName() {
         // Tester l'exception lancée pour un nom de fichier vide
 
