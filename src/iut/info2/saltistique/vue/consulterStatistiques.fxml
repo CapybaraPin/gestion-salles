@@ -91,7 +91,7 @@
                <Insets bottom="-1.0" left="-1.0" right="-1.0" top="-1.0" />
             </VBox.margin>
             <HBox fx:id="hboxFiltresAppliques1" alignment="CENTER_LEFT" />
-            <Button fx:id="statistiquesGlobales" minHeight="37.0" mnemonicParsing="false" onAction="#afficherTableauStatistiquesGlobales" text="Statistiques Globales">
+            <Button fx:id="statistiquesGlobales" minHeight="37.0" mnemonicParsing="false" onAction="#afficherStatistiquesGlobales" text="Statistiques Globales">
                <styleClass>
                   <String fx:value="typo-default" />
                   <String fx:value="navbar-btn-minimize" />
@@ -101,7 +101,7 @@
                   <Insets />
                </HBox.margin>
             </Button>
-            <Button fx:id="sallesNonReservees" minHeight="37.0" mnemonicParsing="false" onAction="#afficherTableauSallesNonReservees" text="Salles non réservées">
+            <Button fx:id="sallesNonReservees" minHeight="37.0" mnemonicParsing="false" onAction="#afficherSallesNonReservees" text="Salles non réservées">
                <styleClass>
                   <String fx:value="typo-default" />
                   <String fx:value="navbar-btn-minimize" />
