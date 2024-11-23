@@ -12,61 +12,187 @@ import static org.junit.jupiter.api.Assertions.*;
  */
 class TestRegex {
 
-    public static String[][] ACTIVTE_VALIDE;
+    public static String[][] ACTIVTE_VALIDE = {
+            {"A0000000", "A"},
+            {"A9999999", "réunion"},
+    };
+    public static String[][] ACTIVTE_IDENTIFIANT_INVALIDE = {
+            {"B0000000", "A"},
+            {"A000000", "réunion"},
+            {"A00000000", "A"},
+            {"", "réunion"},
+            {" ", "A"},
+    };
 
-    public static String[][] ACTIVTE_IDENTIFIANT_INVALIDE;
+    public static String[][] ACTIVTE_ACTIVITE_INVALIDE = {
+            {"A0000000", ""},
+            {"A9999999", " "},
+    };
 
-    public static String[][] ACTIVTE_ACTIVITE_INVALIDE;
+    public static String[][] EMPLOYE_VALIDE = {
+            {"E000000", "N", "P", "0000"},
+            {"E999999", "Dupont", "Pierre", "9999"},
+            {"E000000", "N", "P", ""},
+            {"E999999", "Dupont", "Pierre", " "},
+    };
 
-    public static String[][] EMPLOYE_VALIDE;
+    public static String[][] EMPLOYE_IDENTIFIANT_INVALIDE = {
+            {"B000000", "N", "P", "0000"},
+            {"E00000", "Dupont", "Pierre", "9999"},
+            {"E0000000", "N", "P", ""},
+            {"", "Dupont", "Pierre", " "},
+            {" ", "N", "P", "0000"},
+    };
 
-    public static String[][] EMPLOYE_IDENTIFIANT_INVALIDE;
+    public static String[][] EMPLOYE_NOM_INVALIDE = {
+            {"E000000", "", "P", "0000"},
+            {"E999999", " ", "Pierre", "9999"},
+            {"E000000", "", "P", ""},
+            {"E999999", " ", "Pierre", " "}
+    };
 
-    public static String[][] EMPLOYE_NOM_INVALIDE;
+    public static String[][] EMPLOYE_PRENOM_INVALIDE = {
+            {"E000000", "N", "", "0000"},
+            {"E999999", "Dupont", " ", "9999"},
+            {"E000000", "N", "", ""},
+            {"E999999", "Dupont", " ", " "}
+    };
 
-    public static String[][] EMPLOYE_PRENOM_INVALIDE;
+    public static String[][] EMPLOYE_TELEPHONE_INVALIDE = {
+            {"E000000", "N", "P", "123"},
+            {"E999999", "Dupont", "Pierre", "12345"},
+            {"E000000", "N", "P", "deux"}
+    };
 
-    public static String[][] EMPLOYE_TELEPHONE_INVALIDE;
+    public static String[][] SALLE_VALIDE = {
+            {"00000000", "N", "0", "o", "o", "0", "", "", "o"},
+            {"99999999", "Nom", "99", "O", "O", "99", " ", " ", "O"},
+            {"00000000", "N", "0", "n", "n", "", "T", "L", "n"},
+            {"99999999", "Nom", "99", "N", "N", " ", "Type", "Liste", "N"},
+    };
 
-    public static String[][] SALLE_VALIDE;
+    public static String[][] SALLE_IDENTIFIANT_INVALIDE = {
+            {"0000000", "N", "0", "o", "o", "0", "", "", "o"},
+            {"000000000", "Nom", "99", "O", "O", "99", " ", " ", "O"},
+            {"deuxdeux", "N", "0", "n", "n", "", "T", "L", "n"},
+            {"", "Nom", "99", "N", "N", " ", "Type", "Liste", "N"},
+            {" ", "N", "0", "o", "o", "0", "", "", "o"},
+    };
 
-    public static String[][] SALLE_IDENTIFIANT_INVALIDE;
+    public static String[][] SALLE_NOM_INVALIDE = {
+            {"00000000", "", "0", "o", "o", "0", "", "", "o"},
+            {"99999999", " ", "99", "O", "O", "99", " ", " ", "O"},
+            {"00000000", "", "0", "n", "n", "", "T", "L", "n"},
+            {"99999999", " ", "99", "N", "N", " ", "Type", "Liste", "N"},
+    };
 
-    public static String[][] SALLE_NOM_INVALIDE;
+    public static String[][] SALLE_CAPACITE_INVALIDE = {
+            {"00000000", "N", "", "o", "o", "0", "", "", "o"},
+            {"99999999", "Nom", " ", "O", "O", "99", " ", " ", "O"},
+            {"00000000", "N", "trois", "n", "n", "", "T", "L", "n"},
+            {"99999999", "Nom", "", "N", "N", " ", "Type", "Liste", "N"},
+    };
 
-    public static String[][] SALLE_CAPACITE_INVALIDE;
+    public static String[][] SALLE_VIDEOPROJECTEUR_INVALIDE = {
+            {"00000000", "N", "0", "", "o", "0", "", "", "o"},
+            {"99999999", "Nom", "99", " ", "O", "99", " ", " ", "O"},
+            {"00000000", "N", "0", "Vrai", "n", "", "T", "L", "n"},
+            {"99999999", "Nom", "99", "", "N", " ", "Type", "Liste", "N"},
+    };
 
-    public static String[][] SALLE_VIDEOPROJECTEUR_INVALIDE;
+    public static String[][] SALLE_ECRANXXL_INVALIDE = {
+            {"00000000", "N", "0", "o", "", "0", "", "", "o"},
+            {"99999999", "Nom", "99", "O", " ", "99", " ", " ", "O"},
+            {"00000000", "N", "0", "n", "Vrai", "", "T", "L", "n"},
+            {"99999999", "Nom", "99", "N", "", " ", "Type", "Liste", "N"},
+    };
 
-    public static String[][] SALLE_ECRANXXL_INVALIDE;
+    public static String[][] ORDINATEUR_VALIDE = {
+            {"0", "T", "", "o"},
+            {"99", "Type", " ", "O"},
+            {"0", "T", "L", "n"},
+            {"99", "Type", "Liste", "N"},
+    };
 
-    public static String[][] ORDINATEUR_VALIDE;
+    public static String[][] ORDINATEUR_NB_INVALIDE = {
+            {"", "T", "", "o"},
+            {" ", "Type", " ", "O"},
+            {"un", "T", "L", "n"},
+            {"", "Type", "Liste", "N"},
+    };
 
-    public static String[][] ORDINATEUR_NB_INVALIDE;
+    public static String[][] ORDINATEUR_TYPE_INVALIDE = {
+            {"0", "", "", "o"},
+            {"99", " ", " ", "O"},
+            {"0", "", "L", "n"},
+            {"99", " ", "Liste", "N"},
+    };
 
-    public static String[][] ORDINATEUR_TYPE_INVALIDE;
+    public static String[][] ORDINATEUR_IMPRIMANTE_INVALIDE = {
+            {"0", "T", "", ""},
+            {"99", "Type", " ", " "},
+            {"0", "T", "L", "Vrai"},
+            {"99", "Type", "Liste", ""},
+    };
 
-    public static String[][] ORDINATEUR_IMPRIMANTE_INVALIDE;
+    public static String[][] RESERVATION_VALIDE = {
+            {"R000000", "00000000", "E000000", "A", "00/00/0000", "00h00", "00h00", "", "", "", "", ""},
+            {"R999999", "99999999", "E999999", "Réunion", "99/99/9999", "0h00", "0h00", " ", " ", " ", " ", " "},
+            {"R000000", "00000000", "E000000", "A", "00/00/0000", "99h99", "99h99", "C", "N", "P", "0000000000", "S"},
+            {"R999999", "99999999", "E999999", "Réunion", "99/99/9999", "00h00", "00h00", "Commentaire", "Nom", "Prenom", "9999999999", "Sujet"},
+    };
 
-    public static String[][] RESERVATION_VALIDE;
+    public static String[][] RESERVATION_IDENTIFIANT_INVALIDE = {
+            {"B000000", "00000000", "E000000", "A", "00/00/0000", "00h00", "00h00", "", "", "", "", ""},
+            {"R00000", "99999999", "E999999", "Réunion", "99/99/9999", "0h00", "0h00", " ", " ", " ", " ", " "},
+            {"R9999999", "00000000", "E000000", "A", "00/00/0000", "99h99", "99h99", "C", "N", "P", "0000000000", "S"},
+            {"", "99999999", "E999999", "Réunion", "99/99/9999", "00h00", "00h00", "Commentaire", "Nom", "Prenom", "9999999999", "Sujet"},
+            {" ", "00000000", "E000000", "A", "00/00/0000", "00h00", "00h00", "", "", "", "", ""},
+    };
 
-    public static String[][] RESERVATION_IDENTIFIANT_INVALIDE;
+    public static String[][] RESERVATION_SALLE_INVALIDE = {
+            {"R000000", "0000000", "E000000", "A", "00/00/0000", "00h00", "00h00", "", "", "", "", ""},
+            {"R999999", "000000000", "E999999", "Réunion", "99/99/9999", "0h00", "0h00", " ", " ", " ", " ", " "},
+            {"R000000", "deuxdeux", "E000000", "A", "00/00/0000", "99h99", "99h99", "C", "N", "P", "0000000000", "S"},
+            {"R999999", "", "E999999", "Réunion", "99/99/9999", "00h00", "00h00", "Commentaire", "Nom", "Prenom", "9999999999", "Sujet"},
+            {"R000000", " ", "E000000", "A", "00/00/0000", "00h00", "00h00", "", "", "", "", ""},
+    };
 
-    public static String[][] RESERVATION_SALLE_INVALIDE;
+    public static String[][] RESERVATION_EMPLOYE_INVALIDE = {
+            {"R000000", "00000000", "B000000", "A", "00/00/0000", "00h00", "00h00", "", "", "", "", ""},
+            {"R999999", "99999999", "E00000", "Réunion", "99/99/9999", "0h00", "0h00", " ", " ", " ", " ", " "},
+            {"R000000", "00000000", "E0000000", "A", "00/00/0000", "99h99", "99h99", "C", "N", "P", "0000000000", "S"},
+            {"R999999", "99999999", "", "Réunion", "99/99/9999", "00h00", "00h00", "Commentaire", "Nom", "Prenom", "9999999999", "Sujet"},
+            {"R000000", "00000000", " ", "A", "00/00/0000", "00h00", "00h00", "", "", "", "", ""}
+    };
 
-    public static String[][] RESERVATION_EMPLOYE_INVALIDE;
+    public static String[][] RESERVATION_ACTIVITE_INVALIDE = {
+            {"R000000", "00000000", "E000000", "", "00/00/0000", "00h00", "00h00", "", "", "", "", ""},
+            {"R999999", "99999999", "E999999", " ", "99/99/9999", "0h00", "0h00", " ", " ", " ", " ", " "},
+            {"R000000", "00000000", "E000000", "", "00/00/0000", "99h99", "99h99", "C", "N", "P", "0000000000", "S"},
+            {"R999999", "99999999", "E999999", "", "99/99/9999", "00h00", "00h00", "Commentaire", "Nom", "Prenom", "9999999999", "Sujet"},
+    };
 
-    public static String[][] RESERVATION_ACTIVITE_INVALIDE;
+    public static String[][] RESERVATION_DATE_INVALIDE = {
+            {"R000000", "00000000", "E000000", "A", "01/01/24", "00h00", "00h00", "", "", "", "", ""},
+            {"R999999", "99999999", "E999999", "Réunion", "123/01/2024", "0h00", "0h00", " ", " ", " ", " ", " "},
+            {"R000000", "00000000", "E000000", "A", "01-01-2024", "99h99", "99h99", "C", "N", "P", "0000000000", "S"},
+            {"R999999", "99999999", "E999999", "Réunion", "AA/BB/CCCC", "00h00", "00h00", "Commentaire", "Nom", "Prenom", "9999999999", "Sujet"},
+    };
 
-    public static String[][] RESERVATION_DATE_INVALIDE;
+    public static String[][] RESERVATION_HEURE_DEBUT_INVALIDE = {
+            {"R000000", "00000000", "E000000", "A", "00/00/0000", "01h1", "00h00", "", "", "", "", ""},
+            {"R999999", "99999999", "E999999", "Réunion", "99/99/9999", "01h123", "0h00", " ", " ", " ", " ", " "},
+            {"R000000", "00000000", "E000000", "A", "00/00/0000", "99h99", "01H12", "C", "N", "P", "0000000000", "S"},
+            {"R999999", "99999999", "E999999", "Réunion", "99/99/9999", "unhun", "00h00", "Commentaire", "Nom", "Prenom", "9999999999", "Sujet"},
+    };
 
-    public static String[][] RESERVATION_HEURE_DEBUT_INVALIDE;
-
-    public static String[][] RESERVATION_HEURE_FIN_INVALIDE;
-
-
-
-
+    public static String[][] RESERVATION_HEURE_FIN_INVALIDE = {
+            {"R000000", "00000000", "E000000", "A", "00/00/0000", "00h00", "01h1", "", "", "", "", ""},
+            {"R999999", "99999999", "E999999", "Réunion", "99/99/9999", "0h00", "01h123", " ", " ", " ", " ", " "},
+            {"R000000", "00000000", "E000000", "A", "00/00/0000", "99h99", "99h99", "C", "N", "P", "0000000000", "S"},
+            {"R999999", "99999999", "E999999", "Réunion", "99/99/9999", "00h00", "unhun", "Commentaire", "Nom", "Prenom", "9999999999", "Sujet"},
+    };
 
     @BeforeAll
     static void setUpBeforeClass() throws Exception {
