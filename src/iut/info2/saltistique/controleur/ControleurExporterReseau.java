@@ -73,13 +73,15 @@ public class ControleurExporterReseau extends Controleur {
      * Permet l'arrêt du serveur.
      */
     public void arreterServeur() {
-        if (exporterDonnees != null) {
-            // Arrêt du serveur
-            exporterDonnees.getServeur().arreter();
-            exporterDonnees.setServeur(null);
-            exporterDonnees = null;
-            btnStartStop.setText("Démarrer le serveur");
-        }
+        javafx.application.Platform.runLater(() -> {
+            if (exporterDonnees != null) {
+                // Arrêt du serveur
+                exporterDonnees.getServeur().arreter();
+                exporterDonnees.setServeur(null);
+                exporterDonnees = null;
+                btnStartStop.setText("Démarrer le serveur");
+            }
+        });
     }
 
     /**

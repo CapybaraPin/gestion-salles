@@ -73,6 +73,10 @@ public class GestionDonnees {
             lignesIncorrectesReservations.clear();
             lignesIncorrectesSalles.clear();
             lignesIncorrectesUtilisateurs.clear();
+            for (Fichier f : fichiers) {
+                f.fermerFichier();
+            }
+            fichiers = null;
         } catch (Exception e) {
             new Notification("Impossible de vider les données", "Erreur lors de la suppression des données.");
         }

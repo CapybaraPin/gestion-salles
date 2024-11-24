@@ -198,4 +198,14 @@ public class Fichier {
     public File getFichierExploite() {
         return fichierExploite;
     }
+
+    public void fermerFichier() {
+        try {
+            this.tamponFichier.close();
+            this.lecteurFichier.close();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+    }
 }
