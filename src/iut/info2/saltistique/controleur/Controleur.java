@@ -151,6 +151,7 @@ public class Controleur extends ControleurFiltres{
      * @throws UnsupportedOperationException si Desktop n'est pas supportée sur le système ou si l'action d'ouverture
      *                                       de fichier n'est pas supportée.
      */
+    @FXML
     public void clickAide() {
         try {
             File pdfFile = new File("src/ressources/noticeUtilisation.pdf");
