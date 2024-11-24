@@ -2,6 +2,8 @@ package iut.info2.saltistique.modele;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.stream.Collectors;
+
 import javafx.collections.ObservableList;
 
 /**
@@ -174,7 +176,7 @@ public class Salle implements Serializable {
      * @return Une chaîne de caractères représentant le temps total des réservations pour la salle, au format "Xh Ymin",
      *         où X est le nombre d'heures et Y le nombre de minutes.
      */
-    public String getTempsTotalReservations(ObservableList<Reservation> listeReservations) {
+    public String getTempsTotalReservations(List<Reservation> listeReservations) {
         long totalMinutes = listeReservations.stream()
                 .filter(reservation -> reservation.getSalle().equals(this))
                 .mapToLong(reservation -> java.time.Duration.between(reservation.getDateDebut(), reservation.getDateFin()).toMinutes())
@@ -185,22 +187,37 @@ public class Salle implements Serializable {
     }
 
     /**
-     * TODO JAVADOC
-     * @param listeReservations
-     * @return
+     * Calcule le temps moyen des réservations pour la salle actuelle.
+     *
+     * @param listeReservations La liste des réservations.
+     * @return Le temps moyen des réservations sous la forme "Xh Ymin".
      */
-    public String getTempsMoyenReservations(ObservableList<Reservation> listeReservations) {
-        List<Reservation> reservations = listeReservations.filtered(reservation -> reservation.getSalle().equals(this));
+    public String getTempsMoyenReservations(List<Reservation> listeReservations) {
+        // Filtrer les réservations pour la salle actuelle
+        List<Reservation> reservations = listeReservations.stream()
+                .filter(reservation -> reservation.getSalle().equals(this))  // Filtrer par la salle actuelle
+                .collect(Collectors.toList());  // Collecter les réservations filtrées
+
+        // Si aucune réservation, renvoyer "0h 0min"
         if (reservations.isEmpty()) {
             return "0h 0min";
         }
+
+        // Calculer le temps total en minutes pour toutes les réservations filtrées
         long totalMinutes = reservations.stream()
                 .mapToLong(reservation -> java.time.Duration.between(reservation.getDateDebut(), reservation.getDateFin()).toMinutes())
                 .sum();
+
+        // Calculer la moyenne des minutes
         long moyenneMinutes = totalMinutes / reservations.size();
+
+        // Convertir les minutes en heures et minutes
         long heures = moyenneMinutes / 60;
         long minutes = moyenneMinutes % 60;
+
+        // Retourner le format "Xh Ymin"
         return heures + "h " + minutes + "min";
     }
+
 
 }

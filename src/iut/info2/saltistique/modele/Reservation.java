@@ -94,7 +94,6 @@ public class Reservation implements Serializable {
      * @return La date de debut de la réservation.
      */
     public LocalDateTime getDateDebut() {
-
         return dateDebut;
     }
 
@@ -123,6 +122,16 @@ public class Reservation implements Serializable {
      */
     public String getIdentifiant() {
         return identifiant;
+    }
+
+    /**
+     * Calcul la durée de la réservation en heures.
+     *
+     * @return La durée de la réservation en heures.
+     */
+    public double getDuree() {
+        long durationInMinutes = java.time.Duration.between(dateDebut, dateFin).toMinutes();
+        return durationInMinutes / 60.0; // Retourne la durée en heures
     }
 
     /**

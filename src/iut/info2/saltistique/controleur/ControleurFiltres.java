@@ -4,6 +4,7 @@
  */
 package iut.info2.saltistique.controleur;
 
+import iut.info2.saltistique.Saltistique;
 import iut.info2.saltistique.modele.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -93,11 +94,14 @@ public class ControleurFiltres {
     private ObservableList<Reservation> listeReservations;
 
     /** TableView pour les réservations. */
-    @FXML
-    protected TableView<Reservation> tableauReservations;
+//    @FXML
+//    protected TableView<Reservation> tableauReservations;
 
     /** Filtre contenant les différents filtres appliqués */
     private static Filtre filtre;
+
+    /** Liste des réservations filtrées */
+    public List<Reservation> reservationsFiltrees;
 
     /**
      * Permet de récupérer le filtre actuel.
@@ -120,12 +124,15 @@ public class ControleurFiltres {
         SpinnerValueFactory<Integer> heuresValueFactoryDebut =
                 new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 23);
         heuresDebut.setValueFactory(heuresValueFactoryDebut);
+
         SpinnerValueFactory<Integer> minutesValueFactoryDebut =
                 new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 59);
         minutesDebut.setValueFactory(minutesValueFactoryDebut);
+
         SpinnerValueFactory<Integer> heuresValueFactoryFin =
                 new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 23);
         heuresFin.setValueFactory(heuresValueFactoryFin);
+
         SpinnerValueFactory<Integer> minutesValueFactoryFin =
                 new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 59);
         minutesFin.setValueFactory(minutesValueFactoryFin);
@@ -137,8 +144,11 @@ public class ControleurFiltres {
      */
     @FXML
     void changerFiltre() {
+        if (Filtres.getSelectionModel().getSelectedItem() == null) {
+            return;
+        }
         boutonFiltrer.setOnAction(null);
-        if (Filtres.getSelectionModel().getSelectedItem().equals("Période")) {
+        if ("Période".equals(Filtres.getSelectionModel().getSelectedItem())) {
             vboxFiltreDate.setVisible(true);
             hboxFiltreTexte.setVisible(false);
             hboxFiltreTexte.setMouseTransparent(true);
@@ -157,8 +167,13 @@ public class ControleurFiltres {
             hboxPourBoutonFiltrer.getChildren().remove(boutonFiltrer);
             hboxFiltreTexte.getChildren().remove(boutonFiltrer);
             hboxFiltreTexte.getChildren().add(boutonFiltrer);
-            boutonFiltrer.setOnAction(_ -> creationFiltres());
+            boutonFiltrer.setOnAction(_ -> clickFiltrer());
         }
+    }
+
+    void clickFiltrer() {
+        System.out.println("clickFiltrer");
+        creationFiltres();
     }
 
     /**
@@ -176,6 +191,7 @@ public class ControleurFiltres {
                     correspondanceTrouvee = listeSalles.stream()
                             .anyMatch(salle -> salle.getNom() != null
                                     && salle.getNom().toLowerCase().equals(valeur));
+
                     filtreDejaApplique = correspondanceTrouvee &&
                             filtre.getSallesFiltrees().stream()
                                     .anyMatch(salle -> salle.getNom() != null
@@ -249,6 +265,7 @@ public class ControleurFiltres {
                     correspondanceTrouvee = listeActivites.stream()
                             .anyMatch(activite -> activite.getNom() != null
                                     && activite.getNom().toLowerCase().equals(valeur));
+
                     filtreDejaApplique = correspondanceTrouvee &&
                             filtre.getActivitesFiltrees().stream()
                                     .anyMatch(activite -> activite.getNom() != null
@@ -264,19 +281,16 @@ public class ControleurFiltres {
             }
 
             if (!correspondanceTrouvee) {
-                new Notification("Filtre inconnu", "Le filtre que vous avez rentré ne correspond à " +
-                        "aucune donnée.");
+                new Notification("Filtre inconnu", "Le filtre que vous avez rentré ne correspond à aucune donnée.");
             } else if (filtreDejaApplique) {
-                new Notification("Filtre déjà appliqué", "Le filtre que vous tentez d'appliqué est " +
-                        "déjà actif.");
+                new Notification("Filtre déjà appliqué", "Le filtre que vous tentez d'appliquer est déjà actif.");
             } else {
                 appliquerFiltres();
                 afficherFiltresAppliques();
             }
-        } else {
-            new Notification("Aucun filtre", "Vous n'avez rentré aucun filtre.");
         }
     }
+
 
     /**
      * Applique les filtres définis sur la liste des réservations.
@@ -287,8 +301,13 @@ public class ControleurFiltres {
      */
     @FXML
     private void appliquerFiltres() {
-        List<Reservation> reservationsFiltrees = filtre.appliquerFiltres(new ArrayList<>(listeReservations));
-        tableauReservations.setItems(FXCollections.observableArrayList(reservationsFiltrees));
+        reservationsFiltrees = filtre.appliquerFiltres(new ArrayList<>(listeReservations));
+        ControleurConsultationSalle consultationSalle = Saltistique.getController(Scenes.CONSULTER_SALLE);
+        consultationSalle.actualiserStats();
+
+//        if (tableauReservations.getColumns() != null) {
+//            tableauReservations.setItems(FXCollections.observableArrayList(reservationsFiltrees));
+//        }
     }
 
     /**
@@ -297,6 +316,8 @@ public class ControleurFiltres {
     private void afficherFiltresAppliques() {
         hboxFiltresAppliques.getChildren().clear();
         hboxFiltresAppliques.setSpacing(10);
+
+        // Ajout des filtres Salle, Employé, Activité et Période
         if (filtre.getSallesFiltrees() != null) {
             for (Salle salle : filtre.getSallesFiltrees()) {
                 Button boutonSalle = creerBoutonFiltre("Salle : " + salle.getNom(), _ -> {
@@ -340,6 +361,7 @@ public class ControleurFiltres {
         }
     }
 
+
     /**
      * Crée un bouton de filtre avec un texte et un graphique (croix).
      *
@@ -369,8 +391,10 @@ public class ControleurFiltres {
      */
     private void mettreAJourFiltres() {
         List<Reservation> reservationsFiltrees = filtre.appliquerFiltres(listeReservations);
-        tableauReservations.setItems(FXCollections.observableArrayList(reservationsFiltrees));
+        //tableauReservations.setItems(FXCollections.observableArrayList(reservationsFiltrees));
         afficherFiltresAppliques();
+        ControleurConsultationSalle consultationSalle = Saltistique.getController(Scenes.CONSULTER_SALLE);
+        consultationSalle.actualiserStats();
     }
 
     /**

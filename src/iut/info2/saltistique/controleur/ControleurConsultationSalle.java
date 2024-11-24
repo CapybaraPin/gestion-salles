@@ -8,7 +8,10 @@ import iut.info2.saltistique.modele.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Contrôleur de la vue de consultation des salles.
@@ -27,62 +30,78 @@ public class ControleurConsultationSalle extends Controleur {
     @FXML
     public Label dureeMoyenneReservation;
 
-    /**
-     * Configure les informations spécifiques à la salle sélectionnée.
-     *
-     * @param salle             La salle à afficher.
-     */
-    public void setSalle(Salle salle, ObservableList<Reservation> listeReservations) {
-        if (salle != null) {
-            nomSalle.setText(salle.getNom());
+    /** Filtre actuellement appliqué */
+    private Filtre filtre;
 
-            // Exemple : calculer et afficher des durées fictives
-            dureeReservation.setText(salle.getTempsTotalReservations(listeReservations));
-            dureeMoyenneReservation.setText(salle.getTempsMoyenReservations(listeReservations) + " par jours");
-        }
-    }
+    /** Salle actuellement sélectionnée */
+    private Salle salleSelectionnee;
 
-    Filtre filtre;
-
-    /**
-     * Listes observables contenant les objets de chaques types.
-     * Ces listes sont utilisées pour afficher et gérer les types de données disponibles
-     * dans l'application, permettant la liaison de données pour des composants
-     * de l'interface utilisateur, tels que des tableaux ou des listes.
-     */
-    private ObservableList<Salle> listeSalles;
-    private ObservableList<Activite> listeActivites;
-    private ObservableList<Utilisateur> listeEmployes;
+    /** Listes observables contenant les objets de chaque type. */
     private ObservableList<Reservation> listeReservations;
+    private ObservableList<Utilisateur> listeEmployes;
+    private ObservableList<Activite> listeActivites;
+    private ObservableList<Salle> listeSalles;
 
     /**
      * Initialise le contrôleur après le chargement de la vue FXML.
-     * Configure les filtres, les listes observables, et initialise les tableaux.
      */
     @FXML
     public void initialize() {
-        listeSalles = FXCollections.observableArrayList();
-        listeActivites = FXCollections.observableArrayList();
-        listeEmployes = FXCollections.observableArrayList();
         listeReservations = FXCollections.observableArrayList();
+        listeEmployes = FXCollections.observableArrayList();
+        listeActivites = FXCollections.observableArrayList();
+        listeSalles = FXCollections.observableArrayList();
 
-        // Initialisation des filtres
         filtre = new Filtre();
         setFiltre(filtre);
-        actualiserFiltres();
         initialiserFiltres();
+
+        Filtres.setItems(FXCollections.observableArrayList("Activité", "Employé", "Période"));
+        Filtres.getSelectionModel().selectFirst();
+    }
+
+     public void setDonneesFiltres(ObservableList<Reservation> listeReservations,
+                            ObservableList<Activite> listeActivites,
+                            ObservableList<Utilisateur> listeEmployes,
+                            ObservableList<Salle> listeSalles) {
+
+        this.listeReservations = listeReservations;
+        this.listeActivites = listeActivites;
+        this.listeEmployes = listeEmployes;
+        this.listeSalles = listeSalles;
     }
 
     /**
-         * Gère le clic sur le bouton "Filtrer".
-         * Applique les filtres en fonction du critère et de la valeur sélectionnés.
-         */
-    @FXML
-    void clickFiltrer() {
-        actualiserFiltres();
-        creationFiltres();
+     * Met à jour la salle sélectionnée.
+     *
+     * @param salle La salle sélectionnée.
+     */
+    public void setSalle(Salle salle) {
+        this.salleSelectionnee = salle;
     }
 
+    /**
+     * Actualise les statistiques affichées en fonction des données filtrées.
+     */
+    public void actualiserStats() {
+        actualiserFiltres();
+
+        if (salleSelectionnee != null) {
+            // Filtrer les réservations pour la salle sélectionnée
+            List<Reservation> reservationsFiltrees = listeReservations.stream()
+                    .filter(reservation -> reservation.getSalle().equals(salleSelectionnee))  // Filtrage par salle
+                    .collect(Collectors.toList());
+
+            // Appliquer les filtres
+            reservationsFiltrees = filtre.appliquerFiltres(reservationsFiltrees);
+            System.out.println(reservationsFiltrees);
+
+            // Mettre à jour les données de l'interface
+            nomSalle.setText(salleSelectionnee.getNom());
+            dureeReservation.setText(salleSelectionnee.getTempsTotalReservations(reservationsFiltrees));
+            dureeMoyenneReservation.setText(salleSelectionnee.getTempsMoyenReservations(reservationsFiltrees) + " par jours");
+        }
+    }
     /**
      * Permet l'actualisation des données dans le contrôleur
      * de gestion des filtres.
@@ -92,5 +111,14 @@ public class ControleurConsultationSalle extends Controleur {
         setListeActivites(listeActivites);
         setListeEmployes(listeEmployes);
         setListeReservations(listeReservations);
+    }
+
+    /**
+     * Appliqué lors du clic sur "Filtrer", réactualise les données en fonction du filtre.
+     */
+    @FXML
+    void clickFiltrer() {
+        creationFiltres();
+        actualiserStats();
     }
 }

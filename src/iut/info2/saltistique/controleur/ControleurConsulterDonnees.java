@@ -187,10 +187,10 @@ public class ControleurConsulterDonnees extends Controleur {
      * dans l'application, permettant la liaison de données pour des composants
      * de l'interface utilisateur, tels que des tableaux ou des listes.
      */
-    private ObservableList<Salle> listeSalles;
-    private ObservableList<Activite> listeActivites;
-    private ObservableList<Utilisateur> listeEmployes;
-    private ObservableList<Reservation> listeReservations;
+    protected ObservableList<Salle> listeSalles;
+    protected ObservableList<Activite> listeActivites;
+    protected ObservableList<Utilisateur> listeEmployes;
+    protected ObservableList<Reservation> listeReservations;
 
     /**
      * Initialise le contrôleur après le chargement de la vue FXML.
@@ -313,7 +313,7 @@ public class ControleurConsulterDonnees extends Controleur {
                     btnAction.setOnAction(_ -> {
                         // Récupérer la salle sélectionnée
                         Salle salleSelectionnee = getTableView().getItems().get(getIndex());
-
+                        System.out.println(salleSelectionnee);
                         // Appeler la méthode pour afficher la nouvelle vue
                         afficherConsultationSalle(salleSelectionnee);
                     });
@@ -333,8 +333,9 @@ public class ControleurConsulterDonnees extends Controleur {
      */
     private void afficherConsultationSalle(Salle salle) {
         ControleurConsultationSalle controleur = Saltistique.getController(Scenes.CONSULTER_SALLE);
-        controleur.setSalle(salle, listeReservations);
-
+        controleur.setSalle(salle);
+        controleur.setDonneesFiltres(listeReservations, listeActivites, listeEmployes, listeSalles);
+        controleur.actualiserStats();
         Saltistique.showPopUp(Scenes.CONSULTER_SALLE);
     }
 
