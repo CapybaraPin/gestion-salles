@@ -98,6 +98,8 @@ public class ControleurFiltres {
 
     /** Filtre contenant les différents filtres appliqués */
     private static Filtre filtre;
+    private List<Reservation> reservationsFiltrees;
+    public Label labelTempsTotalReservations;
 
     /**
      * Permet de récupérer le filtre actuel.
@@ -112,7 +114,6 @@ public class ControleurFiltres {
      */
     protected void initialiserFiltres() {
         Filtres.setItems(FXCollections.observableArrayList(
-                "Salle",
                 "Activité",
                 "Employé",
                 "Période"
@@ -157,8 +158,18 @@ public class ControleurFiltres {
             hboxPourBoutonFiltrer.getChildren().remove(boutonFiltrer);
             hboxFiltreTexte.getChildren().remove(boutonFiltrer);
             hboxFiltreTexte.getChildren().add(boutonFiltrer);
-            boutonFiltrer.setOnAction(_ -> creationFiltres());
+            boutonFiltrer.setOnAction(_ -> clickFiltrer());
         }
+    }
+
+    /**
+     * Gère le clic sur le bouton "Filtrer".
+     * Applique les filtres en fonction du critère et de la valeur sélectionnés.
+     */
+    @FXML
+    void clickFiltrer() {
+        creationFiltres();
+        afficherTempsReservationsTotal(getReservationsFiltrees());
     }
 
     /**
@@ -287,8 +298,12 @@ public class ControleurFiltres {
      */
     @FXML
     private void appliquerFiltres() {
-        List<Reservation> reservationsFiltrees = filtre.appliquerFiltres(new ArrayList<>(listeReservations));
+        reservationsFiltrees = filtre.appliquerFiltres(new ArrayList<>(listeReservations));
         tableauReservations.setItems(FXCollections.observableArrayList(reservationsFiltrees));
+    }
+
+    public ObservableList<Reservation> getReservationsFiltrees() {
+        return (ObservableList<Reservation>) this.reservationsFiltrees;
     }
 
     /**
@@ -368,9 +383,18 @@ public class ControleurFiltres {
      * d'assurer que la TableView reflète correctement l'état actuel des filtres.</p>
      */
     private void mettreAJourFiltres() {
-        List<Reservation> reservationsFiltrees = filtre.appliquerFiltres(listeReservations);
+        reservationsFiltrees = filtre.appliquerFiltres(listeReservations);
         tableauReservations.setItems(FXCollections.observableArrayList(reservationsFiltrees));
+        afficherTempsReservationsTotal((ObservableList<Reservation>) reservationsFiltrees);
         afficherFiltresAppliques();
+    }
+
+    void afficherTempsReservationsTotal(ObservableList<Reservation> reservations) {
+        Long tempsTotal = 0L;
+        for (Reservation reservation : reservations) {
+            tempsTotal += reservation.getTempsTotalReservation();
+        }
+        labelTempsTotalReservations.setText("Temps total de reservations : " + tempsTotal + " heures");
     }
 
     /**
