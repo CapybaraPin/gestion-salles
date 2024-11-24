@@ -10,10 +10,13 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.geometry.Insets;
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
+
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
@@ -114,6 +117,7 @@ public class ControleurFiltres {
      */
     protected void initialiserFiltres() {
         Filtres.setItems(FXCollections.observableArrayList(
+                "Salle",
                 "Activité",
                 "Employé",
                 "Période"
@@ -138,29 +142,45 @@ public class ControleurFiltres {
      */
     @FXML
     void changerFiltre() {
+        // Vérifie si un filtre est sélectionné pour éviter NullPointerException
+        String filtreSelectionne = Filtres.getSelectionModel().getSelectedItem();
+        if (filtreSelectionne == null) {
+            System.err.println("Aucun filtre sélectionné !");
+            return;
+        }
+
+        // Réinitialise les actions du bouton
         boutonFiltrer.setOnAction(null);
-        if (Filtres.getSelectionModel().getSelectedItem().equals("Période")) {
+
+        if (filtreSelectionne.equals("Période")) {
+            vboxFiltreDate.setMouseTransparent(false);
+            hboxFiltreTexte.setMouseTransparent(true);
             vboxFiltreDate.setVisible(true);
             hboxFiltreTexte.setVisible(false);
-            hboxFiltreTexte.setMouseTransparent(true);
-            vboxFiltreDate.setMouseTransparent(false);
-            hboxPourBoutonFiltrer.setMouseTransparent(false);
-            hboxFiltreTexte.getChildren().remove(boutonFiltrer);
-            hboxPourBoutonFiltrer.getChildren().remove(boutonFiltrer);
-            hboxPourBoutonFiltrer.getChildren().add(boutonFiltrer);
+
+
+            // Déplace le bouton dans le conteneur approprié
+            if (!hboxPourBoutonFiltrer.getChildren().contains(boutonFiltrer)) {
+                hboxPourBoutonFiltrer.getChildren().add(boutonFiltrer);
+                HBox.setMargin(boutonFiltrer, new Insets(0,429  ,0,0));
+            }
             boutonFiltrer.setOnAction(_ -> clickFiltrerDate());
+
         } else {
-            vboxFiltreDate.setVisible(false);
-            hboxFiltreTexte.setVisible(true);
             vboxFiltreDate.setMouseTransparent(true);
             hboxFiltreTexte.setMouseTransparent(false);
-            hboxPourBoutonFiltrer.setMouseTransparent(true);
-            hboxPourBoutonFiltrer.getChildren().remove(boutonFiltrer);
-            hboxFiltreTexte.getChildren().remove(boutonFiltrer);
-            hboxFiltreTexte.getChildren().add(boutonFiltrer);
+            vboxFiltreDate.setVisible(false);
+            hboxFiltreTexte.setVisible(true);
+
+            // Déplace le bouton dans le conteneur approprié
+            if (!hboxFiltreTexte.getChildren().contains(boutonFiltrer)) {
+                hboxFiltreTexte.getChildren().add(boutonFiltrer);
+                HBox.setMargin(boutonFiltrer, new Insets(0,550,0,0));
+            }
             boutonFiltrer.setOnAction(_ -> clickFiltrer());
         }
     }
+
 
     /**
      * Gère le clic sur le bouton "Filtrer".
@@ -409,16 +429,55 @@ public class ControleurFiltres {
      */
     @FXML
     void clickFiltrerDate() {
-        if (filtreDateDebut.getValue() != null && filtreDateFin.getValue() != null
-                && filtreDateDebut.getValue().isBefore(filtreDateFin.getValue())) {
-            LocalDateTime debut = LocalDateTime.of(filtreDateDebut.getValue(), LocalTime.of(heuresDebut.getValue(),
-                    minutesDebut.getValue()));
-            LocalDateTime fin = LocalDateTime.of(filtreDateFin.getValue(), LocalTime.of(heuresFin.getValue(),
-                    minutesFin.getValue()));
-            filtre.ajouterFiltreDate(debut, fin);
-            mettreAJourFiltres();
-        } else {
-            new Notification("Périodes invalides", "Les périodes rentrées ne sont pas valides.");
+        // Cas 1 : Si on remplit seulement les dates (pas les heures et minutes)
+        if (filtreDateDebut.getValue() != null && filtreDateFin.getValue() != null &&
+                heuresDebut.getValue() == null && minutesDebut.getValue() == null &&
+                heuresFin.getValue() == null && minutesFin.getValue() == null) {
+
+            LocalDate debut = filtreDateDebut.getValue();
+            LocalDate fin = filtreDateFin.getValue();
+            filtre.ajouterFiltreDate(debut.atStartOfDay(), fin.atStartOfDay());  // Filtrage par date seulement
+            mettreAJourFiltres();  // Met à jour l'affichage des résultats filtrés
+
+            // Cas 2 : Si on remplit les dates et les heures/minutes (date et horaire complet)
+        } else if (filtreDateDebut.getValue() != null && filtreDateFin.getValue() != null &&
+                heuresDebut.getValue() != null && minutesDebut.getValue() != null &&
+                heuresFin.getValue() != null && minutesFin.getValue() != null) {
+
+            LocalDateTime debut = LocalDateTime.of(filtreDateDebut.getValue(),
+                    LocalTime.of(heuresDebut.getValue(), minutesDebut.getValue()));
+            LocalDateTime fin = LocalDateTime.of(filtreDateFin.getValue(),
+                    LocalTime.of(heuresFin.getValue(), minutesFin.getValue()));
+            filtre.ajouterFiltreDate(debut, fin);  // Filtrage par date et horaire
+            mettreAJourFiltres();  // Met à jour l'affichage des résultats filtrés
+
+            // Cas 3 : Si on remplit seulement les heures et minutes (sans date)
+        } else if (heuresDebut.getValue() != null && minutesDebut.getValue() != null &&
+                heuresFin.getValue() != null && minutesFin.getValue() != null) {
+
+            // Trouver la date la plus ancienne et la plus récente dans la liste de réservations
+            LocalDateTime dateLaPlusAncienne = listeReservations.stream()
+                    .map(Reservation::getDateDebut) // Récupérer la date de début de chaque réservation
+                    .min(LocalDateTime::compareTo) // Trouver la plus ancienne
+                    .orElse(null);
+
+            LocalDateTime dateLaPlusRécente = listeReservations.stream()
+                    .map(Reservation::getDateDebut) // Récupérer la date de début de chaque réservation
+                    .max(LocalDateTime::compareTo) // Trouver la plus récente
+                    .orElse(null); // Si la liste est vide, renvoyer null
+
+            if (dateLaPlusAncienne != null && dateLaPlusRécente != null) {
+                // Mettre les heures et minutes de début pour la date la plus ancienne
+                LocalDateTime debut = LocalDateTime.of(dateLaPlusAncienne.toLocalDate(),
+                        LocalTime.of(heuresDebut.getValue(), minutesDebut.getValue()));
+
+                // Mettre les heures et minutes de fin pour la date la plus récente
+                LocalDateTime fin = LocalDateTime.of(dateLaPlusRécente.toLocalDate(),
+                        LocalTime.of(heuresFin.getValue(), minutesFin.getValue()));
+
+                filtre.ajouterFiltreDate(debut, fin);  // Filtrage uniquement par horaire
+                mettreAJourFiltres();  // Met à jour l'affichage des résultats filtrés
+            }
         }
     }
 

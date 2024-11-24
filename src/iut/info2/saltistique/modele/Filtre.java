@@ -7,6 +7,7 @@ package iut.info2.saltistique.modele;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+
 import java.time.LocalDateTime;
 import java.util.List;
 
