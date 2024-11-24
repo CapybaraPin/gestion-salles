@@ -1,7 +1,9 @@
 package iut.info2.saltistique.modele;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 
 /**
  * Représente une réservation avec un identifiant unique, une date de debut, une date de fin,
@@ -13,6 +15,7 @@ import java.time.LocalDateTime;
  */
 public class Reservation implements Serializable {
 
+    @Serial
     private static final long serialVersionUID = 1L;
 
     /** Identifant de la réservation*/
@@ -153,5 +156,9 @@ public class Reservation implements Serializable {
                 ", activite='" + activite + '\'' +
                 ", utilisateur='" + utilisateur + '\'' +
                 '}';
+    }
+
+    public Long getTempsTotalReservation() {
+        return ChronoUnit.HOURS.between(this.getDateDebut(), this.getDateFin());
     }
 }

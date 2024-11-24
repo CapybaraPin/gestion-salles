@@ -173,6 +173,7 @@ public class ControleurConsulterDonnees extends Controleur {
     @FXML
     public TableColumn<Salle, Boolean> Imprimante;
 
+
     /** Filtre contenant les différents filtres appliqués */
     @FXML
     private Filtre filtre;
@@ -229,16 +230,6 @@ public class ControleurConsulterDonnees extends Controleur {
     }
 
     /**
-     * Gère le clic sur le bouton "Filtrer".
-     * Applique les filtres en fonction du critère et de la valeur sélectionnés.
-     */
-    @FXML
-    void clickFiltrer() {
-        actualiserFiltres();
-        creationFiltres();
-    }
-
-    /**
      * Rafraîchit les données affichées dans les tableaux.
      * Recharge les données depuis la source et met à jour les tableaux liés.
      */
@@ -252,6 +243,7 @@ public class ControleurConsulterDonnees extends Controleur {
         tableauActivites.setItems(listeActivites);
         tableauEmployes.setItems(listeEmployes);
         tableauReservations.setItems(listeReservations);
+        afficherTempsReservationsTotal(listeReservations);
     }
 
     /**

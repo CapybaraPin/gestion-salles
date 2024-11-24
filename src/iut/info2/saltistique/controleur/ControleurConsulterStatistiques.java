@@ -5,7 +5,6 @@
 package iut.info2.saltistique.controleur;
 import iut.info2.saltistique.modele.Salle;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.layout.VBox;
