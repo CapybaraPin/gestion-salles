@@ -55,6 +55,7 @@ public class ControleurExporterReseau extends Controleur {
      */
     @FXML
     void initialize() {
+        setHoverEffect();
         try {
             Socket socket = new Socket("8.8.8.8", 443);
             localIP = socket.getLocalAddress();

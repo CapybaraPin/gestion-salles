@@ -47,6 +47,14 @@ public class ControleurImporterReseau extends Controleur {
     private ProgressBar progressBar;
 
     /**
+     * Initialise différents éléments de la vue.
+     */
+    @FXML
+    void initialize() {
+        setHoverEffect();
+    }
+
+    /**
      * Gestionnaire d'événement déclenché lors du clic sur le bouton d'importation.
      * Lance l'importation des données depuis le réseau en utilisant les informations fournies
      * (adresse IP et port).

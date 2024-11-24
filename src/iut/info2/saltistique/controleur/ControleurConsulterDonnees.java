@@ -209,6 +209,7 @@ public class ControleurConsulterDonnees extends Controleur {
         initialiserTableauEmployes();
         initialiserTableauReservations();
         clickBoutonNotification();
+        setHoverEffect();
     }
 
     /**
