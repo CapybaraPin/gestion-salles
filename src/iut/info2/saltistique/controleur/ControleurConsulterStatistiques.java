@@ -8,6 +8,7 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
+import javafx.scene.layout.VBox;
 import javafx.scene.shape.Line;
 
 /**
@@ -16,21 +17,34 @@ import javafx.scene.shape.Line;
  */
 public class ControleurConsulterStatistiques extends Controleur {
 
+    /** Section Statistiques Globales */
+    @FXML
+    public VBox sectionStatistiquesGlobales;
+
+    /** Section Salles Non Réservées */
+    @FXML
+    public VBox sectionSallesNonReservees;
+
     /** Onglet Statistiques Globales */
     @FXML
     public Button statistiquesGlobales;
+
     /** Onglet salles non réservées */
     @FXML
     public Button sallesNonReservees;
+
     /** Ligne de soulignage de l'onglet Statistiques Globales */
     @FXML
     public Line SelectionStatistiquesGlobales;
+
     /** Ligne de soulignage de l'onglet Statistiques Globales */
     @FXML
     public Line SelectionSallesNonReservees;
+
     /** Liste des salles */
     @FXML
     public ObservableList<Salle> listeSalles;
+
 
     /**
      * Action associée au bouton filtrer pour filtrer les données en fonction du filtre demandé
@@ -48,9 +62,25 @@ public class ControleurConsulterStatistiques extends Controleur {
         setListeSalles(listeSalles);
     }
 
-    public void afficherStatistiquesGlobales(ActionEvent actionEvent) {
+    public void afficherStatistiquesGlobales() {
+        masquerTousLesTableauxEtSelections();
+        sectionStatistiquesGlobales.setVisible(true);
+        SelectionStatistiquesGlobales.setVisible(true);
     }
 
-    public void afficherSallesNonReservees(ActionEvent actionEvent) {
+    public void afficherSallesNonReservees() {
+        masquerTousLesTableauxEtSelections();
+        sectionSallesNonReservees.setVisible(true);
+        SelectionSallesNonReservees.setVisible(true);
+    }
+
+    /**
+     * Masque toutes les sections de la vue.
+     */
+    private void masquerTousLesTableauxEtSelections() {
+        sectionStatistiquesGlobales.setVisible(false);
+        sectionSallesNonReservees.setVisible(false);
+        SelectionStatistiquesGlobales.setVisible(false);
+        SelectionSallesNonReservees.setVisible(false);
     }
 }

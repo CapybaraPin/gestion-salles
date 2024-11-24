@@ -21,7 +21,7 @@
 <?import javafx.scene.text.Text?>
 <?import javafx.scene.text.TextFlow?>
 
-<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="768.0" prefWidth="1366.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="iut.info2.saltistique.controleur.ControleurConsulterStatistiques">
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="768.0" prefWidth="1366.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="iut.info2.saltistique.controleur.ControleurConsulterStatistiques">
    <styleClass>
       <String fx:value="background-radiant" />
       <String fx:value="border" />
@@ -110,119 +110,122 @@
             </Button>
          </HBox>
          <HBox prefHeight="1.0" prefWidth="200.0">
-            <VBox.margin>
-               <Insets left="-1.0" top="-1.0" />
-            </VBox.margin>
             <Line fx:id="SelectionStatistiquesGlobales" endX="141.0" stroke="#3574f0" strokeLineCap="ROUND" strokeWidth="2.0" />
             <Line fx:id="SelectionSallesNonReservees" endX="139.0" stroke="#3574f0" strokeLineCap="ROUND" strokeWidth="2.0" visible="false" />
          </HBox>
-         <HBox alignment="CENTER_LEFT">
+         <StackPane prefHeight="150.0" prefWidth="200.0">
+            <children>
+               <VBox fx:id="sectionStatistiquesGlobales" prefHeight="200.0" prefWidth="100.0">
+                  <children>
+                     <HBox alignment="CENTER_LEFT">
+                        <ComboBox fx:id="Filtres" onAction="#changerFiltre" prefWidth="100.0" styleClass="input-default">
+                           <HBox.margin>
+                              <Insets right="15.0" />
+                           </HBox.margin>
+                        </ComboBox>
+                        <StackPane>
+                           <HBox.margin>
+                              <Insets />
+                           </HBox.margin>
+                           <HBox fx:id="hboxFiltreTexte" alignment="CENTER_LEFT">
+                              <TextField fx:id="valeurFiltre" alignment="CENTER" onAction="#clickFiltrer" promptText="Filtrer par nom" styleClass="input-default">
+                                 <HBox.margin>
+                                    <Insets left="5.0" right="15.0" />
+                                 </HBox.margin>
+                              </TextField>
+                              <Button fx:id="boutonFiltrer" alignment="CENTER" maxHeight="28.0" mnemonicParsing="false" onAction="#clickFiltrer" styleClass="btn-primary" text="Filtrer" textFill="WHITE">
+                                 <font>
+                                    <Font size="13.0" />
+                                 </font>
+                              </Button>
+                           </HBox>
+                           <VBox fx:id="vboxFiltreDate" alignment="CENTER_LEFT" mouseTransparent="true" visible="false">
+                              <HBox alignment="CENTER_LEFT">
+                                 <VBox.margin>
+                                    <Insets bottom="10.0" />
+                                 </VBox.margin>
+                                 <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Depuis">
+                                    <HBox.margin>
+                                       <Insets right="15.0" />
+                                    </HBox.margin>
+                                 </Text>
+                                 <DatePicker fx:id="filtreDateDebut" maxWidth="120.0" promptText="dd/mm/yyyy" styleClass="input-default">
+                                    <HBox.margin>
+                                       <Insets right="5.0" />
+                                    </HBox.margin>
+                                 </DatePicker>
+                                 <Spinner fx:id="heuresDebut" maxWidth="50.0">
+                                    <HBox.margin>
+                                       <Insets right="5.0" />
+                                    </HBox.margin>
+                                 </Spinner>
+                                 <Text strokeType="OUTSIDE" strokeWidth="0.0" text=":">
+                                    <HBox.margin>
+                                       <Insets right="5.0" />
+                                    </HBox.margin>
+                                 </Text>
+                                 <Spinner fx:id="minutesDebut" maxWidth="50.0">
+                                    <HBox.margin>
+                                       <Insets />
+                                    </HBox.margin>
+                                 </Spinner>
+                              </HBox>
+                              <HBox alignment="CENTER_LEFT">
+                                 <VBox.margin>
+                                    <Insets />
+                                 </VBox.margin>
+                                 <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Jusqu'à">
+                                    <HBox.margin>
+                                       <Insets right="13.0" />
+                                    </HBox.margin>
+                                 </Text>
+                                 <DatePicker fx:id="filtreDateFin" maxWidth="120.0" promptText="dd/mm/yyyy" styleClass="input-default">
+                                    <HBox.margin>
+                                       <Insets right="5.0" />
+                                    </HBox.margin>
+                                 </DatePicker>
+                                 <Spinner fx:id="heuresFin" maxWidth="50.0">
+                                    <HBox.margin>
+                                       <Insets right="5.0" />
+                                    </HBox.margin>
+                                 </Spinner>
+                                 <Text strokeType="OUTSIDE" strokeWidth="0.0" text=":">
+                                    <HBox.margin>
+                                       <Insets right="5.0" />
+                                    </HBox.margin>
+                                 </Text>
+                                 <Spinner fx:id="minutesFin" maxWidth="50.0">
+                                    <HBox.margin>
+                                       <Insets right="15.0" />
+                                    </HBox.margin>
+                                 </Spinner>
+                              </HBox>
+                           </VBox>
+                           <HBox fx:id="hboxPourBoutonFiltrer" alignment="CENTER_RIGHT" mouseTransparent="true" prefHeight="100.0" prefWidth="200.0">
+                              <StackPane.margin>
+                                 <Insets left="175.0" />
+                              </StackPane.margin>
+                           </HBox>
+                        </StackPane>
+                        <Button alignment="CENTER" maxHeight="28.0" mnemonicParsing="false" onAction="#clickGenererPDF" styleClass="btn-primary" text="Générer un rapport PDF" textFill="WHITE">
+                           <font>
+                              <Font size="13.0" />
+                           </font>
+                           <HBox.margin>
+                              <Insets left="525.0" />
+                           </HBox.margin>
+                        </Button>
+                     </HBox>
+                     <HBox fx:id="hboxFiltresAppliques" alignment="CENTER_LEFT" />
+                  </children>
+               </VBox>
+               <VBox fx:id="sectionSallesNonReservees" mouseTransparent="true" prefHeight="200.0" prefWidth="100.0" visible="false" />
+            </children>
             <VBox.margin>
                <Insets left="50.0" right="25.0" />
             </VBox.margin>
-            <ComboBox fx:id="Filtres" onAction="#changerFiltre" prefWidth="100.0" styleClass="input-default">
-               <HBox.margin>
-                  <Insets right="15.0" />
-               </HBox.margin>
-            </ComboBox>
-            <StackPane>
-               <HBox.margin>
-                  <Insets />
-               </HBox.margin>
-               <HBox fx:id="hboxFiltreTexte" alignment="CENTER_LEFT">
-                  <TextField fx:id="valeurFiltre" alignment="CENTER" onAction="#clickFiltrer" promptText="Filtrer par nom" styleClass="input-default">
-                     <HBox.margin>
-                        <Insets left="5.0" right="15.0" />
-                     </HBox.margin>
-                  </TextField>
-                  <Button fx:id="boutonFiltrer" alignment="CENTER" maxHeight="28.0" mnemonicParsing="false" onAction="#clickFiltrer" styleClass="btn-primary" text="Filtrer" textFill="WHITE">
-                     <font>
-                        <Font size="13.0" />
-                     </font>
-                  </Button>
-               </HBox>
-               <VBox fx:id="vboxFiltreDate" alignment="CENTER_LEFT" mouseTransparent="true" visible="false">
-                  <HBox alignment="CENTER_LEFT">
-                     <VBox.margin>
-                        <Insets bottom="10.0" />
-                     </VBox.margin>
-                     <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Depuis">
-                        <HBox.margin>
-                           <Insets right="15.0" />
-                        </HBox.margin>
-                     </Text>
-                     <DatePicker fx:id="filtreDateDebut" maxWidth="120.0" promptText="dd/mm/yyyy" styleClass="input-default">
-                        <HBox.margin>
-                           <Insets right="5.0" />
-                        </HBox.margin>
-                     </DatePicker>
-                     <Spinner fx:id="heuresDebut" maxWidth="50.0">
-                        <HBox.margin>
-                           <Insets right="5.0" />
-                        </HBox.margin>
-                     </Spinner>
-                     <Text strokeType="OUTSIDE" strokeWidth="0.0" text=":">
-                        <HBox.margin>
-                           <Insets right="5.0" />
-                        </HBox.margin>
-                     </Text>
-                     <Spinner fx:id="minutesDebut" maxWidth="50.0">
-                        <HBox.margin>
-                           <Insets />
-                        </HBox.margin>
-                     </Spinner>
-                  </HBox>
-                  <HBox alignment="CENTER_LEFT">
-                     <VBox.margin>
-                        <Insets />
-                     </VBox.margin>
-                     <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Jusqu'à">
-                        <HBox.margin>
-                           <Insets right="13.0" />
-                        </HBox.margin>
-                     </Text>
-                     <DatePicker fx:id="filtreDateFin" maxWidth="120.0" promptText="dd/mm/yyyy" styleClass="input-default">
-                        <HBox.margin>
-                           <Insets right="5.0" />
-                        </HBox.margin>
-                     </DatePicker>
-                     <Spinner fx:id="heuresFin" maxWidth="50.0">
-                        <HBox.margin>
-                           <Insets right="5.0" />
-                        </HBox.margin>
-                     </Spinner>
-                     <Text strokeType="OUTSIDE" strokeWidth="0.0" text=":">
-                        <HBox.margin>
-                           <Insets right="5.0" />
-                        </HBox.margin>
-                     </Text>
-                     <Spinner fx:id="minutesFin" maxWidth="50.0">
-                        <HBox.margin>
-                           <Insets right="15.0" />
-                        </HBox.margin>
-                     </Spinner>
-                  </HBox>
-               </VBox>
-               <HBox fx:id="hboxPourBoutonFiltrer" alignment="CENTER_RIGHT" mouseTransparent="true" prefHeight="100.0" prefWidth="200.0">
-                  <StackPane.margin>
-                     <Insets left="175.0" />
-                  </StackPane.margin>
-               </HBox>
-            </StackPane>
-            <Button alignment="CENTER" maxHeight="28.0" mnemonicParsing="false" onAction="#clickGenererPDF" styleClass="btn-primary" text="Générer un rapport PDF" textFill="WHITE">
-               <font>
-                  <Font size="13.0" />
-               </font>
-               <HBox.margin>
-                  <Insets left="525.0" />
-               </HBox.margin>
-            </Button>
-         </HBox>
-         <HBox fx:id="hboxFiltresAppliques" alignment="CENTER_LEFT">
-            <VBox.margin>
-               <Insets left="50.0" right="50.0" top="10.0" />
-            </VBox.margin>
-         </HBox>
+         </StackPane>
+         <StackPane prefHeight="150.0" prefWidth="200.0" />
       </VBox>
       <Pane fx:id="layerMenu" mouseTransparent="true" onMouseClicked="#menuClick" prefHeight="200.0" prefWidth="200.0">
          <StackPane.margin>
