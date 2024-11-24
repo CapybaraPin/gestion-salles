@@ -86,28 +86,28 @@ public class Salle implements Serializable {
     /**
      * Indique si l'objet dispose d'un vidéoprojecteur.
      *
-     * @return true si l'objet dispose d'un vidéoprojecteur, false sinon
+     * @return "OUI" si l'objet dispose d'un vidéoprojecteur, "NON" sinon
      */
-    public boolean isVideoProjecteur() {
-        return videoProjecteur;
+    public String isVideoProjecteur() {
+        return videoProjecteur ? "Oui" : "Non";
     }
 
     /**
      * Indique si l'objet dispose d'un écran XXL.
      *
-     * @return true si l'objet dispose d'un écran XXL, false sinon
+     * @return "OUI" si l'objet dispose d'un écran XXL, "NON" sinon
      */
-    public boolean isEcranXXL() {
-        return ecranXXL;
+    public String isEcranXXL() {
+        return ecranXXL ? "Oui" : "Non";
     }
 
     /**
      * Indique si l'objet dispose d'une imprimante.
      *
-     * @return true si l'objet dispose d'une imprimante, false sinon
+     * @return "OUI" si l'objet dispose d'une imprimante, "NON" sinon
      */
-    public boolean isImprimante() {
-        return imprimante;
+    public String isImprimante() {
+        return imprimante ? "Oui" : "Non";
     }
 
     /**
