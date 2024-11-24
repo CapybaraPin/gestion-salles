@@ -199,6 +199,9 @@ public class Fichier {
         return fichierExploite;
     }
 
+    /**
+     * Ferme les BufferedReader et FileReader.
+     */
     public void fermerFichier() {
         try {
             this.tamponFichier.close();
