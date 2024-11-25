@@ -208,6 +208,7 @@ public class Controleur extends ControleurFiltres{
     @FXML
     void handlerPartager() {
         Saltistique.showPopUp(Scenes.EXPORTER_RESEAU);
+        menuClick();
     }
 
     /**

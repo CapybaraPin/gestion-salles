@@ -118,7 +118,7 @@
                <VBox prefHeight="423.0" prefWidth="1197.0">
                   <children>
                      <HBox alignment="CENTER_LEFT">
-                        <StackPane>
+                        <StackPane alignment="CENTER_RIGHT" prefHeight="116.0" prefWidth="1201.0">
                            <HBox.margin>
                               <Insets />
                            </HBox.margin>
@@ -194,6 +194,14 @@
                                  <Insets bottom="20.0" top="30.0" />
                               </StackPane.margin>
                            </HBox>
+                           <Button fx:id="boutonConsulterDonnees" alignment="CENTER" maxHeight="28.0" mnemonicParsing="false" onAction="#afficherConsultationDonnees" styleClass="btn-primary" text="Consulter données" textFill="WHITE">
+                              <font>
+                                 <Font size="13.0" />
+                              </font>
+                              <StackPane.margin>
+                                 <Insets right="25.0" />
+                              </StackPane.margin>
+                           </Button>
                         </StackPane>
                      </HBox>
                      <HBox fx:id="hboxFiltresAppliques" alignment="CENTER_LEFT" />
@@ -244,7 +252,7 @@
                   <String fx:value="menu-style" />
                   <String fx:value="shadow" />
                </styleClass>
-               <HBox alignment="CENTER_LEFT" onMouseClicked="#menuClick" prefHeight="6.0" prefWidth="268.0" styleClass="btn-menu">
+               <HBox alignment="CENTER_LEFT" onMouseClicked="#handlerRetourMenu" prefHeight="6.0" prefWidth="268.0" styleClass="btn-menu">
                   <VBox.margin>
                      <Insets />
                   </VBox.margin>
@@ -260,7 +268,7 @@
                      </HBox.margin>
                      <Image url="@home.png" />
                   </ImageView>
-                  <Text onMouseClicked="#handlerRetourMenu" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="typo-default" text="Menu principal" />
+                  <Text strokeType="OUTSIDE" strokeWidth="0.0" styleClass="typo-default" text="Menu principal" />
                </HBox>
                <Separator prefWidth="200.0" styleClass="menu-sepator">
                   <VBox.margin>
