@@ -716,8 +716,6 @@ public class ControleurConsulterDonnees extends Controleur {
         ControleurConsulterStatistiques controleurConsulterStatistiques = Saltistique.getController(Scenes.CONSULTER_STATISTIQUES);
         controleurConsulterStatistiques.initialiserGraphiqueSalles();
         Saltistique.changeScene(Scenes.CONSULTER_STATISTIQUES);
-        ControleurConsulterStatistiques controleur = Saltistique.getController(Scenes.CONSULTER_STATISTIQUES);
-        controleur.rafraichirTableauStatistiques();
     }
       
    /**
