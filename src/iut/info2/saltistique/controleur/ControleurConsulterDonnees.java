@@ -312,7 +312,7 @@ public class ControleurConsulterDonnees extends Controleur {
                     btnAction.setOnAction(_ -> {
                         // Récupérer la salle sélectionnée
                         Salle salleSelectionnee = getTableView().getItems().get(getIndex());
-                        System.out.println(salleSelectionnee);
+
                         // Appeler la méthode pour afficher la nouvelle vue
                         afficherConsultationSalle(salleSelectionnee);
                     });
@@ -444,7 +444,6 @@ public class ControleurConsulterDonnees extends Controleur {
     }
 
     public void afficherTempsReservationsTotal(ObservableList<Reservation> reservations) {
-        System.out.println("Afficher temps total");
         Long tempsTotal = 0L;
         for (Reservation reservation : reservations) {
             tempsTotal += reservation.getTempsTotalReservation();
