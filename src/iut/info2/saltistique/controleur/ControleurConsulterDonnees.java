@@ -579,7 +579,6 @@ public class ControleurConsulterDonnees extends Controleur {
                     setGraphic(null);
                 } else {
                     Reservation reservationSelectionnee = getTableView().getItems().get(getIndex());
-                    System.out.println(reservationSelectionnee);
                     if (reservationSelectionnee instanceof Location || reservationSelectionnee instanceof Formation) {
                         // Créer le bouton avec un texte
                         Button btnAction = new Button("?");
