@@ -389,10 +389,11 @@ public class ControleurFiltres {
     private void mettreAJourFiltres() {
         List<Reservation> reservationsFiltrees = filtre.appliquerFiltres(listeReservations);
 
+        ControleurConsulterDonnees controleurConsulterDonnees = Saltistique.getController(Scenes.CONSULTER_DONNEES);
+        controleurConsulterDonnees.afficherTempsReservationsTotal(tableauReservations.getItems());
+
         if (tableauReservations != null) {
             tableauReservations.setItems(FXCollections.observableArrayList(reservationsFiltrees));
-            ControleurConsulterDonnees controleurConsulterDonnees = Saltistique.getController(Scenes.CONSULTER_DONNEES);
-            controleurConsulterDonnees.afficherTempsReservationsTotal(tableauReservations.getItems());
         } else {
             ControleurConsultationSalle consultationSalle = Saltistique.getController(Scenes.CONSULTER_SALLE);
             consultationSalle.actualiserStats();

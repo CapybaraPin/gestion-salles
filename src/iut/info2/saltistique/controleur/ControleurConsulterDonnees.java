@@ -714,8 +714,9 @@ public class ControleurConsulterDonnees extends Controleur {
     @FXML
     void clickStatistiques() {
         ControleurConsulterStatistiques controleurConsulterStatistiques = Saltistique.getController(Scenes.CONSULTER_STATISTIQUES);
-        controleurConsulterStatistiques.initialiserGraphiqueSalles();
+        //controleurConsulterStatistiques.initialiserGraphiqueSalles();
         Saltistique.changeScene(Scenes.CONSULTER_STATISTIQUES);
+        controleurConsulterStatistiques.rafraichirTableauStatistiques();
     }
       
    /**
@@ -848,6 +849,7 @@ public class ControleurConsulterDonnees extends Controleur {
     private void appliquerFiltres() {
         List<Reservation> reservationsFiltrees = filtre.appliquerFiltres(new ArrayList<>(listeReservations));
         tableauReservations.setItems(FXCollections.observableArrayList(reservationsFiltrees));
+        afficherTempsReservationsTotal(FXCollections.observableArrayList(reservationsFiltrees));
     }
 
     /**
@@ -930,6 +932,8 @@ public class ControleurConsulterDonnees extends Controleur {
         List<Reservation> reservationsFiltrees = filtre.appliquerFiltres(listeReservations);
         tableauReservations.setItems(FXCollections.observableArrayList(reservationsFiltrees));
         afficherFiltresAppliques();
+
+        afficherTempsReservationsTotal((ObservableList<Reservation>) reservationsFiltrees);
     }
 
     /**
