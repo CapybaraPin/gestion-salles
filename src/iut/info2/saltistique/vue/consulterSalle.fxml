@@ -43,7 +43,7 @@
             <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
          </rowConstraints>
       </GridPane>
-      <HBox alignment="CENTER" maxWidth="500.0">
+      <HBox alignment="CENTER" maxWidth="500.0" prefHeight="84.0" prefWidth="500.0">
          <children>
             <ComboBox fx:id="Filtres" onAction="#changerFiltre" prefWidth="100.0" styleClass="input-default">
                <HBox.margin>
@@ -55,7 +55,7 @@
                   <Insets />
                </HBox.margin>
                <children>
-                  <HBox fx:id="hboxFiltreTexte" alignment="CENTER_LEFT">
+                  <HBox fx:id="hboxFiltreTexte" alignment="CENTER_LEFT" prefHeight="71.0" prefWidth="375.0">
                      <children>
                         <TextField fx:id="valeurFiltre" alignment="CENTER" promptText="Filtrer par nom" styleClass="input-default">
                            <HBox.margin>
@@ -149,7 +149,13 @@
             <Insets left="25.0" right="25.0" />
          </VBox.margin>
       </HBox>
-      <HBox fx:id="hboxFiltresAppliques" alignment="CENTER_LEFT" />
+      <HBox fx:id="hboxFiltresAppliques" alignment="CENTER_LEFT">
+         <opaqueInsets>
+            <Insets />
+         </opaqueInsets>
+         <VBox.margin>
+            <Insets bottom="10.0" left="10.0" right="10.0" />
+         </VBox.margin></HBox>
       <Line endX="696.0" stroke="#ebecf0" />
       <HBox alignment="CENTER" fillHeight="false" prefHeight="100.0" prefWidth="200.0">
          <children>

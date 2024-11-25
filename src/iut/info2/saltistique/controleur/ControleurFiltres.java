@@ -164,11 +164,14 @@ public class ControleurFiltres {
 
     @FXML
     void clickFiltrer() {
-        System.out.println("Passage click filtrer");
         creationFiltres();
 
         ControleurConsulterDonnees controleurConsulterDonnees = Saltistique.getController(Scenes.CONSULTER_DONNEES);
-        controleurConsulterDonnees.afficherTempsReservationsTotal(tableauReservations.getItems());
+        if (tableauReservations == null) {
+            controleurConsulterDonnees.afficherTempsReservationsTotal(listeReservations);
+        } else {
+            controleurConsulterDonnees.afficherTempsReservationsTotal(tableauReservations.getItems());
+        }
     }
 
     /**
@@ -298,7 +301,13 @@ public class ControleurFiltres {
     @FXML
     private void appliquerFiltres() {
         List<Reservation> reservationsFiltrees = filtre.appliquerFiltres(new ArrayList<>(listeReservations));
-        tableauReservations.setItems(FXCollections.observableArrayList(reservationsFiltrees));
+
+        if (tableauReservations != null) {
+            tableauReservations.setItems(FXCollections.observableArrayList(reservationsFiltrees));
+        } else {
+            ControleurConsultationSalle consultationSalle = Saltistique.getController(Scenes.CONSULTER_SALLE);
+            consultationSalle.actualiserStats();
+        }
     }
 
     /**
@@ -379,10 +388,15 @@ public class ControleurFiltres {
      */
     private void mettreAJourFiltres() {
         List<Reservation> reservationsFiltrees = filtre.appliquerFiltres(listeReservations);
-        tableauReservations.setItems(FXCollections.observableArrayList(reservationsFiltrees));
 
-        ControleurConsulterDonnees controleurConsulterDonnees = Saltistique.getController(Scenes.CONSULTER_DONNEES);
-        controleurConsulterDonnees.afficherTempsReservationsTotal(tableauReservations.getItems());
+        if (tableauReservations != null) {
+            tableauReservations.setItems(FXCollections.observableArrayList(reservationsFiltrees));
+            ControleurConsulterDonnees controleurConsulterDonnees = Saltistique.getController(Scenes.CONSULTER_DONNEES);
+            controleurConsulterDonnees.afficherTempsReservationsTotal(tableauReservations.getItems());
+        } else {
+            ControleurConsultationSalle consultationSalle = Saltistique.getController(Scenes.CONSULTER_SALLE);
+            consultationSalle.actualiserStats();
+        }
 
         afficherFiltresAppliques();
     }
