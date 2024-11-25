@@ -43,7 +43,7 @@
             <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
          </rowConstraints>
       </GridPane>
-      <HBox alignment="CENTER" maxWidth="500.0" prefHeight="84.0" prefWidth="500.0">
+      <HBox alignment="CENTER" maxWidth="500.0" prefWidth="500.0">
          <children>
             <ComboBox fx:id="Filtres" onAction="#changerFiltre" prefWidth="100.0" styleClass="input-default">
                <HBox.margin>
@@ -157,7 +157,7 @@
             <Insets bottom="10.0" left="10.0" right="10.0" />
          </VBox.margin></HBox>
       <Line endX="696.0" stroke="#ebecf0" />
-      <HBox alignment="CENTER" fillHeight="false" prefHeight="100.0" prefWidth="200.0">
+      <HBox alignment="CENTER" fillHeight="false" prefHeight="117.0" prefWidth="598.0">
          <children>
             <VBox alignment="CENTER">
                <children>
@@ -183,8 +183,18 @@
                   </HBox>
                   <HBox prefHeight="28.0" prefWidth="505.0">
                      <children>
-                        <Label prefHeight="17.0" prefWidth="259.0" styleClass="typo-disabled" text="Temps moyen d'occupation  de la salles" />
-                        <Label fx:id="dureeMoyenneReservation" text="6h30 par jour">
+                        <Label prefHeight="17.0" prefWidth="259.0" styleClass="typo-disabled" text="Temps moyen d'occupation de la salles" />
+                        <Label fx:id="dureeMoyenneReservationJour" text="6h30 par jour">
+                           <HBox.margin>
+                              <Insets left="8.0" />
+                           </HBox.margin>
+                        </Label>
+                     </children>
+                  </HBox>
+                  <HBox prefHeight="28.0" prefWidth="505.0">
+                     <children>
+                        <Label prefHeight="17.0" prefWidth="259.0" styleClass="typo-disabled" />
+                        <Label fx:id="dureeMoyenneReservationSemaine" text="6h30 par semaine">
                            <HBox.margin>
                               <Insets left="8.0" />
                            </HBox.margin>

@@ -1,7 +1,9 @@
 package iut.info2.saltistique.modele;
 
 import java.io.Serializable;
+import java.time.temporal.WeekFields;
 import java.util.List;
+import java.util.Locale;
 import java.util.stream.Collectors;
 
 import javafx.collections.ObservableList;
@@ -192,7 +194,7 @@ public class Salle implements Serializable {
      * @param listeReservations La liste des réservations.
      * @return Le temps moyen des réservations sous la forme "Xh Ymin".
      */
-    public String getTempsMoyenReservations(List<Reservation> listeReservations) {
+    public String getTempsMoyenReservationsJour(List<Reservation> listeReservations) {
         // Filtrer les réservations pour la salle actuelle
         List<Reservation> reservations = listeReservations.stream()
                 .filter(reservation -> reservation.getSalle().equals(this))  // Filtrer par la salle actuelle
@@ -219,5 +221,55 @@ public class Salle implements Serializable {
         return heures + "h " + minutes + "min";
     }
 
+    /**
+     * Calcule le temps moyen des réservations par semaine pour la salle actuelle.
+     *
+     * Cette méthode prend une liste de réservations, filtre celles qui concernent la salle actuelle,
+     * identifie les semaines distinctes où des réservations ont eu lieu, calcule la durée totale des
+     * réservations, puis en déduit le temps moyen par semaine. Le résultat est retourné sous la
+     * forme d'une chaîne formatée "Xh Ymin", où X est le nombre d'heures et Y le nombre de minutes.
+     *
+     * Si aucune réservation n'existe pour la salle, la méthode retourne "0h 0min".
+     *
+     * @param listeReservations La liste des réservations à analyser. Chaque élément contient
+     *                          des informations sur la salle, les dates de début et de fin.
+     * @return Une chaîne représentant le temps moyen des réservations par semaine pour la salle,
+     *         au format "Xh Ymin". Retourne "0h 0min" si aucune réservation n'est trouvée.
+     */
+    public String getTempsMoyenReservationsSemaine(List<Reservation> listeReservations) {
+        // Obtenir un champ pour identifier les semaines en fonction de la locale
+        WeekFields weekFields = WeekFields.of(Locale.getDefault());
 
+        // Filtrer les réservations de la salle actuelle
+        List<Reservation> reservationsSalle = listeReservations.stream()
+                .filter(reservation -> reservation.getSalle().equals(this)) // Filtrer par salle
+                .toList();
+
+        // Si aucune réservation, retourner "0h 0min"
+        if (reservationsSalle.isEmpty()) {
+            return "0h 0min";
+        }
+
+        // Obtenir le nombre de semaines distinctes
+        long nombreSemaines = reservationsSalle.stream()
+                .map(reservation -> reservation.getDateDebut().get(weekFields.weekOfYear())) // Obtenir le numéro de semaine
+                .distinct() // Retenir les semaines uniques
+                .count();
+
+        // Calculer le temps total des réservations en minutes
+        long totalMinutes = reservationsSalle.stream()
+                .mapToLong(reservation -> java.time.Duration.between(
+                        reservation.getDateDebut(), reservation.getDateFin()).toMinutes()) // Calculer la durée
+                .sum();
+
+        // Calculer le temps moyen en minutes par semaine
+        long moyenneMinutesParSemaine = totalMinutes / nombreSemaines;
+
+        // Convertir en heures et minutes
+        long heures = moyenneMinutesParSemaine / 60;
+        long minutes = moyenneMinutesParSemaine % 60;
+
+        // Retourner le résultat formaté
+        return heures + "h " + minutes + "min";
+    }
 }

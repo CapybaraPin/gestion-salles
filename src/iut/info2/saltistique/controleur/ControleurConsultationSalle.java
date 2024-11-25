@@ -28,7 +28,11 @@ public class ControleurConsultationSalle extends Controleur {
 
     /** Label indiquant la durée moyenne des réservations de la salle */
     @FXML
-    public Label dureeMoyenneReservation;
+    public Label dureeMoyenneReservationJour;
+
+    /** Label indiquant la durée moyenne des réservations de la salle */
+    @FXML
+    public Label dureeMoyenneReservationSemaine;
 
     /** Filtre actuellement appliqué */
     private Filtre filtre;
@@ -98,7 +102,8 @@ public class ControleurConsultationSalle extends Controleur {
             // Mettre à jour les données de l'interface
             nomSalle.setText(salleSelectionnee.getNom());
             dureeReservation.setText(salleSelectionnee.getTempsTotalReservations(reservationsFiltrees));
-            dureeMoyenneReservation.setText(salleSelectionnee.getTempsMoyenReservations(reservationsFiltrees) + " par jours");
+            dureeMoyenneReservationJour.setText(salleSelectionnee.getTempsMoyenReservationsJour(reservationsFiltrees) + " par jours");
+            dureeMoyenneReservationSemaine.setText(salleSelectionnee.getTempsMoyenReservationsSemaine(reservationsFiltrees) + " par semaine");
         }
     }
     /**
