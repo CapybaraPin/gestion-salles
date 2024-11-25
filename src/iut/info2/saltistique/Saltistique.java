@@ -47,8 +47,11 @@ public class Saltistique extends Application {
     /** Un EnumMap qui stocke les scènes associées à chaque valeur de l'énumération {@link Scenes}. */
     public static EnumMap<Scenes, Scene> scenes = new EnumMap<>(Scenes.class);
 
-    /** Un HashMap qui stocke les contrôleurs associés aux scènes. */
-    private static HashMap<Scenes, Object> controllers = new HashMap<>();
+    /** Un HashMap qui stocke les contrôleurs associés aux champs de l'énumération {@link Scenes}. */
+    private static HashMap<Scenes, Object> controllersScenes = new HashMap<>();
+
+    /** Un HashMap qui stocke les contrôleurs associés aux scènes. {@link Scene} */
+    private static HashMap<Scene, Object> controllersScene = new HashMap<>();
 
     /** La fenêtre principale (ou scène principale) de l'application JavaFX. */
     private static Stage primaryStage;
@@ -100,8 +103,8 @@ public class Saltistique extends Application {
                 FXMLLoader loader = new FXMLLoader(getClass().getResource(sceneEnum.getChemin()));
                 Scene scene = new Scene(loader.load());
                 scenes.put(sceneEnum, scene);
-                controllers.put(sceneEnum, loader.getController()); // Store the controller
-
+                controllersScenes.put(sceneEnum, loader.getController()); // Store the controller
+                controllersScene.put(scene, loader.getController());
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -151,7 +154,16 @@ public class Saltistique extends Application {
      * @return le contrôleur associé à la scène
      */
     public static <T> T getController(Scenes sceneEnum) {
-        return (T) controllers.get(sceneEnum);
+        return (T) controllersScenes.get(sceneEnum);
+    }
+
+    /**
+     * Méthode pour obtenir le contrôleur d'une scène.
+     *
+     * @param scene la scène
+     */
+    public static <T> T getController(Scene scene) {
+        return (T) controllersScene.get(scene);
     }
 
     /**

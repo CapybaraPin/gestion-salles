@@ -2,7 +2,6 @@
  * ControleurConsulterDonnees.java 02/11/2024
  * IUT de RODEZ, tous les droits sont réservés
  */
-
 package iut.info2.saltistique.controleur;
 
 import iut.info2.saltistique.Saltistique;
@@ -15,6 +14,8 @@ import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
@@ -26,6 +27,7 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * Le contrôleur de la vue permettant de consulter les données.
@@ -326,6 +328,14 @@ public class ControleurConsulterDonnees extends Controleur {
     @FXML
     private Filtre filtre;
 
+    /** Label pour le temps total de réservations */
+    @FXML
+    public Label labelTempsTotalReservations;
+
+    /** Afficher les statistiques d'une salle */
+    @FXML
+    private TableColumn<Salle, Void> Actions;
+
     /**
      * HBox contenant les filtres appliqués
      */
@@ -338,10 +348,10 @@ public class ControleurConsulterDonnees extends Controleur {
      * dans l'application, permettant la liaison de données pour des composants
      * de l'interface utilisateur, tels que des tableaux ou des listes.
      */
-    private ObservableList<Salle> listeSalles;
-    private ObservableList<Activite> listeActivites;
-    private ObservableList<Utilisateur> listeEmployes;
-    private ObservableList<Reservation> listeReservations;
+    protected ObservableList<Salle> listeSalles;
+    protected ObservableList<Activite> listeActivites;
+    protected ObservableList<Utilisateur> listeEmployes;
+    protected ObservableList<Reservation> listeReservations;
 
     /**
      * Initialise le contrôleur après le chargement de la vue FXML.
@@ -381,6 +391,17 @@ public class ControleurConsulterDonnees extends Controleur {
     }
 
     /**
+     * Permet l'actualisation des données dans le contrôleur
+     * de gestion des filtres.
+     */
+    void actualiserFiltres() {
+        setListeSalles(listeSalles);
+        setListeActivites(listeActivites);
+        setListeEmployes(listeEmployes);
+        setListeReservations(listeReservations);
+    }
+
+   /**
      * Permet de changer l'affichage du bouton de filtrage en fonction de si l'affichage correspond aux périodes ou non
      */
     @FXML
@@ -409,8 +430,6 @@ public class ControleurConsulterDonnees extends Controleur {
         }
     }
 
-
-
     /**
      * Rafraîchit les données affichées dans les tableaux.
      * Recharge les données depuis la source et met à jour les tableaux liés.
@@ -425,6 +444,11 @@ public class ControleurConsulterDonnees extends Controleur {
         tableauActivites.setItems(listeActivites);
         tableauEmployes.setItems(listeEmployes);
         tableauReservations.setItems(listeReservations);
+        afficherTempsReservationsTotal(listeReservations);
+    }
+
+    public void setTableauReservations(ObservableList<Reservation> reservationsFiltrees) {
+        tableauReservations.setItems(FXCollections.observableArrayList(reservationsFiltrees));
     }
 
     /**
@@ -461,7 +485,55 @@ public class ControleurConsulterDonnees extends Controleur {
         Type.setCellValueFactory(new PropertyValueFactory<>("type"));
         Logiciels.setCellValueFactory(new PropertyValueFactory<>("logiciels"));
         Imprimante.setCellValueFactory(new PropertyValueFactory<>("imprimante"));
+
+        Actions.setCellFactory(_ -> new TableCell<>() {
+            @Override
+            protected void updateItem(Void item, boolean empty) {
+                super.updateItem(item, empty);
+
+                if (empty) {
+                    setGraphic(null);
+                } else {
+                    // Charger l'icône
+                    ImageView svgIcon = new ImageView(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/ressources/icons/chart.png"))));
+                    svgIcon.setFitWidth(16); // Ajuster la largeur de l'icône
+                    svgIcon.setFitHeight(16); // Ajuster la hauteur de l'icône
+
+                    // Créer le bouton avec un texte
+                    Button btnAction = new Button("Statistique");
+                    btnAction.getStyleClass().add("btn-secondary");
+
+                    // Ajouter l'icône au bouton
+                    btnAction.setGraphic(svgIcon);
+
+                    // Ajouter une action au bouton
+                    btnAction.setOnAction(_ -> {
+                        // Récupérer la salle sélectionnée
+                        Salle salleSelectionnee = getTableView().getItems().get(getIndex());
+
+                        // Appeler la méthode pour afficher la nouvelle vue
+                        afficherConsultationSalle(salleSelectionnee);
+                    });
+
+                    setGraphic(btnAction); // Ajouter le bouton à la cellule
+                    setText(null);
+                }
+            }
+        });
+
         tableauSalles.setItems(listeSalles);
+    }
+
+    /**
+     * Charge la vue de consultation de salle et passe les données de la salle sélectionnée.
+     * @param salle La salle sélectionnée à afficher.
+     */
+    private void afficherConsultationSalle(Salle salle) {
+        ControleurConsultationSalle controleur = Saltistique.getController(Scenes.CONSULTER_SALLE);
+        controleur.setSalle(salle);
+        controleur.setDonneesFiltres(listeReservations, listeActivites, listeEmployes, listeSalles);
+        controleur.actualiserStats();
+        Saltistique.showPopUp(Scenes.CONSULTER_SALLE);
     }
 
     /**
@@ -569,6 +641,14 @@ public class ControleurConsulterDonnees extends Controleur {
         afficherTableau(tableauActivites, SelectionActivites);
     }
 
+    public void afficherTempsReservationsTotal(ObservableList<Reservation> reservations) {
+        Long tempsTotal = 0L;
+        for (Reservation reservation : reservations) {
+            tempsTotal += reservation.getTempsTotalReservation();
+        }
+        labelTempsTotalReservations.setText("Temps total de reservations : " + tempsTotal + " heures");
+    }
+
     /**
      * Affiche le tableau des employes et la sélection associée dans l'interface utilisateur.
      * Cette méthode rend visible le tableau des employes et la sélection des employes,
@@ -579,7 +659,12 @@ public class ControleurConsulterDonnees extends Controleur {
         afficherTableau(tableauEmployes, SelectionEmployes);
     }
 
-    /**
+    @FXML
+    void clickStatistiques() {
+        Saltistique.changeScene(Scenes.CONSULTER_STATISTIQUES);
+    }
+      
+   /**
      * Gère le clic sur le bouton "Filtrer".
      * Applique les filtres en fonction du critère et de la valeur sélectionnés.
      */
