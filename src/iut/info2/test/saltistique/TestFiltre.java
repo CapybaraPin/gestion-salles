@@ -28,7 +28,7 @@ import static org.junit.jupiter.api.Assertions.*;
  * l'ajout, la suppression et l'application des filtres.
  * </p>
  *
- * @author Jules VIALAS, Néo BECOGNE
+ * @author Jules Vialas, Néo Bécogné, Dorian Adams, Hugo Robles, Tom Gutierrez
  */
 class TestFiltre {
 
@@ -179,13 +179,68 @@ class TestFiltre {
     }
 
     /**
-     * Teste l'ajout d'un filtre basé sur une date et vérifie son fonctionnement.
+     * Teste la suppression d'un filtre pour une salle qui n'est pas présente dans la liste des filtres.
      */
-    /*@Test
-    void testAjouterFiltreDateEtAppliquer() {
-        LocalDate date1 = reservation1.getDateDebut().toLocalDate();
-        filtre.ajouterFiltreDate(date1);
+    @Test
+    void testSupprimerFiltreSalleNonExistant() {
+        filtre.supprimerFiltreSalle(salle1); // salle1 n'a pas encore été ajoutée.
+        assertFalse(filtre.getSallesFiltrees().contains(salle1)); // Aucun changement ne doit être fait.
+    }
 
-        assertTrue(filtre.getDatesFiltrees().contains(date1));
-    }*/
+    /**
+     * Teste l'ajout d'une salle déjà présente dans les filtres.
+     */
+    @Test
+    void testAjouterFiltreSalleDejaPresent() {
+        filtre.ajouterFiltreSalle(salle1);
+        filtre.ajouterFiltreSalle(salle1); // Essai d'ajout d'une salle déjà présente
+        assertEquals(1, filtre.getSallesFiltrees().size()); // Salle ne doit pas être dupliquée.
+    }
+
+    /**
+     * Teste l'ajout et la suppression de filtres basés sur les dates.
+     */
+    @Test
+    void testAjouterEtSupprimerFiltreDate() {
+        LocalDateTime dateDebut = LocalDateTime.parse("2024-11-17T08:00");
+        LocalDateTime dateFin = LocalDateTime.parse("2024-11-17T12:00");
+
+        filtre.ajouterFiltreDate(dateDebut, dateFin);
+        LocalDateTime[] dates = filtre.getFiltreDate();
+
+        assertEquals(dateDebut, dates[0]);
+        assertEquals(dateFin, dates[1]);
+
+        filtre.supprimerFiltreDate();
+        dates = filtre.getFiltreDate();
+
+        assertNull(dates[0]);
+        assertNull(dates[1]);
+    }
+
+    /**
+     * Teste l'application de filtres en fonction de la période (date de début et de fin).
+     */
+    @Test
+    void testAppliquerFiltresAvecDate() {
+        LocalDateTime dateDebut = LocalDateTime.parse("2024-11-17T08:00");
+        LocalDateTime dateFin = LocalDateTime.parse("2024-11-17T12:00");
+        filtre.ajouterFiltreDate(dateDebut, dateFin);
+
+        ObservableList<Reservation> resultats = filtre.appliquerFiltres(new ArrayList<>(reservations.values()));
+        assertEquals(2, resultats.size());
+        assertTrue(resultats.contains(reservation1));
+        assertTrue(resultats.contains(reservation3)); // Vérifie que les réservations entre ces dates sont prises en compte.
+    }
+
+    /**
+     * Teste l'application de filtres avec des dates sans période définie.
+     */
+    @Test
+    void testAppliquerFiltresSansDate() {
+        filtre.ajouterFiltreSalle(salle1);
+        ObservableList<Reservation> resultats = filtre.appliquerFiltres(new ArrayList<>(reservations.values()));
+        assertEquals(1, resultats.size()); // On s'attend à 1 résultat avec seulement la salle filtrée.
+    }
+
 }
