@@ -198,4 +198,17 @@ public class Fichier {
     public File getFichierExploite() {
         return fichierExploite;
     }
+
+    /**
+     * Ferme les BufferedReader et FileReader.
+     */
+    public void fermerFichier() {
+        try {
+            this.tamponFichier.close();
+            this.lecteurFichier.close();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+    }
 }

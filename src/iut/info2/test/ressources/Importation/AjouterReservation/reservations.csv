@@ -1,0 +1,12 @@
+Ident;salle;employe;activite;date;heuredebut;heurefin;;;;;
+R000001;00000001;E000001;prêt;07/10/2024;17h00;19h00;club gym;Legendre;Noémie;0600000000;reunion
+R000002;00000001;E000001;formation;07/10/2024;17h00;19h00;Bureautique;Leroux;Jacques;0600000001;
+R000003;00000001;E000001;location;07/10/2024;17h00;19h00;Département;Tournefeuille;Michel;0655555555;
+R000004;00000001;E000001;autre;07/10/2024;17h00;19h00;tests candidats;;;;
+R000004;00000001;E000001;autre;07/10/2024;17h00;19h00;doublon;;;;
+R000005;00000002;E000001;autre;07/10/2024;17h00;19h00;salle incorrecte;;;;
+R000006;00000001;E000002;autre;07/10/2024;17h00;19h00;employe incorrect;;;;
+R000007;00000001;E000001;incorrect;07/10/2024;17h00;19h00;activité incorrecte;;;;
+R000008;00000001;E000001;incorrect;07/10/2024;20h00;19h00;date incorrecte;;;;
+R00000neuf;00000001;E000001;incorrect;07/10/2024;20h00;19h00;ligne incorrecte;;;;
+;;;;;;;;;;;

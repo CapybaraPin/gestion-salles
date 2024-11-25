@@ -137,12 +137,12 @@ public class Reservation implements Serializable {
     public String toString() {
         return "Reservation{" +
                 "identifiant='" + identifiant + '\'' +
-                ", dateDebut=" + dateDebut +
-                ", dateFin=" + dateFin +
+                ", dateDebut='" + dateDebut + '\'' +
+                ", dateFin='" + dateFin + '\'' +
                 ", description='" + description + '\'' +
-                ", salle=" + salle +
-                ", activite=" + activite +
-                ", utilisateur=" + utilisateur +
+                ", salle='" + salle + '\'' +
+                ", activite='" + activite + '\'' +
+                ", utilisateur='" + utilisateur + '\'' +
                 '}';
     }
 }

@@ -32,12 +32,39 @@ public class Importation {
     private static final String ERREUR_NB_CHEMINS_FICHIERS =
             "Le nombre de fichiers à fournir n'est pas respecté";
 
+    /** Délimiteur utilisé pour séparer les attributs dans les fichiers .csv. */
     private static final String DELIMITEUR = ";";
+
+    /** Stocke les fichiers fournis pour l'importation. */
     private Fichier[] fichiers;
+
+    /**
+     * Stocke le fichier d'activités fourni pour l'importation.
+     * Permet de retrouver facilement le fichier d'activités parmi les fichiers fournis.
+     */
     private Fichier fichierActivites;
+
+    /**
+     * Stocke le fichier de réservations fourni pour l'importation.
+     * Permet de retrouver facilement le fichier de réservations parmi les fichiers fournis.
+     */
     private Fichier fichierReservations;
+
+    /**
+     * Stocke le fichier de salles fourni pour l'importation.
+     * Permet de retrouver facilement le fichier de salles parmi les fichiers fournis.
+     */
     private Fichier fichierSalles;
+
+    /**
+     * Stocke le fichier d'utilisateurs fourni pour l'importation.
+     * Permet de retrouver facilement le fichier d'utilisateurs parmi les fichiers fournis.
+     */
     private Fichier fichierUtilisateurs;
+
+    /**
+     * Stocke l'objet GestionDonnees pour l'importation des données.
+     */
     private GestionDonnees donnees;
 
     /**
@@ -64,6 +91,7 @@ public class Importation {
      * @throws IllegalArgumentException si le nombre de fichiers n'est pas égal à 4
      *                                  ou si un fichier n'est pas reconnu
      * @throws IOException si une erreur survient lors de la lecture du fichier
+     * @author Tom GUTIERREZ
      */
     public void importerDonnees(String[] cheminFichiers) throws IOException {
         donnees.viderDonnees();
@@ -304,7 +332,6 @@ public class Importation {
         return activite;
     }
 
-
     /**
      * Ajoute une salle à partir d'une ligne spécifiée.
      * <br><br>
@@ -482,7 +509,6 @@ public class Importation {
 
         messageErreur = null;
         attributs = ligne.split(DELIMITEUR, -1);
-
         if (estLigneComplete(ligne, "reservations")) {
             identifiant = extraireNombre(attributs[0]);
             reservations = donnees.getReservations();
@@ -500,7 +526,7 @@ public class Importation {
             } else {
                 messageErreur = "Identifiant déjà utilisé";
             }
-        }  else {
+        } else {
             for (int indiceAttribut = 0; indiceAttribut < attributs.length && messageErreur == null; indiceAttribut++) {
                 // Vérifie qu'au moins un attribut n'est pas vide pour déterminer si la ligne est incorrecte
                 // si tous les attributs sont vides, la ligne est ignorée
@@ -578,7 +604,6 @@ public class Importation {
         } catch (IllegalArgumentException e) {
             return null; // TODO : Ajouter un message d'erreur
         }
-
         identifiant = attributs[0].trim();
         description = attributs[7].trim();
 

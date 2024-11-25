@@ -24,11 +24,8 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-
-import iut.info2.saltistique.modele.GenerePDF;
 
 /**
  * Le contrôleur de la vue permettant de consulter les données.
@@ -643,7 +640,7 @@ public class ControleurConsulterDonnees extends Controleur {
                     } else {
                         correspondanceTrouvee = listeEmployes.stream()
                                 .anyMatch(employe -> employe.getNom() != null && employe.getPrenom() != null
-                                        && Arrays.stream(motsRecherche)
+                                        && java.util.Arrays.stream(motsRecherche)
                                                 .anyMatch(mot -> employe.getNom().toLowerCase().contains(mot)
                                                         || employe.getPrenom().toLowerCase().contains(mot)));
 
@@ -651,7 +648,7 @@ public class ControleurConsulterDonnees extends Controleur {
                                 filtre.getEmployesFiltres().stream()
                                         .anyMatch(employe -> employe.getNom() != null
                                                 && employe.getPrenom() != null
-                                                && Arrays.stream(motsRecherche)
+                                                && java.util.Arrays.stream(motsRecherche)
                                                         .anyMatch(mot -> employe.getNom()
                                                                 .toLowerCase().contains(mot)
                                                                 || employe.getPrenom().toLowerCase().contains(mot)));
@@ -659,7 +656,7 @@ public class ControleurConsulterDonnees extends Controleur {
                         if (correspondanceTrouvee && !filtreDejaApplique) {
                             listeEmployes.stream()
                                     .filter(employe -> employe.getNom() != null && employe.getPrenom() != null
-                                            && Arrays.stream(motsRecherche)
+                                            && java.util.Arrays.stream(motsRecherche)
                                                     .anyMatch(mot -> employe.getNom().toLowerCase().contains(mot)
                                                             || employe.getPrenom().toLowerCase().contains(mot)))
                                     .forEach(employe -> filtre.ajouterFiltreEmploye(employe));
@@ -861,5 +858,4 @@ public class ControleurConsulterDonnees extends Controleur {
             System.err.println(e.getMessage());
         }
     }
-
 }

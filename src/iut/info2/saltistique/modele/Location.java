@@ -57,4 +57,62 @@ public class Location extends Reservation {
         this.prenomInterlocuteur = prenomInterlocuteur;
         this.telephoneInterlocuteur = telephoneInterlocuteur;
     }
+
+    /**
+     * Obtient le nom de l'organisme.
+     *
+     * @return Le nom de l'organisme.
+     */
+    public String getNomOrganisme() {
+        return nomOrganisme;
+    }
+
+    /**
+     * Obtient le nom de l'interlocuteur.
+     *
+     * @return Le nom de l'interlocuteur.
+     */
+    public String getNomInterlocuteur() {
+        return nomInterlocuteur;
+    }
+
+    /**
+     * Obtient le prénom de l'interlocuteur.
+     *
+     * @return Le prénom de l'interlocuteur.
+     */
+    public String getPrenomInterlocuteur() {
+        return prenomInterlocuteur;
+    }
+
+    /**
+     * Obtient le numéro de téléphone de l'interlocuteur.
+     *
+     * @return Le numéro de téléphone de l'interlocuteur.
+     */
+    public String getTelephoneInterlocuteur() {
+        return telephoneInterlocuteur;
+    }
+
+    /**
+     * Retourne une représentation sous forme de chaîne de caractères du nom de l'interlocuteur.
+     *
+     * @return Le nom de l'interlocuteur sous forme de chaîne de caractères.
+     */
+    @Override
+    public String toString() {
+        return "Reservation - location{" +
+                "identifiant='" + getIdentifiant() + '\'' +
+                ", dateDebut=" + getDateDebut() + '\'' +
+                ", dateFin=" + getDateFin() + '\'' +
+                ", description='" + getDescription() + '\'' +
+                ", salle=" + getSalle() + '\'' +
+                ", activite=" + getActivite() + '\'' +
+                ", utilisateur=" + getUtilisateur() + '\'' +
+                ", nomOrganisme='" + nomOrganisme + '\'' +
+                ", nomInterlocuteur='" + nomInterlocuteur + '\'' +
+                ", prenomInterlocuteur='" + prenomInterlocuteur + '\'' +
+                ", telephoneInterlocuteur='" + telephoneInterlocuteur + '\'' +
+                '}';
+    }
 }
