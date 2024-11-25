@@ -336,6 +336,9 @@ public class ControleurConsulterDonnees extends Controleur {
     @FXML
     private TableColumn<Salle, Void> Actions;
 
+    @FXML
+    public TableColumn<Reservation, Void> informationReservation;
+
     /**
      * HBox contenant les filtres appliqués
      */
@@ -567,7 +570,57 @@ public class ControleurConsulterDonnees extends Controleur {
         Salle.setCellValueFactory(new PropertyValueFactory<>("salle"));
         Activite.setCellValueFactory(new PropertyValueFactory<>("activite"));
         Utilisateur.setCellValueFactory(new PropertyValueFactory<>("utilisateur"));
+
+        informationReservation.setCellFactory(_ -> new TableCell<>() {
+            @Override
+            protected void updateItem(Void item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty) {
+                    setGraphic(null);
+                } else {
+                    Reservation reservationSelectionnee = getTableView().getItems().get(getIndex());
+                    System.out.println(reservationSelectionnee);
+                    if (reservationSelectionnee instanceof Location || reservationSelectionnee instanceof Formation) {
+                        // Créer le bouton avec un texte
+                        Button btnAction = new Button("?");
+                        btnAction.getStyleClass().add("btn-secondary");
+                        // Ajouter une action au bouton
+                        btnAction.setOnAction(_ -> {
+                            if (reservationSelectionnee instanceof Location) {
+                                //Afficher pour une location
+                                Location l = (Location) reservationSelectionnee;
+                                afficherConsulterLocation(l);
+                            } else {
+                                //Afficher pour une formation
+                                Formation f = (Formation) reservationSelectionnee;
+                                afficherConsulterFormation(f);
+                            }
+                        });
+                        setGraphic(btnAction); // Ajouter le bouton à la cellule
+                        setText(null);
+                    } else {
+                        setGraphic(null);
+                    }
+                }
+            }
+        });
+
         tableauReservations.setItems(listeReservations);
+    }
+
+    /**
+     * Charge la vue de consultation de salle et passe les données de la salle sélectionnée.
+     * @param location La reservation sélectionnée à afficher.
+     */
+    private void afficherConsulterLocation(Location location) {
+        ControleurInformationReservation controleur = Saltistique.getController(Scenes.INFORMATION_RESERVATION);
+        controleur.setlocation(location);
+        Saltistique.showPopUp(Scenes.INFORMATION_RESERVATION);
+    }
+    private void afficherConsulterFormation(Formation formation) {
+        ControleurInformationReservation controleur = Saltistique.getController(Scenes.INFORMATION_RESERVATION);
+        controleur.setFormation(formation);
+        Saltistique.showPopUp(Scenes.INFORMATION_RESERVATION);
     }
 
     /**
