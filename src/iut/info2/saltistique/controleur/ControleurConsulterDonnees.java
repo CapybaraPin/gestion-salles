@@ -713,6 +713,8 @@ public class ControleurConsulterDonnees extends Controleur {
 
     @FXML
     void clickStatistiques() {
+        ControleurConsulterStatistiques controleurConsulterStatistiques = Saltistique.getController(Scenes.CONSULTER_STATISTIQUES);
+        controleurConsulterStatistiques.initialiserGraphiqueSalles();
         Saltistique.changeScene(Scenes.CONSULTER_STATISTIQUES);
     }
       
