@@ -85,6 +85,7 @@ public class ControleurImporterReseau extends Controleur {
     @FXML
     public void finInmportationReseau(String dossier) {
         javafx.application.Platform.runLater(() -> {
+            progressVbox.setVisible(false);
             fermerFenetre();
 
             ControleurConsulterDonnees controleur = Saltistique.getController(Scenes.CONSULTER_DONNEES);

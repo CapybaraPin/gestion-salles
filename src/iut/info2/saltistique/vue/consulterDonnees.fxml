@@ -291,6 +291,7 @@
                   <TableColumn fx:id="Salle" prefWidth="75.0" text="Salle" />
                   <TableColumn fx:id="Activite" prefWidth="75.0" text="Activite" />
                   <TableColumn fx:id="Utilisateur" prefWidth="75.0" text="Utilisateur" />
+                  <TableColumn fx:id="informationReservation" prefWidth="75.0" text="Plus d'information" />
                </columns>
                <columnResizePolicy>
                   <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
