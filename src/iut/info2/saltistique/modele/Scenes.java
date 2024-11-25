@@ -21,7 +21,8 @@ public enum Scenes {
     CONSULTER_DONNEES("/iut/info2/saltistique/vue/consulterDonnees.fxml"),
     CONSULTER_DONNEES_INCORRECTES("/iut/info2/saltistique/vue/consulterDonneesIncorrectes.fxml"),
     CONSULTER_SALLE("/iut/info2/saltistique/vue/consulterSalle.fxml"),
-    CONSULTER_STATISTIQUES("/iut/info2/saltistique/vue/consulterStatistiques.fxml");
+    CONSULTER_STATISTIQUES("/iut/info2/saltistique/vue/consulterStatistiques.fxml"),
+    SALLES_NON_RESERVEES("/iut/info2/saltistique/vue/sallesNonReservees.fxml");
 
     /** Le chemin du fichier FXML correspondant à la scène. */
     private String chemin;
