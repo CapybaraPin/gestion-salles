@@ -80,9 +80,6 @@ public class ControleurConsulterStatistiques extends Controleur {
         borderPane.setCenter(buildPieChart());
     }
 
-    /**
-     * Action associée au bouton statistiques globales pour afficher les statistiques globales
-     */
     void initialiserGraphiqueSalles(){
         borderPane.setCenter(buildPieChart());
     }
