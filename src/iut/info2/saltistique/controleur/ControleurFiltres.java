@@ -4,6 +4,7 @@
  */
 package iut.info2.saltistique.controleur;
 
+import iut.info2.saltistique.Saltistique;
 import iut.info2.saltistique.modele.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -157,8 +158,17 @@ public class ControleurFiltres {
             hboxPourBoutonFiltrer.getChildren().remove(boutonFiltrer);
             hboxFiltreTexte.getChildren().remove(boutonFiltrer);
             hboxFiltreTexte.getChildren().add(boutonFiltrer);
-            boutonFiltrer.setOnAction(_ -> creationFiltres());
+            boutonFiltrer.setOnAction(_ -> clickFiltrer());
         }
+    }
+
+    @FXML
+    void clickFiltrer() {
+        System.out.println("Passage click filtrer");
+        creationFiltres();
+
+        ControleurConsulterDonnees controleurConsulterDonnees = Saltistique.getController(Scenes.CONSULTER_DONNEES);
+        controleurConsulterDonnees.afficherTempsReservationsTotal(tableauReservations.getItems());
     }
 
     /**
@@ -370,6 +380,10 @@ public class ControleurFiltres {
     private void mettreAJourFiltres() {
         List<Reservation> reservationsFiltrees = filtre.appliquerFiltres(listeReservations);
         tableauReservations.setItems(FXCollections.observableArrayList(reservationsFiltrees));
+
+        ControleurConsulterDonnees controleurConsulterDonnees = Saltistique.getController(Scenes.CONSULTER_DONNEES);
+        controleurConsulterDonnees.afficherTempsReservationsTotal(tableauReservations.getItems());
+
         afficherFiltresAppliques();
     }
 

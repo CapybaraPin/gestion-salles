@@ -117,7 +117,7 @@ public class ControleurConsultationSalle extends Controleur {
      * Appliqué lors du clic sur "Filtrer", réactualise les données en fonction du filtre.
      */
     @FXML
-    void clickFiltrer() {
+    void clickFiltrerSalle() {
         creationFiltres();
         actualiserStats();
     }

@@ -173,10 +173,13 @@ public class ControleurConsulterDonnees extends Controleur {
     @FXML
     public TableColumn<Salle, Boolean> Imprimante;
 
-
     /** Filtre contenant les différents filtres appliqués */
     @FXML
     private Filtre filtre;
+
+    /** Label pour le temps total de réservations */
+    @FXML
+    public Label labelTempsTotalReservations;
 
     /** Afficher les statistiques d'une salle */
     @FXML
@@ -244,6 +247,10 @@ public class ControleurConsulterDonnees extends Controleur {
         tableauEmployes.setItems(listeEmployes);
         tableauReservations.setItems(listeReservations);
         afficherTempsReservationsTotal(listeReservations);
+    }
+
+    public void setTableauReservations(ObservableList<Reservation> reservationsFiltrees) {
+        tableauReservations.setItems(FXCollections.observableArrayList(reservationsFiltrees));
     }
 
     /**
@@ -434,6 +441,15 @@ public class ControleurConsulterDonnees extends Controleur {
     @FXML
     void afficherTableauActivites() {
         afficherTableau(tableauActivites, SelectionActivites);
+    }
+
+    public void afficherTempsReservationsTotal(ObservableList<Reservation> reservations) {
+        System.out.println("Afficher temps total");
+        Long tempsTotal = 0L;
+        for (Reservation reservation : reservations) {
+            tempsTotal += reservation.getTempsTotalReservation();
+        }
+        labelTempsTotalReservations.setText("Temps total de reservations : " + tempsTotal + " heures");
     }
 
     /**
