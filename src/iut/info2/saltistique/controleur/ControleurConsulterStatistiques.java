@@ -4,13 +4,19 @@
  */
 package iut.info2.saltistique.controleur;
 import iut.info2.saltistique.Saltistique;
+import iut.info2.saltistique.modele.Reservation;
 import iut.info2.saltistique.modele.Salle;
+import iut.info2.saltistique.modele.SalleStatistiques;
 import iut.info2.saltistique.modele.Scenes;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
-import javafx.scene.layout.VBox;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.shape.Line;
+
+import java.util.Map;
 
 /**
  * Contrôleur de la vue de consultation des statistiques.
@@ -18,68 +24,83 @@ import javafx.scene.shape.Line;
  */
 public class ControleurConsulterStatistiques extends Controleur {
 
-    /** Section Statistiques Globales */
+    /** Ligne de selection des statistiques globales */
     @FXML
-    public VBox sectionStatistiquesGlobales;
-
-    /** Section Salles Non Réservées */
+    public Line selectionStatistiquesGlobales;
+    /** Ligne de selection des salles non réservées */
     @FXML
-    public VBox sectionSallesNonReservees;
-
-    /** Onglet Statistiques Globales */
+    public Line selectionSallesNonreservees;
+    /** Tableau représentatif des statistiques globales */
     @FXML
-    public Button statistiquesGlobales;
-
-    /** Onglet salles non réservées */
+    public TableView<SalleStatistiques> tableauStatistiquesGlobales;
+    /** Colonne pour l'identifiant de la salle. */
     @FXML
-    public Button sallesNonReservees;
-
-    /** Ligne de soulignage de l'onglet Statistiques Globales */
+    public TableColumn<SalleStatistiques, String> identifiantSalle;
+    /** Nom de la salle */
     @FXML
-    public Line SelectionStatistiquesGlobales;
-
-    /** Ligne de soulignage de l'onglet Statistiques Globales */
+    public TableColumn<SalleStatistiques, String> nomSalle;
+    /** Colonne pour le temps moyen d'occupation par jour. */
     @FXML
-    public Line SelectionSallesNonReservees;
-
-    /** Liste des salles */
+    public TableColumn<SalleStatistiques, String> tempsMoyenOccupationJour;
+    /** Colonne pour le temps moyen d'occupation par semaine. */
     @FXML
-    public ObservableList<Salle> listeSalles;
-
-
-    /**
-     * Action associée au bouton filtrer pour filtrer les données en fonction du filtre demandé
-     */
+    public TableColumn<SalleStatistiques, String> tempsMoyenOccupationSemaine;
+    /** Colonne pour le temps d'occupation total. */
     @FXML
-    void clickFiltrer() {
-        actualiserFiltres();
-        creationFiltres();
+    public TableColumn<SalleStatistiques, String> tempsOccupationTotal;
+
+    /** Liste contenante les données à afficher */
+    ObservableList<SalleStatistiques> listeDonnees;
+
+    ObservableList<Reservation> listeReservations;
+
+    @FXML
+    void initialize() {
+        setHoverEffect();
+        initialiserTableauStatistiques();
+    }
+
+    void initialiserTableauStatistiques() {
+        identifiantSalle.setCellValueFactory(new PropertyValueFactory<>("identifiant"));
+        nomSalle.setCellValueFactory(new PropertyValueFactory<>("nom"));
+        tempsMoyenOccupationJour.setCellValueFactory(new PropertyValueFactory<>("tempsMoyenOccupationJour"));
+        tempsMoyenOccupationSemaine.setCellValueFactory(new PropertyValueFactory<>("tempsMoyenOccupationSemaine"));
+        tempsOccupationTotal.setCellValueFactory(new PropertyValueFactory<>("tempsOccupationTotal"));
+        tableauStatistiquesGlobales.setItems(listeDonnees);
+    }
+
+    private void remplirListeDonnees() {
+        listeDonnees = FXCollections.observableArrayList();
+        for (int rang = 0; rang < Saltistique.gestionDonnees.getSalles().size(); rang++) {
+            try {
+                listeDonnees.add(new SalleStatistiques(
+                        Saltistique.gestionDonnees.getSalles().get(rang).getIdentifiant(),
+                        Saltistique.gestionDonnees.getSalles().get(rang).getNom(),
+                        Saltistique.gestionDonnees.getSalles().get(rang).getTempsMoyenReservationsJour(listeReservations),
+                        Saltistique.gestionDonnees.getSalles().get(rang).getTempsMoyenReservationsSemaine(listeReservations),
+                        Saltistique.gestionDonnees.getSalles().get(rang).getTempsTotalReservations(listeReservations)
+                ));
+                System.out.println(Saltistique.gestionDonnees.getSalles().get(rang).getTempsMoyenReservationsJour(listeReservations));
+            } catch (Exception e) {
+                System.err.println("Erreur lors du traitement de la salle : " + e.getMessage());
+            }
+        }
+    }
+
+    void rafraichirTableauStatistiques() {
+        listeReservations = FXCollections.observableArrayList();
+        for (Map.Entry<Integer, Reservation> entry : Saltistique.gestionDonnees.getReservations().entrySet()) {
+            listeReservations.add(entry.getValue());
+        }
+        remplirListeDonnees();
+        tableauStatistiquesGlobales.setItems(listeDonnees);
     }
 
     /**
-     * Permet d'actualiser l'affichage des données en fonction des filtres appliqués
+     * Passe sur l'affichage des salles non réservées
      */
-    void actualiserFiltres() {
-        setListeSalles(listeSalles);
-    }
-
-    public void afficherStatistiquesGlobales() {
-        masquerTousLesTableauxEtSelections();
-        sectionStatistiquesGlobales.setVisible(true);
-        SelectionStatistiquesGlobales.setVisible(true);
-    }
-
-    public void afficherSallesNonReservees() {
+    @FXML
+    void afficherSallesNonReservees() {
         Saltistique.changeScene(Scenes.SALLES_NON_RESERVEES);
-    }
-
-    /**
-     * Masque toutes les sections de la vue.
-     */
-    private void masquerTousLesTableauxEtSelections() {
-        sectionStatistiquesGlobales.setVisible(false);
-        sectionSallesNonReservees.setVisible(false);
-        SelectionStatistiquesGlobales.setVisible(false);
-        SelectionSallesNonReservees.setVisible(false);
     }
 }
