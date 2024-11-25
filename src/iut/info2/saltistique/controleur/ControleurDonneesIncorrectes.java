@@ -174,6 +174,7 @@ public class ControleurDonneesIncorrectes extends Controleur {
         initialiserTableauEmployes();
         initialiserTableauReservations();
         clickBoutonNotification();
+        setHoverEffect();
     }
 
     /**

@@ -129,12 +129,21 @@
 }
 
 .help {
-    -fx-background-color: none;
-    -fx-font-size: 14;
-    -fx-border-radius: 50;
+    -fx-shape: "M0,50 A50,50 0 1,1 100,50 A50,50 0 1,1 0,50";
+    -fx-min-width: 32px;
+    -fx-min-height: 32px;
+    -fx-max-width: 32px;
+    -fx-max-height: 32px;
+    -fx-background-color: transparent;
     -fx-border-color: #C9CCD6;
+    -fx-border-width: 1px;
     -fx-alignment: center;
-    -fx-text-fill: #6C707E;
+    -fx-text-fill: black;
+    -fx-font-size: 14px;
+}
+
+.help:hover {
+    -fx-background-color: #DFE1E5;
 }
 
 .navbar-btn-close {

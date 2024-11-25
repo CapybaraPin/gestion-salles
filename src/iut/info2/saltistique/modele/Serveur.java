@@ -4,14 +4,18 @@
  */
 package iut.info2.saltistique.modele;
 
+import iut.info2.saltistique.Saltistique;
+import iut.info2.saltistique.controleur.ControleurExporterReseau;
+
 import java.io.*;
 import java.math.BigInteger;
+import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 
 /**
- * La classe Serveur gère les connexions client pour envoyer une liste de fichiers CSV.
- * Chaque fichier est transmis individuellement au client connecté et de manière chiffré.
+ * La classe Serveur gère la connexion client pour envoyer une liste de fichiers CSV.
+ * Chaque fichier est transmis individuellement au client connecté et de manière chiffrée.
  *
  * @author Hugo ROBLES, Dorian ADAMS
  */
@@ -29,14 +33,18 @@ public class Serveur implements Runnable {
     /** Taille du buffer pour la lecture et l'envoi de fichiers (4096 octets) */
     private static final int BUFFER_SIZE = 1024;
 
+    /** Adresse utilisée pour le socket du serveur */
+    InetAddress localIP;
+
     /**
      * Constructeur de la classe Serveur.
      *
      * @param port        le port d'écoute du serveur (doit être entre 1024 et 65535).
+     * @param localIP     Adresse utilisée pour le socket du serveur
      * @param fichiersCSV la liste des fichiers CSV à envoyer.
      * @throws IllegalArgumentException si le port est hors limites ou si la liste de fichiers est vide.
      */
-    public Serveur(int port, Fichier[] fichiersCSV) {
+    public Serveur(int port, InetAddress localIP, Fichier[] fichiersCSV) {
         if (port < 1024 || port > 65535) {
             throw new IllegalArgumentException("Le numéro de port doit être compris entre 1024 et 65535.");
         }
@@ -45,6 +53,8 @@ public class Serveur implements Runnable {
         }
         this.port = port;
         this.fichiersCSV = fichiersCSV;
+        this.localIP = localIP;
+
     }
 
     /**
@@ -53,18 +63,18 @@ public class Serveur implements Runnable {
     @Override
     public void run() {
         try {
-            serverSocket = new ServerSocket(port);
+            serverSocket = new ServerSocket(port, 1, localIP);
             new Notification("Exportation des données", "Serveur démarré sur le port : " + port);
+            try{
+                Socket clientSocket = serverSocket.accept();
+                new Notification("Serveur", "Client connecté. Envoi des fichiers en cours...");
 
-            while (!serverSocket.isClosed()) {
-                try{
-                    Socket clientSocket = serverSocket.accept();
-                    System.out.println("Client connecté. Envoi des fichiers...");
-
-                    envoyerFichiers(clientSocket);
-                } catch (IOException e) {
-                    throw new IOException("Erreur lors de la connexion avec un client.");
-                }
+                envoyerFichiers(clientSocket);
+                new Notification("Serveur", "Les données ont bien été transmises. Fermeture du serveur...");
+                ControleurExporterReseau controleurExporterReseau = Saltistique.getController(Scenes.EXPORTER_RESEAU);
+                controleurExporterReseau.arreterServeur();
+            } catch (IOException e) {
+                throw new IOException("Erreur lors de la connexion avec un client.");
             }
         } catch (IOException e) {
             if (!serverSocket.isClosed()) {
