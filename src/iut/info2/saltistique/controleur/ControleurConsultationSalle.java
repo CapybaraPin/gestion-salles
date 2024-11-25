@@ -94,7 +94,6 @@ public class ControleurConsultationSalle extends Controleur {
 
             // Appliquer les filtres
             reservationsFiltrees = filtre.appliquerFiltres(reservationsFiltrees);
-            System.out.println(reservationsFiltrees);
 
             // Mettre à jour les données de l'interface
             nomSalle.setText(salleSelectionnee.getNom());
