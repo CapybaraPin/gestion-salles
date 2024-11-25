@@ -195,14 +195,6 @@
                               </StackPane.margin>
                            </HBox>
                         </StackPane>
-                        <Button alignment="CENTER" maxHeight="28.0" mnemonicParsing="false" onAction="#clickGenererPDF" styleClass="btn-primary" text="Générer un rapport PDF" textFill="WHITE">
-                           <font>
-                              <Font size="13.0" />
-                           </font>
-                           <HBox.margin>
-                              <Insets left="610.0" />
-                           </HBox.margin>
-                        </Button>
                      </HBox>
                      <HBox fx:id="hboxFiltresAppliques" alignment="CENTER_LEFT" />
                      <TableView fx:id="tableauSalles" prefHeight="435.0" prefWidth="1197.0">
@@ -219,7 +211,6 @@
                            <TableColumn fx:id="Type" prefWidth="75" text="Type" />
                            <TableColumn fx:id="Logiciels" prefWidth="75" text="Logiciels" />
                            <TableColumn fx:id="Imprimante" prefWidth="75" text="Imprimante" />
-                           <TableColumn fx:id="Actions" prefWidth="75" text="Actions" />
                         </columns>
                         <columnResizePolicy>
                            <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
