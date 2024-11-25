@@ -2,6 +2,7 @@ package iut.info2.saltistique.modele;
 
 import java.io.Serializable;
 import java.time.temporal.WeekFields;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.stream.Collectors;
@@ -272,4 +273,5 @@ public class Salle implements Serializable {
         // Retourner le résultat formaté
         return heures + "h " + minutes + "min";
     }
+
 }
