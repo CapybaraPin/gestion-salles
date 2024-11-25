@@ -10,6 +10,8 @@ import iut.info2.saltistique.modele.*;
 
 import java.util.HashMap;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Classe responsable de la gestion des données pour les salles, activités, utilisateurs et réservations.
@@ -80,6 +82,49 @@ public class GestionDonnees {
         } catch (Exception e) {
             new Notification("Impossible de vider les données", "Erreur lors de la suppression des données.");
         }
+    }
+
+    /**
+     * Calcule le pourcentage d'utilisation des salles en fonction des réservations,
+     * et normalise le total des pourcentages pour qu'il ne dépasse pas 100%.
+     *
+     * @param salles la liste des salles à analyser
+     * @param reservations la liste des réservations associées
+     * @return une map des salles et leur pourcentage d'utilisation normalisé
+     */
+    public Map<Salle, Double> calculerPourcentageReservation(List<Salle> salles, HashMap<Integer, Reservation> reservations) {
+        // Calculer le temps total réservé pour chaque salle
+        Map<Salle, Double> pourcentages = new HashMap<>();
+
+        // Première étape : calculer le pourcentage d'utilisation pour chaque salle
+        for (Salle salle : salles) {
+            // Calculer le temps total réservé pour cette salle (en heures)
+            long tempsTotalReserve = reservations.values().stream()
+                    .filter(reservation -> reservation.getSalle().equals(salle)) // Filtrer les réservations pour cette salle
+                    .mapToLong(reservation -> reservation.getTempsTotalReservation()) // Récupérer la durée de chaque réservation
+                    .sum(); // Additionner toutes les durées des réservations
+
+            // Calculer la capacité de la salle en heures (par exemple, 24 heures par jour)
+            long heuresDisponibles = salle.getCapacite(); // Ou la capacité peut être calculée autrement si nécessaire
+
+            // Calculer le pourcentage d'utilisation
+            double pourcentage = (tempsTotalReserve * 100.0) / heuresDisponibles;
+            pourcentages.put(salle, pourcentage);
+        }
+
+        // Deuxième étape : Normaliser les pourcentages pour que la somme soit égale à 100%
+        double totalUtilisation = pourcentages.values().stream().mapToDouble(Double::doubleValue).sum();
+
+        // Si le total d'utilisation est supérieur à 0, on ajuste les pourcentages
+        if (totalUtilisation > 0) {
+            // Normaliser chaque pourcentage pour qu'ils somment à 100%
+            for (Salle salle : pourcentages.keySet()) {
+                double pourcentageNormalise = (pourcentages.get(salle) * 100) / totalUtilisation;
+                pourcentages.put(salle, pourcentageNormalise);
+            }
+        }
+
+        return pourcentages;
     }
 
     /**
