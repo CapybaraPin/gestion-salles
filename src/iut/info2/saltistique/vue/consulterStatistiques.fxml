@@ -14,6 +14,7 @@
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.StackPane?>
@@ -251,6 +252,9 @@
             <Insets />
          </StackPane.margin>
       </Pane>
+         <children>
+            <BorderPane fx:id="borderPane" layoutX="130.0" layoutY="242.0" prefHeight="336.0" prefWidth="476.0" />
+         </children></Pane>
       <HBox maxHeight="1.0" maxWidth="1.0" minHeight="1.0" minWidth="1.0" prefHeight="100.0" prefWidth="200.0">
          <VBox fx:id="conteneurMenu" minWidth="300.0" prefHeight="725.0" prefWidth="169.0" visible="false">
             <VBox minWidth="290.0" prefHeight="0.0" prefWidth="290.0">

@@ -83,6 +83,34 @@ public class GestionDonnees {
     }
 
     /**
+     * Calcule le pourcentage d'utilisation d'une salle en fonction des réservations.
+     * Cette méthode calcule le pourcentage d'occupation basé sur le temps total réservé par rapport à la capacité de la salle.
+     *
+     * @param salle la salle dont on souhaite calculer le pourcentage d'utilisation
+     * @param reservations la liste des réservations, où chaque réservation contient une salle associée
+     * @return le pourcentage d'utilisation de la salle
+     */
+    public double calculerPourcentageReservation(Salle salle, HashMap<Integer, Reservation> reservations) {
+        // Calculer le temps total réservé pour cette salle (en heures)
+        long tempsTotalReserve = reservations.values().stream()
+                .filter(reservation -> reservation.getSalle().equals(salle)) // Filtrer les réservations pour la salle
+                .mapToLong(reservation -> reservation.getTempsTotalReservation()) // Récupérer la durée de chaque réservation
+                .sum(); // Additionner toutes les durées des réservations
+
+        // Calculer le nombre d'heures disponibles dans la salle (en fonction de sa capacité et du nombre de jours ouvrés)
+        // Supposons que la salle est disponible toute la journée pendant un certain nombre d'heures.
+        // Par exemple, la capacité d'une salle pourrait être interprétée comme le nombre d'heures de réservation possibles par jour.
+        long heuresDisponibles = 24; // Par exemple, 24 heures disponibles pour une journée complète
+
+        // Calculer le pourcentage d'utilisation en fonction du temps réservé par rapport aux heures disponibles
+        if (heuresDisponibles > 0) {
+            return Math.min((tempsTotalReserve * 100.0) / (heuresDisponibles), 100.0); // Assurez-vous que le pourcentage ne dépasse pas 100
+        }
+        return 0; // Si aucune réservation n'est possible, retourner 0%
+    }
+
+
+    /**
      * Définit les fichiers à utiliser pour l'importation ou d'autres opérations.
      *
      * @param fichiers Tableau de fichiers à associer à cette instance.

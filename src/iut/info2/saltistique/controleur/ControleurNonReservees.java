@@ -385,5 +385,22 @@ public class ControleurNonReservees extends Controleur {
     public void afficherStatistiquesGlobales() {
         Saltistique.changeScene(Scenes.CONSULTER_STATISTIQUES);
     }
+
+    /**
+     * Affiche la consultation de données.
+     */
+    public void afficherConsultationDonnees() {
+        Saltistique.changeScene(Scenes.CONSULTER_DONNEES);
+    }
+
+    /**
+     * Retour au menu principal.
+     */
+    @Override
+    @FXML
+    public void handlerRetourMenu() {
+        Saltistique.changeScene(Scenes.CONSULTER_DONNEES);
+        menuClick();
+    }
 }
 
