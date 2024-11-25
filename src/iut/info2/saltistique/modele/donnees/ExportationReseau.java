@@ -3,6 +3,8 @@ package iut.info2.saltistique.modele.donnees;
 import iut.info2.saltistique.modele.Fichier;
 import iut.info2.saltistique.modele.Serveur;
 
+import java.net.InetAddress;
+
 public class ExportationReseau {
 
     /** Port de communication entre les deux machines */
@@ -14,16 +16,22 @@ public class ExportationReseau {
     /** Liste des fichiers transmis lors de la communication réseau */
     private Fichier[] fichiers;
 
+    /** Adresse utilisée pour le socket du serveur */
+    InetAddress localIP;
+
     /**
      * Constructeur de l'exportation des données via le réseau
-     * @param port Port de communication entre les deux machines
+     *
+     * @param port     Port de communication entre les deux machines
      * @param fichiers Liste des fichiers transmis lors de la communication réseau
+     * @param localIP  Adresse utilisée pour le socket du serveur
      */
-    public ExportationReseau(int port, Fichier[] fichiers){
+    public ExportationReseau(int port, Fichier[] fichiers, InetAddress localIP){
         if (port < 1024 || port > 65535) {
             throw new IllegalArgumentException("Le numéro de port doit être compris entre 1024 et 65535.");
         }
 
+        this.localIP = localIP;
         this.port = port;
 
         // TODO : Vérification de la variable fichiers
@@ -41,7 +49,7 @@ public class ExportationReseau {
      * Exporte les données via le réseau au travers de la classe {@link Serveur}
      */
     private void exportationDonnees(){
-        this.serveur = new Serveur(port, this.fichiers);
+        this.serveur = new Serveur(port, this.localIP, this.fichiers);
         Thread serveurThread = new Thread(serveur);
         serveurThread.start();
     }

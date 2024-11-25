@@ -40,7 +40,7 @@ public class ControleurAccueil extends Controleur {
     public Text descriptionNotification;
 
     /**
-     * Initialise différents éléments de la vue d'accueil.
+     * Initialise différents éléments de la vue.
      */
     @FXML
     void initialize() {

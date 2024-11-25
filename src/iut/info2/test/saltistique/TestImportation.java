@@ -54,27 +54,37 @@ class TestImportation {
     /** Ligne reservations ne passant pas le regex */
     final String LIGNE_INVALIDE_RESERVATIONS = "R12345;20240101;E123456;Dupont Jean;21/10/2024;10h00;12h00;;";
 
+
     /**
-     * Date valide pour les tests
+     * Tableau contenant des dates valides.
      */
-    final String[][] DATE_VALIDE = {
-            {"21/10/2024", "10h00"}, // cas normal
-            {"21/10/2024", "00h00"}, // heure limite basse
-            {"21/10/2024", "23h59"}, // heure limite haute
-            {"29/02/2024", "23h59"} // bissextile
+    final String[][] DATES_VALIDE = {
+            {"01/01/2023", "0h00"}, // Date normale et minuit
+            {"01/01/2023", "24h00"}, // Date normale et minuit
+            {"01/01/2023", "23h59"}, // Date normale et heure maximale
+            {"29/02/2024", "0h00"} // Année bissextile
     };
 
     /**
-     * Date invalide pour les tests
+     * Tableau contenant les dates attendus
      */
-    final String[][] DATE_INVALIDE = {
-            {"15/08/2023", "25h00"},   // Heure invalide
-            {"15/08/2023", "1030"},    // Format de l'heure incorrect
-            {"15/08/2023", ""},        // Heure nulle
-            {"32/01/2023", "10h30"},   // Jour invalide
-            {"32/01/2023", "25h00"},   // Date et heure invalides
-            {"15-08-2023", "10h30"},   // Format de la date incorrect
-            {"", "10h30"}              // Date vide
+    final String[] DATES_ATTENDUES = {
+            "2023-01-01T00:00",
+            "2023-01-01T00:00",
+            "2023-01-01T23:59",
+            "2024-02-29T00:00"
+    };
+
+    /**
+     * Tableau contenant des dates invalides.
+     */
+    final String[][] DATES_INVALIDE = {
+            {"32/01/2023", "0h00"}, // Jour invalide
+            {"01-01-2023", "0h00"}, // Format invalide pour la date
+            {"01/01/2023", "12:30"}, // Format invalide pour l'heure
+            {null, "0h00"}, // Date nulle
+            {"01/01/2023", null}, // Heure nulle
+            {"32/01/2023", "25h00"} // Jour et heure invalides
     };
     
 
@@ -246,14 +256,14 @@ class TestImportation {
 
     @Test
     void testImporterDonnees() throws IOException {
-        testAjouterFichier();
+        testAjouterFichiers();
         testAjouterActivite();
         testAjouterSalle();
         testAjouterUtilisateur();
         testAjouterReservation();
     }
 
-    private void testAjouterReservation() {
+    void testAjouterReservation() {
         GestionDonnees donnees = new GestionDonnees();
         Importation importation = new Importation(donnees);
         try {
@@ -274,7 +284,7 @@ class TestImportation {
         }
     }
 
-    private void testAjouterUtilisateur() {
+    void testAjouterUtilisateur() {
         GestionDonnees donnees = new GestionDonnees();
         Importation importation = new Importation(donnees);
         try {
@@ -339,7 +349,6 @@ class TestImportation {
             fail("Erreur inattendue pour testAjouterSalle : " + e.getMessage());
         }
     }
-
 
 
     @Test
@@ -430,13 +439,16 @@ class TestImportation {
     @Test
     void testConstruireDate() {
         // Cas valides
-        for (String[] date : DATE_VALIDE) {
-            LocalDateTime d = Importation.construireDate(date[0], date[1]);
-            assertNotNull(d);
+        for (int i = 0; i < DATES_VALIDE.length; i++) {
+            try {
+                assertEquals(DATES_ATTENDUES[i], Importation.construireDate(DATES_VALIDE[i][0], DATES_VALIDE[i][1]).toString(), "Erreur pour testConstruireDate cas " + i);
+            } catch (Exception e) {
+                fail("Erreur inattendue pour testConstruireDate cas " + i + " : " + e.getMessage());
+            }
         }
 
         // Cas invalides
-        for (String[] date : DATE_INVALIDE) {
+        for (String[] date : DATES_INVALIDE) {
             assertThrows(IllegalArgumentException.class, () -> Importation.construireDate(date[0], date[1]));
         }
     }
@@ -460,7 +472,7 @@ class TestImportation {
     }
 
     /** Test de la méthode privée grâce à la méthode publique importerDonnees. */
-    void testAjouterFichier() throws IOException {
+    void testAjouterFichiers() throws IOException {
         String[] cheminsFichierCourant;
             Importation importation;
                 // cas 1 : fichier valide
