@@ -122,7 +122,7 @@
                            <HBox.margin>
                               <Insets />
                            </HBox.margin>
-                           <HBox fx:id="hboxFiltreTexte" alignment="CENTER_LEFT">
+                           <HBox fx:id="hboxFiltreTexte" alignment="CENTER_LEFT" prefHeight="66.0" prefWidth="409.0">
                               <VBox fx:id="vboxFiltreDate" alignment="CENTER_LEFT">
                                  <HBox alignment="CENTER_LEFT">
                                     <VBox.margin>
@@ -185,7 +185,7 @@
                                     </Spinner>
                                  </HBox>
                               </VBox>
-                              <Button fx:id="boutonFiltrer" alignment="CENTER" maxHeight="28.0" mnemonicParsing="false" onAction="#clickFiltrer" styleClass="btn-primary" text="Filtrer" textFill="WHITE">
+                              <Button fx:id="boutonFiltrer" alignment="CENTER" maxHeight="28.0" mnemonicParsing="false" onAction="#clickFiltrer" styleClass="btn-primary" text="Rechercher" textFill="WHITE">
                                  <font>
                                     <Font size="13.0" />
                                  </font>
@@ -200,14 +200,14 @@
                               <Font size="13.0" />
                            </font>
                            <HBox.margin>
-                              <Insets left="660.0" />
+                              <Insets left="610.0" />
                            </HBox.margin>
                         </Button>
                      </HBox>
                      <HBox fx:id="hboxFiltresAppliques" alignment="CENTER_LEFT" />
-                     <TableView fx:id="tableauSalles" prefHeight="435.0" prefWidth="1197.0" visible="false">
+                     <TableView fx:id="tableauSalles" prefHeight="435.0" prefWidth="1197.0">
                         <placeholder>
-                           <Label text="" />
+                           <Label text="Aucune donnée selectionnée ou l'intégralité des salles sont réservées." />
                         </placeholder>
                         <columns>
                            <TableColumn fx:id="IdentifiantSalle" prefWidth="75" text="Identifiant" />

@@ -172,7 +172,6 @@ public class ControleurNonReservees extends Controleur {
             }
         }
 
-        tableauSalles.setVisible(true);
         tableauSalles.setItems(listeSalles);
 
     }
@@ -335,7 +334,6 @@ public class ControleurNonReservees extends Controleur {
      */
     private void viderTableauSalles() {
         listeSalles.clear();
-        tableauSalles.setVisible(false);
         tableauSalles.setItems(listeSalles);
     }
 
