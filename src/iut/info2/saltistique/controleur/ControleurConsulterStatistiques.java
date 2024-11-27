@@ -5,52 +5,54 @@
 package iut.info2.saltistique.controleur;
 import iut.info2.saltistique.Saltistique;
 import iut.info2.saltistique.modele.Reservation;
-import iut.info2.saltistique.modele.SalleStatistiques;
+import iut.info2.saltistique.modele.Salle;
 import iut.info2.saltistique.modele.Scenes;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
-import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.shape.Line;
 
+import java.util.HashMap;
 import java.util.Map;
 
 /**
  * Contrôleur de la vue de consultation des statistiques.
  * Permet de consulter les statistiques globales et les salles non réservées.
  */
-public class ControleurConsulterStatistiques extends Controleur {
+public class ControleurConsulterStatistiques extends ControleurFiltres {
 
-    /** Ligne de selection des statistiques globales */
+    /** Ligne de sélection des statistiques globales */
     @FXML
     public Line selectionStatistiquesGlobales;
-    /** Ligne de selection des salles non réservées */
+    /** Ligne de sélection des salles non réservées */
     @FXML
     public Line selectionSallesNonreservees;
     /** Tableau représentatif des statistiques globales */
     @FXML
-    public TableView<SalleStatistiques> tableauStatistiquesGlobales;
-    /** Colonne pour l'identifiant de la salle. */
+    public TableView<Map<String, String>> tableauStatistiquesGlobales;
+    /** Colonne pour l'identifiant de la salle */
     @FXML
-    public TableColumn<SalleStatistiques, String> identifiantSalle;
+    public TableColumn<Map<String, String>, String> identifiantSalle;
     /** Nom de la salle */
     @FXML
-    public TableColumn<SalleStatistiques, String> nomSalle;
-    /** Colonne pour le temps moyen d'occupation par jour. */
+    public TableColumn<Map<String, String>, String> nomSalle;
+    /** Colonne pour le temps moyen d'occupation par jour */
     @FXML
-    public TableColumn<SalleStatistiques, String> tempsMoyenOccupationJour;
-    /** Colonne pour le temps moyen d'occupation par semaine. */
+    public TableColumn<Map<String, String>, String> tempsMoyenOccupationJour;
+    /** Colonne pour le temps moyen d'occupation par semaine */
     @FXML
-    public TableColumn<SalleStatistiques, String> tempsMoyenOccupationSemaine;
-    /** Colonne pour le temps d'occupation total. */
+    public TableColumn<Map<String, String>, String> tempsMoyenOccupationSemaine;
+    /** Colonne pour le temps d'occupation total */
     @FXML
-    public TableColumn<SalleStatistiques, String> tempsOccupationTotal;
+    public TableColumn<Map<String, String>, String> tempsOccupationTotal;
 
-    /** Liste contenante les données à afficher */
-    ObservableList<SalleStatistiques> listeDonnees;
+    /** Liste contenant les données à afficher */
+    ObservableList<Map<String, String>> listeDonnees;
 
+    /** Liste des réservations utilisées pour les calculs */
     ObservableList<Reservation> listeReservations;
 
     @FXML
@@ -61,26 +63,26 @@ public class ControleurConsulterStatistiques extends Controleur {
     }
 
     void initialiserTableauStatistiques() {
-        identifiantSalle.setCellValueFactory(new PropertyValueFactory<>("identifiant"));
-        nomSalle.setCellValueFactory(new PropertyValueFactory<>("nom"));
-        tempsMoyenOccupationJour.setCellValueFactory(new PropertyValueFactory<>("tempsMoyenOccupationJour"));
-        tempsMoyenOccupationSemaine.setCellValueFactory(new PropertyValueFactory<>("tempsMoyenOccupationSemaine"));
-        tempsOccupationTotal.setCellValueFactory(new PropertyValueFactory<>("tempsOccupationTotal"));
+        identifiantSalle.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().get("identifiant")));
+        nomSalle.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().get("nom")));
+        tempsMoyenOccupationJour.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().get("tempsMoyenOccupationJour")));
+        tempsMoyenOccupationSemaine.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().get("tempsMoyenOccupationSemaine")));
+        tempsOccupationTotal.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().get("tempsOccupationTotal")));
         tableauStatistiquesGlobales.setItems(listeDonnees);
     }
 
     private void remplirListeDonnees() {
         listeDonnees = FXCollections.observableArrayList();
-        for (int rang = 0; rang < Saltistique.gestionDonnees.getSalles().size(); rang++) {
+        for (Salle salle : Saltistique.gestionDonnees.getSalles().values()) {
             try {
-                listeDonnees.add(new SalleStatistiques(
-                        Saltistique.gestionDonnees.getSalles().get(rang).getIdentifiant(),
-                        Saltistique.gestionDonnees.getSalles().get(rang).getNom(),
-                        Saltistique.gestionDonnees.getSalles().get(rang).getTempsMoyenReservationsJour(listeReservations),
-                        Saltistique.gestionDonnees.getSalles().get(rang).getTempsMoyenReservationsSemaine(listeReservations),
-                        Saltistique.gestionDonnees.getSalles().get(rang).getTempsTotalReservations(listeReservations)
-                ));
-                System.out.println(Saltistique.gestionDonnees.getSalles().get(rang).getTempsMoyenReservationsJour(listeReservations));
+                Map<String, String> statistiqueSalle = new HashMap<>();
+                statistiqueSalle.put("identifiant", salle.getIdentifiant());
+                statistiqueSalle.put("nom", salle.getNom());
+                statistiqueSalle.put("tempsMoyenOccupationJour", String.valueOf(salle.getTempsMoyenReservationsJour(listeReservations)));
+                statistiqueSalle.put("tempsMoyenOccupationSemaine", String.valueOf(salle.getTempsMoyenReservationsSemaine(listeReservations)));
+                statistiqueSalle.put("tempsOccupationTotal", String.valueOf(salle.getTempsTotalReservations(listeReservations)));
+
+                listeDonnees.add(statistiqueSalle);
             } catch (Exception e) {
                 System.err.println("Erreur lors du traitement de la salle : " + e.getMessage());
             }
@@ -89,9 +91,7 @@ public class ControleurConsulterStatistiques extends Controleur {
 
     void rafraichirTableauStatistiques() {
         listeReservations = FXCollections.observableArrayList();
-        for (Map.Entry<Integer, Reservation> entry : Saltistique.gestionDonnees.getReservations().entrySet()) {
-            listeReservations.add(entry.getValue());
-        }
+        listeReservations.addAll(Saltistique.gestionDonnees.getReservations().values());
         remplirListeDonnees();
         tableauStatistiquesGlobales.setItems(listeDonnees);
     }

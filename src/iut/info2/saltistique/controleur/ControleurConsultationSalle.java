@@ -8,15 +8,13 @@ import iut.info2.saltistique.modele.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * Contrôleur de la vue de consultation des salles.
  */
-public class ControleurConsultationSalle extends Controleur {
+public class ControleurConsultationSalle extends ControleurFiltres {
 
     /** Label indiquant le nom de la salle */
     @FXML
@@ -88,16 +86,15 @@ public class ControleurConsultationSalle extends Controleur {
      * Actualise les statistiques affichées en fonction des données filtrées.
      */
     public void actualiserStats() {
+        List<Reservation> reservationsFiltrees;
         actualiserFiltres();
 
         if (salleSelectionnee != null) {
-            // Filtrer les réservations pour la salle sélectionnée
-            List<Reservation> reservationsFiltrees = listeReservations.stream()
-                    .filter(reservation -> reservation.getSalle().equals(salleSelectionnee))  // Filtrage par salle
-                    .collect(Collectors.toList());
+            // Ajouter le filtre de salle
+            filtre.ajouterFiltreSalle(salleSelectionnee);
 
             // Appliquer les filtres
-            reservationsFiltrees = filtre.appliquerFiltres(reservationsFiltrees);
+            reservationsFiltrees = filtre.appliquerFiltres(listeReservations);
 
             // Mettre à jour les données de l'interface
             nomSalle.setText(salleSelectionnee.getNom());

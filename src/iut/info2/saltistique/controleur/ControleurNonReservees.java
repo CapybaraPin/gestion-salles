@@ -171,9 +171,6 @@ public class ControleurNonReservees extends Controleur {
                 listeSalles.add(entry.getValue());
             }
         }
-
-        tableauSalles.setItems(listeSalles);
-
     }
 
     /**
@@ -316,6 +313,8 @@ public class ControleurNonReservees extends Controleur {
             afficherFiltresAppliques();
             viderTableauSalles();
             calculerSallesNonReservees();
+            tableauSalles.setItems(listeSalles);
+
             new Notification("Filtre", "Filtre appliqué");
         } else {
             // set les valeurs actuelles

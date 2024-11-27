@@ -119,6 +119,7 @@ public class Filtre {
         }
     }
 
+
     /**
      * Supprime une activité des filtres.
      * L'activité sera retirée des filtres si elle y est présente.

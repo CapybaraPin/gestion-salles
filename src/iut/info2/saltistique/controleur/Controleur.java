@@ -25,7 +25,7 @@ import java.io.IOException;
  *
  * @author Jules VIALAS, Dorian ADAMS
  */
-public class Controleur extends ControleurFiltres{
+public class Controleur {
 
     /** Cadre de la notification */
     @FXML

@@ -44,7 +44,7 @@ import java.util.Objects;
  *
  * @author Jules VIALAS
  */
-public class ControleurConsulterDonnees extends Controleur {
+public class ControleurConsulterDonnees extends ControleurFiltres {
 
     /**
      * Bouton pour afficher les employés.

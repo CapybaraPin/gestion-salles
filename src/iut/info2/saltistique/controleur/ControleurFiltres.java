@@ -28,7 +28,7 @@ import java.util.List;
  *
  * @author Hugo ROBLES, Jules VIALAS
  */
-public class ControleurFiltres {
+public class ControleurFiltres extends Controleur {
 
     /** Champs pour rentrer le filtre que l'on veut appliquer */
     @FXML
