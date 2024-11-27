@@ -424,6 +424,18 @@
                   </ImageView>
                   <Text strokeType="OUTSIDE" strokeWidth="0.0" styleClass="typo-default" text="Aide" />
                </HBox>
+               <HBox alignment="CENTER_LEFT" onMouseClicked="#adresseIP" prefHeight="6.0" prefWidth="268.0" styleClass="btn-menu">
+                  <padding>
+                     <Insets left="10.0" right="10.0" />
+                  </padding>
+                  <ImageView fitHeight="20.0" fitWidth="40.0" opacity="0.0" pickOnBounds="true" preserveRatio="true" scaleX="0.8" scaleY="0.8">
+                     <HBox.margin>
+                        <Insets right="5.0" />
+                     </HBox.margin>
+                     <Image url="@quit.png" />
+                  </ImageView>
+                  <Text strokeType="OUTSIDE" strokeWidth="0.0" styleClass="typo-default" text="Adresse IP " />
+               </HBox>
                <Separator prefWidth="200.0" styleClass="menu-sepator">
                   <VBox.margin>
                      <Insets bottom="5.0" top="5.0" />

@@ -18,6 +18,8 @@ import javafx.stage.Stage;
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
+import java.net.InetAddress;
+import java.net.Socket;
 
 /**
  * Contrôleur général, permet d'importer toutes
@@ -228,6 +230,25 @@ public class Controleur {
             cadreNotification.setVisible(false);
             cadreNotification.setMouseTransparent(true);
         });
+    }
+
+    /**
+     * Méthode permettant la fermeture de la fenêtre de l'application en cours d'exécution
+     * Cette méthode est également appelée lors d'un évènement de clic
+     */
+    @FXML
+    public void adresseIP() {
+        try {
+            Socket socket = new Socket("8.8.8.8", 443);
+            InetAddress localIP = socket.getLocalAddress();
+            new Notification("Votre adresse IP ", "Votre adresse IP est "+localIP.getHostAddress());
+            socket.close();
+
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+
     }
 
     @FXML
