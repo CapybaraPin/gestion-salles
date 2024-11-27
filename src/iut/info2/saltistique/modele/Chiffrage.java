@@ -37,16 +37,16 @@ import java.security.SecureRandom;
 public class Chiffrage {
 
     /** Base publique pour le calcul de Diffie-Hellman, entier générateur. */
-    private final BigInteger G = new BigInteger("293420472449539282455733124980401731387348120353499102030073038693451021459432155986836198729889379129133276675643359344407061495518484882889255574219109091144354842690051056706764720316243236342474368038219273019275745144167424235176331112507920866365947957948345947545404084592870247787654918296581073234611");
+    private final BigInteger G = new BigInteger("31764794428138480214671413771253280726665938137897183634782280859965571942057202524092377065982932926289029427862419490796746253297700514995912287654703942277255793459750775716514684088489227671989150409215341187762204054352457728590679598045754995745159224720921195095615352866297036066122425800557747934250");
 
     /** Modulo public pour le calcul de Diffie-Hellman, entier premier. */
-    private final BigInteger P = new BigInteger("162259276829213363391578010288127");
+    private final BigInteger P = new BigInteger("106333388747226275732193185377627149343666046697987523494586989505959201046037088076682414946724279832335406939535338443526679848215858868217457314503018799895999481882423546153212446058825176049136107426717982171288040413359335454491929108447294426423764459286955987948721738615208714001021593765968022681999");
 
     /** Limite minimal pour la génération de l'exposant Diffie-Hellman. */
-    private final BigInteger EXPOSANT_MINIMUM = new BigInteger("5000000000000000");
+    private final BigInteger EXPOSANT_MINIMUM = new BigInteger("50000000000000000000000000000000000000000000000000000000000000000000000000000");
 
     /** Limite maximale pour la génération de l'exposant Diffie-Hellman. */
-    private final BigInteger EXPOSANT_MAXIMUM = new BigInteger("9999999999999999");
+    private final BigInteger EXPOSANT_MAXIMUM = new BigInteger("99999999999999999999999999999999999999999999999999999999999999999999999999999");
 
     /** Alphabet personnalisé utilisé pour le chiffrement et le déchiffrement de Vigenère. */
     private static final String ALPHABET_PERSONNALISE = "abcdefghijklmnopqrstuvwxyzABCDEFGH"
@@ -64,6 +64,7 @@ public class Chiffrage {
     /** Clé publique générée pour le calcul de Diffie-Hellman. */
     private BigInteger clePublique;
 
+    /** Exposant générer pour le calcul de Diffie-Hellman */
     private BigInteger exposantChoisit;
 
     /**
@@ -258,7 +259,7 @@ public class Chiffrage {
             StringBuilder secretKey = new StringBuilder();
             String gabString = clePartager.toString();
             for (int i = 0; i < gabString.length(); i++) {
-                int index = Character.getNumericValue(gabString.charAt(i)) % ALPHABET_PERSONNALISE.length();
+                int index = Character.getNumericValue(gabString.charAt(i));
                 secretKey.append(ALPHABET_PERSONNALISE.charAt(index));
             }
             this.cleVigenere = secretKey.toString();
