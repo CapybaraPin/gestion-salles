@@ -64,6 +64,8 @@ public class Chiffrage {
     /** Clé publique générée pour le calcul de Diffie-Hellman. */
     private BigInteger clePublique;
 
+    private BigInteger exposantChoisit;
+
     /**
      * Constructeur principal qui initialise le chemin du fichier et génère une clé publique Diffie-Hellman.
      *
@@ -71,8 +73,8 @@ public class Chiffrage {
      */
     public Chiffrage(String cheminFichier) {
         this.cheminFichier = cheminFichier;
-        BigInteger exposant = genererExposant();
-        this.clePublique = exponentiationModulaire(G, exposant, P);
+        exposantChoisit = genererExposant();
+        this.clePublique = exponentiationModulaire(G, exposantChoisit, P);
     }
 
     /**
@@ -80,8 +82,8 @@ public class Chiffrage {
      * Génère une clé publique Diffie-Hellman.
      */
     public Chiffrage() {
-        BigInteger exposant = genererExposant();
-        this.clePublique = exponentiationModulaire(G, exposant, P);
+        exposantChoisit = genererExposant();
+        this.clePublique = exponentiationModulaire(G, exposantChoisit, P);
     }
 
     /**
@@ -242,7 +244,7 @@ public class Chiffrage {
      */
     public void calculeClePartager(BigInteger cle) {
         if(cle != null) {
-            this.clePartager = exponentiationModulaire(G, clePublique.multiply(cle), P);
+            this.clePartager = exponentiationModulaire(cle, exposantChoisit, P);
         } else {
             throw new IllegalArgumentException("Le gros entier ne peut être nul.");
         }
