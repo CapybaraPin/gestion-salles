@@ -12,9 +12,9 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
+import java.io.*;
 import java.util.EnumMap;
 import java.util.HashMap;
-import java.io.IOException;
 
 import iut.info2.saltistique.modele.Scenes;
 import iut.info2.saltistique.modele.donnees.GestionDonnees;
@@ -61,6 +61,9 @@ public class Saltistique extends Application {
     /** Prend en charge le lien entre le controleur et le modèle */
     public static GestionDonnees gestionDonnees;
 
+    /** Chemin du fichier de sauvegarde */
+    private static final String FILE_PATH = "src/ressources/gestionDonnees.ser";
+
     /**
      * Méthode de démarrage de l'application JavaFX.
      *
@@ -72,6 +75,7 @@ public class Saltistique extends Application {
      */
     @Override
     public void start(Stage primaryStage) {
+        chargerGestionDonnees();
         Saltistique.primaryStage = primaryStage;
         // Disable title bar
         primaryStage.initStyle(StageStyle.UNDECORATED);
@@ -79,7 +83,27 @@ public class Saltistique extends Application {
         primaryStage.setTitle("Gestion de salles");
         primaryStage.getIcons().add(new Image("/iut/info2/saltistique/vue/logo.png"));
         loadScenes();
-        changeScene(Scenes.ACCUEIL);
+
+        if (estInstanceVide()) {
+            changeScene(Scenes.ACCUEIL);
+        } else {
+            changeScene(Scenes.CONSULTER_DONNEES);
+        }
+
+    }
+
+    public boolean estInstanceVide() {
+        boolean reservationsVide;
+        boolean sallesVide;
+        boolean utilisateursVide;
+        boolean activitesVide;
+
+        reservationsVide = gestionDonnees.getReservations().isEmpty();
+        sallesVide = gestionDonnees.getSalles().isEmpty();
+        utilisateursVide = gestionDonnees.getUtilisateurs().isEmpty();
+        activitesVide = gestionDonnees.getActivites().isEmpty();
+
+        return reservationsVide && sallesVide && utilisateursVide && activitesVide;
     }
 
     /**
@@ -87,7 +111,7 @@ public class Saltistique extends Application {
      */
     @Override
     public void stop(){
-        // TODO: Implement closing of popUps on main window close
+        sauvegarderGestionDonnees();
     }
 
     /**
@@ -175,9 +199,10 @@ public class Saltistique extends Application {
      * @param args les arguments de ligne de commande
      */
     public static void main(String[] args) {
-        gestionDonnees = new GestionDonnees();
         launch();
     }
+
+
 
     /**
      * Retourne la scène principale de l'application, qui sert de fenêtre principale.
@@ -186,5 +211,28 @@ public class Saltistique extends Application {
      */
     public static Stage getPrimaryStage() {
         return primaryStage;
+    }
+
+    /**
+     * Sauvegarde l'objet GestionDonnees dans un fichier.
+     */
+    private void sauvegarderGestionDonnees() {
+        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(FILE_PATH))) {
+            oos.writeObject(gestionDonnees);
+        } catch (IOException e) {
+            System.err.println("Erreur lors de la sauvegarde de GestionDonnees : " + e.getMessage());
+        }
+    }
+
+    /**
+     * Charge l'objet GestionDonnees depuis un fichier, ou crée une nouvelle instance si le fichier n'existe pas.
+     */
+    private void chargerGestionDonnees() {
+        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(FILE_PATH))) {
+            gestionDonnees = (GestionDonnees) ois.readObject();
+        } catch (IOException | ClassNotFoundException e) {
+            System.out.println("Aucun état précédent trouvé ou erreur lors du chargement. Nouvelle instance créée.");
+            gestionDonnees = new GestionDonnees(); // Instance par défaut
+        }
     }
 }

@@ -1,12 +1,13 @@
 package iut.info2.saltistique.modele;
 
+import java.io.Serializable;
 
 /**
  * Représente un groupe d'ordinateur avec une quantité, un type et des logiciels.
  *
  * @author Jules Vialas
  */
-public class GroupeOrdinateurs {
+public class GroupeOrdinateurs implements Serializable {
 
     /** Quantité d'ordinateur */
     private final int quantite;

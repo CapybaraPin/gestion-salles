@@ -390,6 +390,7 @@ public class ControleurConsulterDonnees extends ControleurFiltres {
         initialiserTableauActivites();
         initialiserTableauEmployes();
         initialiserTableauReservations();
+        afficherTempsReservationsTotal(listeReservations);
         clickBoutonNotification();
     }
 

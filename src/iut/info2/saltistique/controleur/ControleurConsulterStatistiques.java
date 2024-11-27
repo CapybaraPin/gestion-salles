@@ -58,7 +58,6 @@ public class ControleurConsulterStatistiques extends ControleurFiltres {
     @FXML
     void initialize() {
         setHoverEffect();
-        remplirListeDonnees();
         initialiserTableauStatistiques();
     }
 
@@ -103,4 +102,22 @@ public class ControleurConsulterStatistiques extends ControleurFiltres {
     void afficherSallesNonReservees() {
         Saltistique.changeScene(Scenes.SALLES_NON_RESERVEES);
     }
+
+    /**
+     * Retour au menu principal.
+     */
+    @Override
+    @FXML
+    public void handlerRetourMenu() {
+        Saltistique.changeScene(Scenes.CONSULTER_DONNEES);
+        menuClick();
+    }
+
+    /**
+     * Affiche la consultation de données.
+     */
+    public void afficherConsultationDonnees() {
+        Saltistique.changeScene(Scenes.CONSULTER_DONNEES);
+    }
+
 }

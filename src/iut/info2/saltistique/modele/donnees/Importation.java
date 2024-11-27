@@ -98,6 +98,7 @@ public class Importation {
         ajouterFichiers(cheminFichiers);
 
         donnees.setFichiers(fichiers);
+        donnees.setCheminFichiers(cheminFichiers);
 
         ajouterDonnees(fichierActivites.contenuFichier(), this::ajouterActivite);
         ajouterDonnees(fichierSalles.contenuFichier(), this::ajouterSalle);

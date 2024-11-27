@@ -4,7 +4,11 @@
  */
 package iut.info2.saltistique.modele;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileReader;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.FileNotFoundException;
 
 /**
  * La classe Fichier gère les opérations de lecture

@@ -115,10 +115,10 @@
          </HBox>
          <StackPane prefHeight="580.0" prefWidth="1197.0">
             <children>
-               <VBox prefHeight="423.0" prefWidth="1197.0">
+               <VBox prefHeight="580.0" prefWidth="1102.0">
                   <children>
                      <HBox alignment="CENTER_LEFT">
-                        <StackPane alignment="CENTER_RIGHT" prefHeight="116.0" prefWidth="1201.0">
+                        <StackPane alignment="CENTER_RIGHT" prefHeight="37.0" prefWidth="1197.0">
                            <HBox.margin>
                               <Insets />
                            </HBox.margin>
@@ -191,10 +191,10 @@
                                  </font>
                               </Button>
                               <StackPane.margin>
-                                 <Insets bottom="20.0" top="30.0" />
+                                 <Insets bottom="20.0" top="20.0" />
                               </StackPane.margin>
                            </HBox>
-                           <Button fx:id="boutonConsulterDonnees" alignment="CENTER" maxHeight="28.0" mnemonicParsing="false" onAction="#afficherConsultationDonnees" styleClass="btn-primary" text="Consulter données" textFill="WHITE">
+                           <Button fx:id="boutonConsulterDonnees" alignment="CENTER" maxHeight="28.0" mnemonicParsing="false" onAction="#afficherConsultationDonnees" styleClass="btn-primary" text="Consulter les données" textFill="WHITE">
                               <font>
                                  <Font size="13.0" />
                               </font>
@@ -203,9 +203,12 @@
                               </StackPane.margin>
                            </Button>
                         </StackPane>
+                        <VBox.margin>
+                           <Insets left="10.0" top="10.0" />
+                        </VBox.margin>
                      </HBox>
                      <HBox fx:id="hboxFiltresAppliques" alignment="CENTER_LEFT" />
-                     <TableView fx:id="tableauSalles" prefHeight="435.0" prefWidth="1197.0">
+                     <TableView fx:id="tableauSalles" prefHeight="435.0" prefWidth="1141.0">
                         <placeholder>
                            <Label text="Aucune donnée selectionnée ou l'intégralité des salles sont réservées." />
                         </placeholder>
@@ -231,7 +234,7 @@
                </VBox>
             </children>
             <VBox.margin>
-               <Insets left="50.0" right="25.0" />
+               <Insets left="30.0" right="30.0" />
             </VBox.margin>
          </StackPane>
       </VBox>
