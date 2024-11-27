@@ -100,7 +100,7 @@ public class Chiffrage {
             throw new NullPointerException("La clé de Vigenère doit d'abord être calculée.");
         }
         try {
-            //Lecture du fichier à chiffrer
+            // Lecture du fichier à chiffrer
             String cheminFichierChiffrer = cheminFichier.replace(".csv", "-c.csv");
             StringBuilder contenu = new StringBuilder();
             try (BufferedReader lecteur = new BufferedReader(new FileReader(cheminFichier))) {
@@ -111,14 +111,14 @@ public class Chiffrage {
             }
             String contenuFichier = contenu.toString();
 
-            //Chiffrage du fichier
+            // Chiffrage du fichier
             try (BufferedWriter writer = new BufferedWriter(new FileWriter(cheminFichierChiffrer))) {
                 StringBuilder textChiffer = new StringBuilder();
                 int k = 0;
                 for (int i = 0; i < contenuFichier.length(); i++) {
-                    int valeur_m = ALPHABET_PERSONNALISE.indexOf(contenuFichier.charAt(i));
-                    int valeur_c = ALPHABET_PERSONNALISE.indexOf(cleVigenere.charAt(k));
-                    if (valeur_m == -1) {
+                    int indexCaractereTexte = ALPHABET_PERSONNALISE.indexOf(contenuFichier.charAt(i));
+                    int indexCaractereCle = ALPHABET_PERSONNALISE.indexOf(cleVigenere.charAt(k));
+                    if (indexCaractereTexte == -1) {
                         textChiffer.append(contenuFichier.charAt(i));
                     } else {
                         if (k == cleVigenere.length() - 1) {
@@ -126,7 +126,7 @@ public class Chiffrage {
                         } else {
                             k++;
                         }
-                        int valeurTotal = valeur_m + valeur_c;
+                        int valeurTotal = indexCaractereTexte + indexCaractereCle;
                         textChiffer.append(ALPHABET_PERSONNALISE.charAt(valeurTotal % ALPHABET_PERSONNALISE.length()));
                     }
                 }
@@ -171,10 +171,10 @@ public class Chiffrage {
                 StringBuilder textDechiffrer = new StringBuilder();
                 int k = 0;
                 for (int i = 0; i < contenuFichier.length() - 1; i++) {
-                    int valeur_m = ALPHABET_PERSONNALISE.indexOf(contenuFichier.charAt(i));
-                    int valeur_c = ALPHABET_PERSONNALISE.indexOf(cleVigenere.charAt(k));
+                    int indexCaractereTexte = ALPHABET_PERSONNALISE.indexOf(contenuFichier.charAt(i));
+                    int indexCaractereCle = ALPHABET_PERSONNALISE.indexOf(cleVigenere.charAt(k));
 
-                    if (valeur_m == -1) {
+                    if (indexCaractereTexte == -1) {
                         textDechiffrer.append(contenuFichier.charAt(i));
                     } else {
                         if (k == cleVigenere.length() - 1) {
@@ -183,7 +183,7 @@ public class Chiffrage {
                             k++;
                         }
 
-                        int valeurTotal = (valeur_m - valeur_c) % ALPHABET_PERSONNALISE.length();
+                        int valeurTotal = (indexCaractereTexte - indexCaractereCle) % ALPHABET_PERSONNALISE.length();
                         if (valeurTotal < 0) {
                             valeurTotal += ALPHABET_PERSONNALISE.length();
                         }
@@ -274,6 +274,11 @@ public class Chiffrage {
         this.cheminFichier = cheminFichier;
     }
 
+    /**
+     * Retourne la cle partagée de Diffie-Hellman
+     *
+     * @return la clé partagée
+     */
     public BigInteger getClePartager() {
         return clePartager;
     }
