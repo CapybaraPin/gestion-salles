@@ -1,6 +1,13 @@
+/*
+ * Salle.java              21/10/2024
+ * IUT de RODEZ, pas de copyrights
+ */
+
 package iut.info2.saltistique.modele;
 
 import java.io.Serializable;
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.time.temporal.WeekFields;
 import java.util.List;
 import java.util.Locale;
@@ -20,39 +27,52 @@ public class Salle implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    /** Identifiant d'une salle */
+    /**
+     * Identifiant d'une salle
+     */
     private String identifiant;
 
-    /** Le nom de la salle */
+    /**
+     * Le nom de la salle
+     */
     private String nom;
 
-    /** Capacité d'une salle */
+    /**
+     * Capacité d'une salle
+     */
     private int capacite;
 
-    /** La présence d'un vidéo projecteur*/
+    /**
+     * La présence d'un vidéo projecteur
+     */
     private boolean videoProjecteur;
 
-    /** Présence d'un ecran XXL */
+    /**
+     * Présence d'un ecran XXL
+     */
     private boolean ecranXXL;
 
-    /** Présence d'une iprimante */
+    /**
+     * Présence d'une iprimante
+     */
     private boolean imprimante;
 
-    /** Ordinateur présent dans la salle */
+    /**
+     * Ordinateur présent dans la salle
+     */
     private GroupeOrdinateurs ordinateurs;
-
 
 
     /**
      * Constructeur de la classe salle.
      *
-     * @param identifiant L'identifiant unique d'une salle.
-     * @param nom Le nom d'une salle.
-     * @param capacite La capcité d'une salle.
+     * @param identifiant     L'identifiant unique d'une salle.
+     * @param nom             Le nom d'une salle.
+     * @param capacite        La capcité d'une salle.
      * @param videoProjecteur La présence d'un video projecteur dans la salle.
-     * @param ecranXXL La présence d'un ecran XXL dans une salle .
-     * @param imprimante La présence d'une imprimante dans la salle.
-     * @param ordinateurs Les ordinateurs dans la salle .
+     * @param ecranXXL        La présence d'un ecran XXL dans une salle .
+     * @param imprimante      La présence d'une imprimante dans la salle.
+     * @param ordinateurs     Les ordinateurs dans la salle .
      */
     public Salle(String identifiant, String nom, int capacite, boolean videoProjecteur, boolean ecranXXL, boolean imprimante, GroupeOrdinateurs ordinateurs) {
         this.identifiant = identifiant;
@@ -176,16 +196,19 @@ public class Salle implements Serializable {
      * @param listeReservations La liste des réservations à analyser. Chaque élément de cette liste est une réservation
      *                          contenant des informations sur la salle, la date de début et la date de fin.
      * @return Une chaîne de caractères représentant le temps total des réservations pour la salle, au format "Xh Ymin",
-     *         où X est le nombre d'heures et Y le nombre de minutes.
+     * où X est le nombre d'heures et Y le nombre de minutes.
      */
-    public String getTempsTotalReservations(List<Reservation> listeReservations) {
-        long totalMinutes = listeReservations.stream()
-                .filter(reservation -> reservation.getSalle().equals(this))
-                .mapToLong(reservation -> java.time.Duration.between(reservation.getDateDebut(), reservation.getDateFin()).toMinutes())
-                .sum();
-        long heures = totalMinutes / 60;
-        long minutes = totalMinutes % 60;
-        return heures + "h " + minutes + "min";
+    public long getTempsTotalReservations(List<Reservation> listeReservations) {
+        long totalMinutes;
+
+        totalMinutes = 0;
+        for(Reservation reservation : listeReservations){
+            if(reservation.getSalle().equals(this)){
+                totalMinutes += reservation.getTempsTotalReservation();
+            }
+        }
+
+        return totalMinutes;
     }
 
     /**
@@ -194,31 +217,29 @@ public class Salle implements Serializable {
      * @param listeReservations La liste des réservations.
      * @return Le temps moyen des réservations sous la forme "Xh Ymin".
      */
-    public String getTempsMoyenReservationsJour(List<Reservation> listeReservations) {
-        // Filtrer les réservations pour la salle actuelle
-        List<Reservation> reservations = listeReservations.stream()
-                .filter(reservation -> reservation.getSalle().equals(this))  // Filtrer par la salle actuelle
-                .collect(Collectors.toList());  // Collecter les réservations filtrées
+    public long getTempsMoyenReservationsJour(List<Reservation> listeReservations) {
+        LocalDateTime dateDebut;
+        LocalDateTime dateLaPlusAncienne;
+        LocalDateTime dateLaPlusRecente;
+        long totalMinutes;
+        long nbJours;
 
-        // Si aucune réservation, renvoyer "0h 0min"
-        if (reservations.isEmpty()) {
-            return "0h 0min";
+        dateLaPlusAncienne = null;
+        dateLaPlusRecente = null;
+        for (Reservation reservation : listeReservations) {
+            dateDebut = reservation.getDateDebut();
+            if (dateLaPlusAncienne == null || dateDebut.isBefore(dateLaPlusAncienne)) {
+                dateLaPlusAncienne = dateDebut;
+            }
+            if (dateLaPlusRecente == null || dateDebut.isAfter(dateLaPlusRecente)) {
+                dateLaPlusRecente = dateDebut;
+            }
         }
 
-        // Calculer le temps total en minutes pour toutes les réservations filtrées
-        long totalMinutes = reservations.stream()
-                .mapToLong(reservation -> java.time.Duration.between(reservation.getDateDebut(), reservation.getDateFin()).toMinutes())
-                .sum();
+        nbJours = Duration.between(dateLaPlusAncienne, dateLaPlusRecente).toDays() + 1;
 
-        // Calculer la moyenne des minutes
-        long moyenneMinutes = totalMinutes / reservations.size();
-
-        // Convertir les minutes en heures et minutes
-        long heures = moyenneMinutes / 60;
-        long minutes = moyenneMinutes % 60;
-
-        // Retourner le format "Xh Ymin"
-        return heures + "h " + minutes + "min";
+        totalMinutes = getTempsTotalReservations(listeReservations);
+        return totalMinutes / nbJours;
     }
 
     /**
@@ -236,40 +257,75 @@ public class Salle implements Serializable {
      * @return Une chaîne représentant le temps moyen des réservations par semaine pour la salle,
      *         au format "Xh Ymin". Retourne "0h 0min" si aucune réservation n'est trouvée.
      */
-    public String getTempsMoyenReservationsSemaine(List<Reservation> listeReservations) {
-        // Obtenir un champ pour identifier les semaines en fonction de la locale
-        WeekFields weekFields = WeekFields.of(Locale.getDefault());
+    public long getTempsMoyenReservationsSemaine(List<Reservation> listeReservations) {
+        long totalMinutes;
+        int nbSemaines;
+        int semaineDebut;
+        int anneeDebut;
+        int semaineFin;
+        int anneeFin;
+        WeekFields weekFields;
+        LocalDateTime dateDebut;
+        LocalDateTime dateLaPlusAncienne;
+        LocalDateTime dateLaPlusRecente;
 
-        // Filtrer les réservations de la salle actuelle
-        List<Reservation> reservationsSalle = listeReservations.stream()
-                .filter(reservation -> reservation.getSalle().equals(this)) // Filtrer par salle
-                .toList();
-
-        // Si aucune réservation, retourner "0h 0min"
-        if (reservationsSalle.isEmpty()) {
-            return "0h 0min";
+        dateLaPlusAncienne = null;
+        dateLaPlusRecente = null;
+        for (Reservation reservation : listeReservations) {
+            dateDebut = reservation.getDateDebut();
+            if (dateLaPlusAncienne == null || dateDebut.isBefore(dateLaPlusAncienne)) {
+                dateLaPlusAncienne = dateDebut;
+            }
+            if (dateLaPlusRecente == null || dateDebut.isAfter(dateLaPlusRecente)) {
+                dateLaPlusRecente = dateDebut;
+            }
         }
 
-        // Obtenir le nombre de semaines distinctes
-        long nombreSemaines = reservationsSalle.stream()
-                .map(reservation -> reservation.getDateDebut().get(weekFields.weekOfYear())) // Obtenir le numéro de semaine
-                .distinct() // Retenir les semaines uniques
-                .count();
+        // Calculer les semaines uniques
+        weekFields = WeekFields.of(Locale.getDefault());
+        semaineDebut = dateLaPlusAncienne.get(weekFields.weekOfWeekBasedYear());
+        anneeDebut = dateLaPlusAncienne.get(weekFields.weekBasedYear());
+        semaineFin = dateLaPlusRecente.get(weekFields.weekOfWeekBasedYear());
+        anneeFin = dateLaPlusRecente.get(weekFields.weekBasedYear());
 
-        // Calculer le temps total des réservations en minutes
-        long totalMinutes = reservationsSalle.stream()
-                .mapToLong(reservation -> java.time.Duration.between(
-                        reservation.getDateDebut(), reservation.getDateFin()).toMinutes()) // Calculer la durée
-                .sum();
-
-        // Calculer le temps moyen en minutes par semaine
-        long moyenneMinutesParSemaine = totalMinutes / nombreSemaines;
-
-        // Convertir en heures et minutes
-        long heures = moyenneMinutesParSemaine / 60;
-        long minutes = moyenneMinutesParSemaine % 60;
-
-        // Retourner le résultat formaté
-        return heures + "h " + minutes + "min";
+        nbSemaines = (anneeFin - anneeDebut) * 52
+                + semaineFin - semaineDebut + 1;
+        totalMinutes = getTempsTotalReservations(listeReservations);
+        return totalMinutes / nbSemaines;
     }
+
+    /**
+     * Calcule le pourcentage d'utilisation de la salle en fonction du temps total des réservations.
+     * La durée théorique disponible est calculée comme l'intervalle total (en minutes) entre la
+     * première et la dernière réservation de la liste.
+     *
+     * @param listeReservations La liste des réservations de la salle.
+     * @return Le pourcentage d'utilisation de la salle (entre 0 et 100).
+     */
+    public double getPourcentageUtilisation(List<Reservation> listeReservations) {
+        long minutesTotalesReservations;
+
+        if (listeReservations == null || listeReservations.isEmpty()) {
+            return 0;
+        }
+
+        minutesTotalesReservations = 0;
+        // Parcourir chaque salle unique à partir des réservations
+        for (Salle salle : listeReservations.stream()
+                .map(Reservation::getSalle)
+                .collect(Collectors.toSet())) {
+            // Ajouter les minutes totales des réservations pour cette salle
+            minutesTotalesReservations += salle.getTempsTotalReservations(listeReservations);
+        }
+
+
+        // Calculer le temps total des réservations
+        long tempsTotalReservations = getTempsTotalReservations(listeReservations);
+
+        // Calculer le pourcentage
+        return (double) tempsTotalReservations / minutesTotalesReservations * 100;
+    }
+
+
+
 }

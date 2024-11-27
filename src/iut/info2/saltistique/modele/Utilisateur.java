@@ -1,3 +1,8 @@
+/*
+ * Utilisateur.java              21/10/2024
+ * Dorian ADAMS, Néo BECOGNE, Tom GUTIERREZ, Hugo ROBLES et Jules VIALAS , pas de copyrights
+ */
+
 package iut.info2.saltistique.modele;
 
 import java.io.Serializable;

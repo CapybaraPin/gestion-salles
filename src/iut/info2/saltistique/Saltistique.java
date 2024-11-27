@@ -4,6 +4,7 @@
  */
 package iut.info2.saltistique;
 
+import iut.info2.saltistique.modele.Notification;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -62,7 +63,7 @@ public class Saltistique extends Application {
     public static GestionDonnees gestionDonnees;
 
     /** Chemin du fichier de sauvegarde */
-    private static final String FILE_PATH = "src/ressources/gestionDonnees.ser";
+    private static final String CHEMIN_SAUVEGARDE = "src/ressources/gestionDonnees.ser";
 
     /**
      * Méthode de démarrage de l'application JavaFX.
@@ -88,6 +89,7 @@ public class Saltistique extends Application {
             changeScene(Scenes.ACCUEIL);
         } else {
             changeScene(Scenes.CONSULTER_DONNEES);
+            new Notification("Chargement des données", "Les données précédentes ont été chargées.");
         }
 
     }
@@ -217,7 +219,7 @@ public class Saltistique extends Application {
      * Sauvegarde l'objet GestionDonnees dans un fichier.
      */
     private void sauvegarderGestionDonnees() {
-        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(FILE_PATH))) {
+        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(CHEMIN_SAUVEGARDE))) {
             oos.writeObject(gestionDonnees);
         } catch (IOException e) {
             System.err.println("Erreur lors de la sauvegarde de GestionDonnees : " + e.getMessage());
@@ -228,7 +230,7 @@ public class Saltistique extends Application {
      * Charge l'objet GestionDonnees depuis un fichier, ou crée une nouvelle instance si le fichier n'existe pas.
      */
     private void chargerGestionDonnees() {
-        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(FILE_PATH))) {
+        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(CHEMIN_SAUVEGARDE))) {
             gestionDonnees = (GestionDonnees) ois.readObject();
         } catch (IOException | ClassNotFoundException e) {
             System.out.println("Aucun état précédent trouvé ou erreur lors du chargement. Nouvelle instance créée.");

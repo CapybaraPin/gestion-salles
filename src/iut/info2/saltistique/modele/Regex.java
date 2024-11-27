@@ -1,5 +1,5 @@
 /* Regex.java                           28/10/2024
- *
+ * IUT De Rodez, tous les droits sont réservés
  */
 
 package iut.info2.saltistique.modele;

@@ -1,9 +1,13 @@
+/*
+ * Reservation.java              21/10/2024
+ * IUT de Rodez, pas de copyrights
+ */
+
 package iut.info2.saltistique.modele;
 
 import java.io.Serial;
 import java.io.Serializable;
 import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
 
 /**
  * Représente une réservation avec un identifiant unique, une date de debut, une date de fin,
@@ -158,7 +162,12 @@ public class Reservation implements Serializable {
                 '}';
     }
 
-    public Long getTempsTotalReservation() {
-        return ChronoUnit.HOURS.between(this.getDateDebut(), this.getDateFin());
+    /**
+     * Calcule le temps total de la réservation en minutes.
+     * Utilise la méthode {@link java.time.Duration#between} pour calculer
+     * @return Le temps total de la réservation en minutes.
+     */
+    public long getTempsTotalReservation() {
+        return java.time.Duration.between(dateDebut, dateFin).toMinutes();
     }
 }

@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.ArrayList;
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * Classe responsable de la gestion des données pour les salles, activités, utilisateurs et réservations.
@@ -21,7 +22,7 @@ import java.io.Serializable;
  *
  * <p>Cette classe agit comme un conteneur central pour les données manipulées dans l'application.</p>
  *
- * @author Hugo ROBLES, Tom GUTIERREZ
+ * @author Tom GUTIERREZ, Hugo ROBLES
  */
 public class GestionDonnees implements Serializable {
 
@@ -89,32 +90,42 @@ public class GestionDonnees implements Serializable {
     }
 
     /**
-     * Calcule le pourcentage d'utilisation d'une salle en fonction des réservations.
-     * Cette méthode calcule le pourcentage d'occupation basé sur le temps total réservé par rapport à la capacité de la salle.
+     * Calcule le pourcentage d'occupation d'une salle sur la
+     * totalité de la période d'occupation.
      *
-     * @param salle la salle dont on souhaite calculer le pourcentage d'utilisation
-     * @param reservations la liste des réservations, où chaque réservation contient une salle associée
-     * @return le pourcentage d'utilisation de la salle
+     * @param salle La salle pour laquelle on souhaite calculer le pourcentage d'occupation.
+     *              La salle doit être une salle existante dans la liste des salles.
+     * @return Le pourcentage d'occupation de la salle.
+     * @throws IllegalArgumentException si la salle n'existe pas dans la liste des salles.
      */
-    public double calculerPourcentageReservation(Salle salle, HashMap<Integer, Reservation> reservations) {
-        // Calculer le temps total réservé pour cette salle (en heures)
-        long tempsTotalReserve = reservations.values().stream()
-                .filter(reservation -> reservation.getSalle().equals(salle)) // Filtrer les réservations pour la salle
-                .mapToLong(reservation -> reservation.getTempsTotalReservation()) // Récupérer la durée de chaque réservation
-                .sum(); // Additionner toutes les durées des réservations
+    public double calculerPourcentageOccupation (Salle salle) {
+        double tempsTotalOccupation;
+        double tempsTotal;
 
-        // Calculer le nombre d'heures disponibles dans la salle (en fonction de sa capacité et du nombre de jours ouvrés)
-        // Supposons que la salle est disponible toute la journée pendant un certain nombre d'heures.
-        // Par exemple, la capacité d'une salle pourrait être interprétée comme le nombre d'heures de réservation possibles par jour.
-        long heuresDisponibles = 24; // Par exemple, 24 heures disponibles pour une journée complète
-
-        // Calculer le pourcentage d'utilisation en fonction du temps réservé par rapport aux heures disponibles
-        if (heuresDisponibles > 0) {
-            return Math.min((tempsTotalReserve * 100.0) / (heuresDisponibles), 100.0); // Assurez-vous que le pourcentage ne dépasse pas 100
+        if (!salles.containsValue(salle)) {
+            throw new IllegalArgumentException("La salle n'existe pas dans la liste des salles.");
         }
-        return 0; // Si aucune réservation n'est possible, retourner 0%
+
+
+
+
+        return 0.0;
     }
 
+    /**
+     * Calcule le temps total d'occupation total de toutes les salles.
+     * @return Le temps total d'occupation de toutes les salles.
+     */
+    public double getTempsTotalOccupation() {
+        double tempsTotal;
+
+        tempsTotal = 0;
+        List<Reservation> listeReservations = new ArrayList<>(reservations.values());
+        for (Salle salle : salles.values()) {
+            tempsTotal += salle.getTempsTotalReservations(listeReservations);
+        }
+        return tempsTotal;
+    }
 
     /**
      * Définit les fichiers à utiliser pour l'importation ou d'autres opérations.
@@ -128,10 +139,11 @@ public class GestionDonnees implements Serializable {
     /**
      * Retourne les fichiers actuellement associés à cette instance.
      *
+     * Si les fichiers n'ont pas été initialisés, ils sont créés à partir des chemins spécifiés.
+     *
      * @return Tableau de fichiers importés.
      */
     public Fichier[] getFichiers() throws IOException {
-
         if (fichiers == null) {
             fichiers = new Fichier[4];
             for (int i = 0; i < 4; i++) {

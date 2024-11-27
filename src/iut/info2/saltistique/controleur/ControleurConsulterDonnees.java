@@ -28,6 +28,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 /**
  * Le contrôleur de la vue permettant de consulter les données.
@@ -332,6 +333,14 @@ public class ControleurConsulterDonnees extends ControleurFiltres {
     @FXML
     public Label labelTempsTotalReservations;
 
+    /** Label pour le temps moyen de réservations par jour */
+    @FXML
+    public Label labelTempsMoyenJour;
+
+    /** Label pour le temps moyen de réservations par semaine */
+    @FXML
+    public Label labelTempsMoyenSemaine;
+
     /** Afficher les statistiques d'une salle */
     @FXML
     private TableColumn<Salle, Void> Actions;
@@ -390,19 +399,8 @@ public class ControleurConsulterDonnees extends ControleurFiltres {
         initialiserTableauActivites();
         initialiserTableauEmployes();
         initialiserTableauReservations();
-        afficherTempsReservationsTotal(listeReservations);
+        actualiserLabels(listeReservations);
         clickBoutonNotification();
-    }
-
-    /**
-     * Permet l'actualisation des données dans le contrôleur
-     * de gestion des filtres.
-     */
-    void actualiserFiltres() {
-        setListeSalles(listeSalles);
-        setListeActivites(listeActivites);
-        setListeEmployes(listeEmployes);
-        setListeReservations(listeReservations);
     }
 
    /**
@@ -448,11 +446,7 @@ public class ControleurConsulterDonnees extends ControleurFiltres {
         tableauActivites.setItems(listeActivites);
         tableauEmployes.setItems(listeEmployes);
         tableauReservations.setItems(listeReservations);
-        afficherTempsReservationsTotal(listeReservations);
-    }
-
-    public void setTableauReservations(ObservableList<Reservation> reservationsFiltrees) {
-        tableauReservations.setItems(FXCollections.observableArrayList(reservationsFiltrees));
+        actualiserLabels(listeReservations);
     }
 
     /**
@@ -586,9 +580,8 @@ public class ControleurConsulterDonnees extends ControleurFiltres {
                         btnAction.getStyleClass().add("btn-secondary");
                         // Ajouter une action au bouton
                         btnAction.setOnAction(_ -> {
-                            if (reservationSelectionnee instanceof Location) {
+                            if (reservationSelectionnee instanceof Location l) {
                                 //Afficher pour une location
-                                Location l = (Location) reservationSelectionnee;
                                 afficherConsulterLocation(l);
                             } else {
                                 //Afficher pour une formation
@@ -636,6 +629,9 @@ public class ControleurConsulterDonnees extends ControleurFiltres {
         tableau.setVisible(true);
         selection.setVisible(true);
         boolean afficherFiltres = tableau == tableauReservations;
+        labelTempsMoyenSemaine.setVisible(afficherFiltres);
+        labelTempsMoyenJour.setVisible(afficherFiltres);
+        labelTempsTotalReservations.setVisible(afficherFiltres);
         valeurFiltre.setVisible(afficherFiltres);
         Filtres.setVisible(afficherFiltres);
         boutonFiltrer.setVisible(afficherFiltres);
@@ -694,12 +690,64 @@ public class ControleurConsulterDonnees extends ControleurFiltres {
         afficherTableau(tableauActivites, SelectionActivites);
     }
 
+    /**
+     * Affiche les labels de statistiques des réservations.
+     * @param reservations
+     */
+    public void actualiserLabels(ObservableList<Reservation> reservations) {
+        afficherTempsReservationsTotal(reservations);
+        afficherTempsMoyenJour(reservations);
+        afficherTempsMoyenSemaine(reservations);
+    }
+
+    /**
+     * Affiche le temps total de réservations.
+     * @param reservations
+     */
     public void afficherTempsReservationsTotal(ObservableList<Reservation> reservations) {
-        Long tempsTotal = 0L;
+        long tempsTotal = 0;
         for (Reservation reservation : reservations) {
             tempsTotal += reservation.getTempsTotalReservation();
         }
-        labelTempsTotalReservations.setText("Temps total de reservations : " + tempsTotal + " heures");
+        labelTempsTotalReservations.setText("Temps total de reservations : " + (int) tempsTotal / 60 + "h "
+                + (int) tempsTotal % 60 + " min");
+    }
+
+    /**
+     * Affiche le temps moyen de réservations par jour.
+     * @param reservations La liste des réservations à considérer.
+     */
+    public void afficherTempsMoyenJour(ObservableList<Reservation> reservations) {
+        long tempsTotal;
+
+        tempsTotal = 0;
+        // Pour chaque salle, on récupère le temps moyen de réservations par jour
+        for (Salle salle : listeReservations.stream()
+                .map(Reservation::getSalle)
+                .collect(Collectors.toSet())) {
+            tempsTotal += salle.getTempsMoyenReservationsJour(reservations);
+        }
+
+        labelTempsMoyenJour.setText("Temps moyen de reservations par jour : " + tempsTotal / 60 + "h "
+                + tempsTotal % 60 + "min");
+    }
+
+    /**
+     * Affiche le temps moyen de réservations par semaine.
+     * @param reservations La liste des réservations à considérer.
+     */
+    public void afficherTempsMoyenSemaine(ObservableList<Reservation> reservations) {
+        long tempsTotal;
+
+        tempsTotal = 0;
+        for (Salle salle : listeReservations.stream()
+                .map(Reservation::getSalle)
+                .collect(Collectors.toSet())) {
+            tempsTotal += salle.getTempsMoyenReservationsSemaine(reservations);
+        }
+
+        labelTempsMoyenSemaine.setText("Temps moyen de reservations par semaine : " + tempsTotal / 60 + "h "
+                + tempsTotal % 60 + "min");
     }
 
     /**
@@ -712,6 +760,9 @@ public class ControleurConsulterDonnees extends ControleurFiltres {
         afficherTableau(tableauEmployes, SelectionEmployes);
     }
 
+    /**
+     * Gère le clic sur le bouton "Statistiques".
+     */
     @FXML
     void clickStatistiques() {
         ControleurConsulterStatistiques controleurConsulterStatistiques = Saltistique.getController(Scenes.CONSULTER_STATISTIQUES);
@@ -850,7 +901,6 @@ public class ControleurConsulterDonnees extends ControleurFiltres {
     private void appliquerFiltres() {
         List<Reservation> reservationsFiltrees = filtre.appliquerFiltres(new ArrayList<>(listeReservations));
         tableauReservations.setItems(FXCollections.observableArrayList(reservationsFiltrees));
-        afficherTempsReservationsTotal(FXCollections.observableArrayList(reservationsFiltrees));
     }
 
     /**
@@ -930,11 +980,10 @@ public class ControleurConsulterDonnees extends ControleurFiltres {
      * d'assurer que la TableView reflète correctement l'état actuel des filtres.</p>
      */
     private void mettreAJourFiltres() {
-        List<Reservation> reservationsFiltrees = filtre.appliquerFiltres(listeReservations);
+        ObservableList<Reservation> reservationsFiltrees = filtre.appliquerFiltres(listeReservations);
         tableauReservations.setItems(FXCollections.observableArrayList(reservationsFiltrees));
         afficherFiltresAppliques();
 
-        afficherTempsReservationsTotal((ObservableList<Reservation>) reservationsFiltrees);
     }
 
     /**

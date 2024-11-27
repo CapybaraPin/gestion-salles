@@ -1,3 +1,8 @@
+/*
+ * GenererPDF.java              21/10/2024
+ * IUT de Rodez, pas de copyrights
+ */
+
 package iut.info2.saltistique.modele;
 
 import com.itextpdf.io.image.ImageDataFactory;

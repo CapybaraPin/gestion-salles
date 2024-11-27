@@ -340,7 +340,6 @@ public class ControleurNonReservees extends Controleur {
      * Affiche les filtres appliqués.
      */
     protected void afficherFiltresAppliques() {
-        System.out.println("Affichage des filtres appliqués");
         hboxFiltresAppliques.getChildren().clear();
         hboxFiltresAppliques.setSpacing(10);
         LocalDateTime[] datesFiltrees = filtre.getFiltreDate();

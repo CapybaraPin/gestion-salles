@@ -62,6 +62,13 @@ public class ControleurConsultationSalle extends ControleurFiltres {
         Filtres.getSelectionModel().selectFirst();
     }
 
+    /**
+     * Met à jour les listes observables contenant les objets de chaque type.
+     * @param listeReservations Liste des réservations.
+     * @param listeActivites Liste des activités.
+     * @param listeEmployes Liste des employés.
+     * @param listeSalles Liste des salles.
+     */
      public void setDonneesFiltres(ObservableList<Reservation> listeReservations,
                             ObservableList<Activite> listeActivites,
                             ObservableList<Utilisateur> listeEmployes,
@@ -87,6 +94,9 @@ public class ControleurConsultationSalle extends ControleurFiltres {
      */
     public void actualiserStats() {
         List<Reservation> reservationsFiltrees;
+        long tempsTotal;
+        long tempsMoyenJour;
+        long tempsMoyenSemaine;
         actualiserFiltres();
 
         if (salleSelectionnee != null) {
@@ -98,9 +108,14 @@ public class ControleurConsultationSalle extends ControleurFiltres {
 
             // Mettre à jour les données de l'interface
             nomSalle.setText(salleSelectionnee.getNom());
-            dureeReservation.setText(salleSelectionnee.getTempsTotalReservations(reservationsFiltrees));
-            dureeMoyenneReservationJour.setText(salleSelectionnee.getTempsMoyenReservationsJour(reservationsFiltrees) + " par jours");
-            dureeMoyenneReservationSemaine.setText(salleSelectionnee.getTempsMoyenReservationsSemaine(reservationsFiltrees) + " par semaine");
+
+            tempsTotal = salleSelectionnee.getTempsTotalReservations(reservationsFiltrees);
+            tempsMoyenJour = salleSelectionnee.getTempsMoyenReservationsJour(reservationsFiltrees);
+            tempsMoyenSemaine = salleSelectionnee.getTempsMoyenReservationsSemaine(reservationsFiltrees);
+
+            dureeReservation.setText((int) tempsTotal / 60 + "h " + (int) tempsTotal % 60 + "min");
+            dureeMoyenneReservationJour.setText((int) tempsMoyenJour / 60 + "h " + (int) tempsMoyenJour % 60 + "min par jour");
+            dureeMoyenneReservationSemaine.setText((int) tempsMoyenSemaine / 60 + "h " + (int) tempsMoyenSemaine % 60 + "min par semaine");
         }
     }
     /**

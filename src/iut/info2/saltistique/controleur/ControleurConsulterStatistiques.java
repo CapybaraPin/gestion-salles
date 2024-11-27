@@ -22,7 +22,7 @@ import java.util.Map;
  * Contrôleur de la vue de consultation des statistiques.
  * Permet de consulter les statistiques globales et les salles non réservées.
  */
-public class ControleurConsulterStatistiques extends ControleurFiltres {
+public class ControleurConsulterStatistiques extends Controleur {
 
     /** Ligne de sélection des statistiques globales */
     @FXML
@@ -48,6 +48,9 @@ public class ControleurConsulterStatistiques extends ControleurFiltres {
     /** Colonne pour le temps d'occupation total */
     @FXML
     public TableColumn<Map<String, String>, String> tempsOccupationTotal;
+    /** Colonne pour le pourcentage d'utilisation */
+    @FXML
+    public TableColumn<Map<String, String>, String> pourcentageUtilisation;
 
     /** Liste contenant les données à afficher */
     ObservableList<Map<String, String>> listeDonnees;
@@ -67,19 +70,37 @@ public class ControleurConsulterStatistiques extends ControleurFiltres {
         tempsMoyenOccupationJour.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().get("tempsMoyenOccupationJour")));
         tempsMoyenOccupationSemaine.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().get("tempsMoyenOccupationSemaine")));
         tempsOccupationTotal.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().get("tempsOccupationTotal")));
+        pourcentageUtilisation.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().get("pourcentageUtilisation")));
+
         tableauStatistiquesGlobales.setItems(listeDonnees);
     }
 
+    /**
+     * Remplit la liste des données à afficher dans le tableau.
+     * Calcule les statistiques pour chaque salle. Les données sont stockées dans une liste de maps.
+     *
+     */
     private void remplirListeDonnees() {
         listeDonnees = FXCollections.observableArrayList();
+        long tempsMoyenOccupationJour;
+        long tempsMoyenOccupationSemaine;
+        long tempsOccupationTotal;
+        double pourcentageUtilisation;
+
+        // Pour chaque salle, on calcule les statistiques et on les ajoute à la liste
         for (Salle salle : Saltistique.gestionDonnees.getSalles().values()) {
             try {
+                tempsOccupationTotal = salle.getTempsTotalReservations(listeReservations);
+                tempsMoyenOccupationJour = salle.getTempsMoyenReservationsJour(listeReservations);
+                tempsMoyenOccupationSemaine = salle.getTempsMoyenReservationsSemaine(listeReservations);
+                pourcentageUtilisation = salle.getPourcentageUtilisation(listeReservations);
                 Map<String, String> statistiqueSalle = new HashMap<>();
                 statistiqueSalle.put("identifiant", salle.getIdentifiant());
                 statistiqueSalle.put("nom", salle.getNom());
-                statistiqueSalle.put("tempsMoyenOccupationJour", String.valueOf(salle.getTempsMoyenReservationsJour(listeReservations)));
-                statistiqueSalle.put("tempsMoyenOccupationSemaine", String.valueOf(salle.getTempsMoyenReservationsSemaine(listeReservations)));
-                statistiqueSalle.put("tempsOccupationTotal", String.valueOf(salle.getTempsTotalReservations(listeReservations)));
+                statistiqueSalle.put("tempsMoyenOccupationJour", (int) tempsMoyenOccupationJour / 60 + "h " + (int) tempsMoyenOccupationJour % 60 + "min");
+                statistiqueSalle.put("tempsMoyenOccupationSemaine", (int) tempsMoyenOccupationSemaine / 60 + "h " + (int) tempsMoyenOccupationSemaine % 60 + "min");
+                statistiqueSalle.put("tempsOccupationTotal", (int) tempsOccupationTotal / 60 + "h " + (int) tempsOccupationTotal % 60 + "min");
+                statistiqueSalle.put("pourcentageUtilisation", String.format("%.2f", pourcentageUtilisation) + "%");
 
                 listeDonnees.add(statistiqueSalle);
             } catch (Exception e) {
@@ -88,6 +109,11 @@ public class ControleurConsulterStatistiques extends ControleurFiltres {
         }
     }
 
+    /**
+     * Rafraîchit le tableau des statistiques.
+     * Utilisé pour mettre à jour les données après une modification.
+     *
+     */
     void rafraichirTableauStatistiques() {
         listeReservations = FXCollections.observableArrayList();
         listeReservations.addAll(Saltistique.gestionDonnees.getReservations().values());

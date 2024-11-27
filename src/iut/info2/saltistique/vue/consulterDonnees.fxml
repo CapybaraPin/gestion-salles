@@ -252,14 +252,23 @@
                <Insets left="50.0" right="50.0" top="10.0" />
             </VBox.margin>
          </HBox>
-         <Label fx:id="labelTempsTotalReservations">
+         <VBox prefHeight="0.0" prefWidth="1272.0">
+            <children>
+               <Label fx:id="labelTempsTotalReservations">
+                  <VBox.margin>
+                     <Insets />
+                  </VBox.margin>
+                  <padding>
+                     <Insets top="10.0" />
+                  </padding>
+               </Label>
+               <Label fx:id="labelTempsMoyenJour" />
+               <Label fx:id="labelTempsMoyenSemaine" />
+            </children>
             <VBox.margin>
-               <Insets left="50.0" right="50.0" />
+               <Insets left="50.0" />
             </VBox.margin>
-            <padding>
-               <Insets top="10.0" />
-            </padding>
-         </Label>
+         </VBox>
          <StackPane prefHeight="400.0" prefWidth="1274.0">
             <VBox.margin>
                <Insets />
@@ -340,7 +349,7 @@
                   <String fx:value="menu-style" />
                   <String fx:value="shadow" />
                </styleClass>
-               <HBox alignment="CENTER_LEFT" onMouseClicked="#menuClick" prefHeight="6.0" prefWidth="268.0" styleClass="btn-menu">
+               <HBox alignment="CENTER_LEFT" onMouseClicked="#handlerRetourMenu" prefHeight="6.0" prefWidth="268.0" styleClass="btn-menu">
                   <VBox.margin>
                      <Insets />
                   </VBox.margin>
@@ -356,7 +365,7 @@
                      </HBox.margin>
                      <Image url="@home.png" />
                   </ImageView>
-                  <Text onMouseClicked="#handlerRetourMenu" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="typo-default" text="Menu principal" />
+                  <Text strokeType="OUTSIDE" strokeWidth="0.0" styleClass="typo-default" text="Menu principal" />
                </HBox>
                <Separator prefWidth="200.0" styleClass="menu-sepator">
                   <VBox.margin>
