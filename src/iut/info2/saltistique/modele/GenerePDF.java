@@ -106,7 +106,7 @@ public class GenerePDF {
         Table headerTable = new Table(UnitValue.createPercentArray(new float[]{2, 5}));
         headerTable.setWidth(UnitValue.createPercentValue(100));
 
-        String logoPath = "src/ressources/logoIUT.jpg";
+        String logoPath = "src/ressources/icones/logoIUT.jpg";
         Image logo = new Image(ImageDataFactory.create(logoPath)).setHeight(50);
         headerTable.addCell(new Cell().add(logo).setBorder(Border.NO_BORDER));
 

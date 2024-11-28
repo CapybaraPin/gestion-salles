@@ -90,44 +90,6 @@ public class GestionDonnees implements Serializable {
     }
 
     /**
-     * Calcule le pourcentage d'occupation d'une salle sur la
-     * totalité de la période d'occupation.
-     *
-     * @param salle La salle pour laquelle on souhaite calculer le pourcentage d'occupation.
-     *              La salle doit être une salle existante dans la liste des salles.
-     * @return Le pourcentage d'occupation de la salle.
-     * @throws IllegalArgumentException si la salle n'existe pas dans la liste des salles.
-     */
-    public double calculerPourcentageOccupation (Salle salle) {
-        double tempsTotalOccupation;
-        double tempsTotal;
-
-        if (!salles.containsValue(salle)) {
-            throw new IllegalArgumentException("La salle n'existe pas dans la liste des salles.");
-        }
-
-
-
-
-        return 0.0;
-    }
-
-    /**
-     * Calcule le temps total d'occupation total de toutes les salles.
-     * @return Le temps total d'occupation de toutes les salles.
-     */
-    public double getTempsTotalOccupation() {
-        double tempsTotal;
-
-        tempsTotal = 0;
-        List<Reservation> listeReservations = new ArrayList<>(reservations.values());
-        for (Salle salle : salles.values()) {
-            tempsTotal += salle.getTempsTotalReservations(listeReservations);
-        }
-        return tempsTotal;
-    }
-
-    /**
      * Définit les fichiers à utiliser pour l'importation ou d'autres opérations.
      *
      * @param fichiers Tableau de fichiers à associer à cette instance.

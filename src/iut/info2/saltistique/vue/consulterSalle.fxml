@@ -247,7 +247,7 @@
       <String fx:value="border" />
    </styleClass>
    <stylesheets>
-      <URL value="@style.css" />
-      <URL value="@application.css" />
+      <URL value="@../../../../ressources/styles/style.css" />
+      <URL value="@../../../../ressources/styles/application.css" />
    </stylesheets>
 </VBox>

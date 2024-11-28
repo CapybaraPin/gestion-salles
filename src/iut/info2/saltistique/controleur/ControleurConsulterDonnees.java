@@ -493,7 +493,7 @@ public class ControleurConsulterDonnees extends ControleurFiltres {
                     setGraphic(null);
                 } else {
                     // Charger l'icône
-                    ImageView svgIcon = new ImageView(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/ressources/icons/chart.png"))));
+                    ImageView svgIcon = new ImageView(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/ressources/icones/chart.png"))));
                     svgIcon.setFitWidth(16); // Ajuster la largeur de l'icône
                     svgIcon.setFitHeight(16); // Ajuster la hauteur de l'icône
 

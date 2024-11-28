@@ -82,7 +82,7 @@ public class Saltistique extends Application {
         primaryStage.initStyle(StageStyle.UNDECORATED);
         primaryStage.setResizable(false);
         primaryStage.setTitle("Gestion de salles");
-        primaryStage.getIcons().add(new Image("/iut/info2/saltistique/vue/logo.png"));
+        primaryStage.getIcons().add(new Image("/ressources/icones/logo.png"));
         loadScenes();
 
         if (estInstanceVide()) {
