@@ -1,3 +1,8 @@
+/*
+ * Formation.java              21/10/2024
+ * IUT de Rodez, pas de copyrights
+ */
+
 package iut.info2.saltistique.modele;
 
 import java.time.LocalDateTime;
@@ -7,7 +12,7 @@ import java.time.LocalDateTime;
  *Cette classe implémente Reservation afin de pouvoir récupérer des information de
  * résevation liée a une formation
  *
- * @author Jules Vialas, Néo Bécogné, Dorian Adams, Hugo Robles, Tom Gutierrez
+ * @author Jules Vialas
  */
 
 public class Formation extends Reservation {

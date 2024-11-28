@@ -85,27 +85,6 @@ public class ImportationReseau extends Importation {
     }
 
     /**
-     * Lance l'importation des données transmises par le serveur distant.
-     * Vérifie la présence des fichiers reçus et les transmet à la classe parente {@link Importation}.
-     *
-     * @throws IOException Si une erreur survient lors de la gestion des fichiers locaux.
-     */
-//    private void importationDonnees() throws IOException {
-//        System.out.println("Importation des données via le client...");
-//        connexionClient();
-//
-//        File[] fichiersExistants = dossierSauvegarde.listFiles();
-//        String[] cheminFichiers = new String[4];
-//
-//        if (sourceEstVide()) {
-//            for (int i = 0; i < 3; i++) {
-//                cheminFichiers[i] = fichiersExistants[i].getAbsolutePath();
-//            }
-//            importerDonnees(cheminFichiers);
-//        }
-//    }
-
-    /**
      * Vérifie si le dossier source contenant les fichiers est vide.
      *
      * @return {@code true} si le dossier contient des fichiers, sinon {@code false}.
@@ -132,7 +111,6 @@ public class ImportationReseau extends Importation {
                 try {
                     Files.deleteIfExists(fichier.toPath());
                 } catch (IOException e) {
-                    e.printStackTrace();
                     throw new IOException("Impossible de supprimer le fichier du dossier source : " + fichier.getName());
                 }
             }

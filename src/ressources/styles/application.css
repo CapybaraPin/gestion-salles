@@ -1,6 +1,6 @@
 @font-face {
     font-family: 'Inter';
-    src: url('Inter_regular.ttf');
+    src: url('../polices/Inter_regular.ttf');
 }
 
 .btn-primary{

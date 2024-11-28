@@ -1,5 +1,11 @@
+/*
+ * Reservation.java              21/10/2024
+ * IUT de Rodez, pas de copyrights
+ */
+
 package iut.info2.saltistique.modele;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
@@ -9,10 +15,11 @@ import java.time.LocalDateTime;
  * Cette classe implémente l'interface Serializable afin de pouvoir être
  * sérialisée et désérialisée.
  *
- * @author Jules Vialas, Néo Bécogné, Dorian Adams, Hugo Robles, Tom Gutierrez
+ * @author Jules Vialas
  */
 public class Reservation implements Serializable {
 
+    @Serial
     private static final long serialVersionUID = 1L;
 
     /** Identifant de la réservation*/
@@ -125,6 +132,16 @@ public class Reservation implements Serializable {
     }
 
     /**
+     * Calcul la durée de la réservation en heures.
+     *
+     * @return La durée de la réservation en heures.
+     */
+    public double getDuree() {
+        long durationInMinutes = java.time.Duration.between(dateDebut, dateFin).toMinutes();
+        return durationInMinutes / 60.0; // Retourne la durée en heures
+    }
+
+    /**
      * Cette méthode génère une description détaillée de la réservation
      * incluant les informations telles que l'identifiant, les dates, la salle,
      * l'activité, l'utilisateur.
@@ -136,12 +153,21 @@ public class Reservation implements Serializable {
     public String toString() {
         return "Reservation{" +
                 "identifiant='" + identifiant + '\'' +
-                ", dateDebut=" + dateDebut +
-                ", dateFin=" + dateFin +
+                ", dateDebut='" + dateDebut + '\'' +
+                ", dateFin='" + dateFin + '\'' +
                 ", description='" + description + '\'' +
-                ", salle=" + salle +
-                ", activite=" + activite +
-                ", utilisateur=" + utilisateur +
+                ", salle='" + salle + '\'' +
+                ", activite='" + activite + '\'' +
+                ", utilisateur='" + utilisateur + '\'' +
                 '}';
+    }
+
+    /**
+     * Calcule le temps total de la réservation en minutes.
+     * Utilise la méthode {@link java.time.Duration#between} pour calculer
+     * @return Le temps total de la réservation en minutes.
+     */
+    public long getTempsTotalReservation() {
+        return java.time.Duration.between(dateDebut, dateFin).toMinutes();
     }
 }

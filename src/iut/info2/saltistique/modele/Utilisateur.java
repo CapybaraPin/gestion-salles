@@ -1,3 +1,8 @@
+/*
+ * Utilisateur.java              21/10/2024
+ * Dorian ADAMS, Néo BECOGNE, Tom GUTIERREZ, Hugo ROBLES et Jules VIALAS , pas de copyrights
+ */
+
 package iut.info2.saltistique.modele;
 
 import java.io.Serializable;
@@ -8,7 +13,7 @@ import java.io.Serializable;
  * Cette classe implémente l'interface Serializable afin de pouvoir être
  * sérialisée et désérialisée.
  *
- * @author Jules Vialas, Néo Bécogné, Dorian Adams, Hugo Robles, Tom Gutierrez
+ * @author Jules Vialas
  */
 public class Utilisateur implements Serializable {
 

@@ -1,0 +1,4 @@
+Ident;Nom;Prenom;Telephone
+E000001;valide;Pierre;2614
+E000001;doublon;Pierre;2614
+E000002;incorrect;Pierre;2614a

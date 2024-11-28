@@ -1,224 +1,288 @@
-package iut.info2.saltistique.modele;
-
 /*
- * Chiffrage.java 								18/10/2023
- * IUT de Rodez, pas de copyrights ni copyleft
+ * Chiffrage.java                   18/11/2024
+ * IUT de RODEZ, tous les droits sont réservés
  */
 
-import java.util.HashMap;
+package iut.info2.saltistique.modele;
+
+import java.io.IOException;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.math.BigInteger;
+import java.security.SecureRandom;
 
 /**
- * La classe  Chiffrage fournit des méthodes pour chiffrer et déchiffrer des données
- * en utilisant deux algorithmes de cryptographie,le chiffrement de Vigenère
- * et l'échange de clés Diffie-Hellman.
+ * Classe représentant un système de chiffrement utilisant l'algorithme de Vigenère et
+ * la génération de clés via Diffie-Hellman.
+ * Cette classe permet de chiffrer et déchiffrer des fichiers texte en utilisant un alphabet personnalisé.
  *
- * <p>Cette classe prend en charge le chiffrement et le déchiffrement de textes,
- * en appliquant des algorithmes de cryptographie.
- * Elle permet également de générer des clés sécurisées pour assurer la confidentialité des échanges de données.</p>
+ * La clé de Vigenère est générée à partir de la clé partagée issue de l'algorithme de Diffie-Hellman.
+ * Les opérations de cryptage et de décryptage se basent sur des index dans un alphabet défini par
+ * {@code CUSTOM_ALPHABET}.
  *
- * <p>Les principales fonctionnalités incluent :</p>
+ * <p>
+ * Utilisation typique :
  * <ul>
- *   <li>Chiffrement et déchiffrement de chaînes de caractères</li>
- *   <li>Échange de clés sécurisé avec l'algorithme Diffie-Hellman</li>
+ *   <li>Créer une instance de la classe avec un chemin de fichier a chiffrer ou déchiffrer</li>
+ *   <li>Envoyer la clé privée calculée</li>
+ *   <li>Calculer la clé partagée et générer la clé de Vigenère à partir de Diffie-Hellman</li>
+ *   <li>Crypter ou décrypter le fichier</li>
  * </ul>
+ * </p>
  *
- * @author Jules Vialas, Néo Bécogné, Dorian Adams, Hugo Robles, Tom Gutierrez
+ * @author Dorian ADAMS, Néo BECOGNE
  */
 public class Chiffrage {
 
+    /** Base publique pour le calcul de Diffie-Hellman, entier générateur. */
+    private final BigInteger G = new BigInteger("43");
 
-    /**Longueur minimale et maximale d'une clé de chiffrement*/
-    private static final int LONGUEUR_CLE_MINIMUM = 40 ;
-    private static final int LONGUEUR_CLE_MAXIMUM = 60 ;
+    /** Modulo public pour le calcul de Diffie-Hellman, entier premier. */
+    private final BigInteger P = new BigInteger("27057181654137254867746283675268503801533112402711400619423975836717891477887419452579007515407107123751154604926619703236915966879142662310030359869325517827347770143352644079648091599154051855898441334648289811872951093197765275656709374685175387690147596009467314653079993138381556881685926676054564328977382738775701628006076004991834230449286333791868911835560143728719315932752389722258899053865173290869485796256656347807840959792904566617052960880677168930065771958327163216083097862048053464721014791115411212209325601837732230066421384139444625453340760096453351283393101656879623230905119916854857437704469");
 
-    /**Alphabet personnalisé pouvant etre chiffré*/
-    public static String CUSTOM_ALPHABET = "abcdefghijklmnopqrstuvwxyzABCDEFGH"
+    /** Limite minimal pour la génération de l'exposant Diffie-Hellman. */
+    private final BigInteger EXPOSANT_MINIMUM = new BigInteger("16158503035655503650357438344334975980222051334857742016065172713762327569433945446598600705761456731844358980460949009747059779575245460547544076193224141560315438683650498045875098875194826053398028819192033784138396109321309878080919047169238085235290822926018152521443787945770532904303776199561965192760957166694834171210342487393282284747428088017663161029038902829665513096354230157075129296432088558362971801859230928678799175576150822952201848806616643615613562842355410104862578550863465661734839271290328348967522998634176499319107762583194718667771801067716614802322659239302476074096777926805529798115328");
+
+    /** Limite maximale pour la génération de l'exposant Diffie-Hellman. */
+    private final BigInteger EXPOSANT_MAXIMUM = new BigInteger("32317006071311007300714876688669951960444102669715484032130345427524655138867890893197201411522913463688717960921898019494119559150490921095088152386448283120630877367300996091750197750389652106796057638384067568276792218642619756161838094338476170470581645852036305042887575891541065808607552399123930385521914333389668342420684974786564569494856176035326322058077805659331026192708460314150258592864177116725943603718461857357598351152301645904403697613233287231227125684710820209725157101726931323469678542580656697935045997268352998638215525166389437335543602135433229604645318478604952148193555853611059596230655");
+
+    /** Alphabet personnalisé utilisé pour le chiffrement et le déchiffrement de Vigenère. */
+    private static final String ALPHABET_PERSONNALISE = "abcdefghijklmnopqrstuvwxyzABCDEFGH"
             + "IJKLMNOPQRSTUVWXYZ&~\"#'({[-|`_\\^@)]}/*.!?,;:<>1234567890$% +=\n";
 
-    /**Mapping des caractères de l'alphabet vers des entiers*/
-    public static final HashMap<Character, Integer> ALPHABET_TO_INT
-            = new HashMap<>();
+    /** Chemin du fichier à crypter ou décrypter. */
+    private String cheminFichier;
 
-    /**Mapping des entiers vers des caractères de l'alphabet*/
-    public static final HashMap<Integer, Character> INT_TO_ALPHABET
-            = new HashMap<>();
+    /** Clé secrète générée pour le chiffrement Vigenère. */
+    private String cleVigenere;
 
+    /** Clé partagée calculée via Diffie-Hellman. */
+    private BigInteger clePartager;
 
-    /**Paramètres pour l'algorithme de Diffie-Hellman*/
-    public static final int P = 8291;
-    public static final int G = 4148;
-    private static final int PUISSANCE_MINI = 5000 ;
-    private static final int PUISSANCE_MAXI = 9999 ;
+    /** Clé publique générée pour le calcul de Diffie-Hellman. */
+    private BigInteger clePublique;
 
-    /**Valeur partagée dans l'algorithme de Diffie-Hellman*/
-    private static int gab = 0;
-
-    /**Initialisation des mappings entre caractères et entiers*/
-    static {
-
-        for (int i = 0; i < CUSTOM_ALPHABET.length(); i++) {
-            char c = CUSTOM_ALPHABET.charAt(i);
-            ALPHABET_TO_INT.put(c, i);
-            INT_TO_ALPHABET.put(i, c);
-        }
-    }
-    /**Nombre de lettres dans l'alphabet personnalisé*/
-    final static int NOMBRE_LETTRE_ALPHABET = CUSTOM_ALPHABET.length();
-
-
+    /** Exposant générer pour le calcul de Diffie-Hellman */
+    private BigInteger exposantChoisit;
 
     /**
-     * Méthode de génération de clé
-     * @return une cle de longueur comprise entre
-     * LONGUEUR_CLE_MINIMUM et LONGUEUR_CLE_MAXIMUM
-     * et comprenant uniquement des caractères de INT_TO_ALPHABET
-     */
-    public static String generationCle() {
-        int longueurCle = (int)(Math.random()*
-                (LONGUEUR_CLE_MAXIMUM + 1 - LONGUEUR_CLE_MINIMUM)
-                + LONGUEUR_CLE_MINIMUM);
-        StringBuilder cle = new StringBuilder();
-        for (int i = 0 ; i < longueurCle ; i++) {
-            char ajout = INT_TO_ALPHABET.get(
-                    (int)(Math.random()*NOMBRE_LETTRE_ALPHABET));
-
-            cle.append(ajout);
-        }
-        return cle.toString();
-    }
-
-
-    /**
-     * Chiffre un message donné en utilisant une clé fournie.
+     * Constructeur principal qui initialise le chemin du fichier et génère une clé publique Diffie-Hellman.
      *
-     * @param message Le message à chiffrer.
-     * @param cle     La clé de chiffrement.
-     * @return Le message chiffré.
+     * @param cheminFichier chemin du fichier à crypter ou décrypter.
      */
-    public static String chiffrement(String message, String cle) {
-        StringBuilder aCrypter = new StringBuilder();
-        for (int i = 0; i < message.length(); i++) {
-            char currentChar = message.charAt(i);
-            Integer messageI = ALPHABET_TO_INT.get(currentChar);
+    public Chiffrage(String cheminFichier) {
+        this.cheminFichier = cheminFichier;
+        exposantChoisit = genererExposant();
+        this.clePublique = exponentiationModulaire(G, exposantChoisit, P);
+    }
 
-            if (messageI == null) {
-                // Ignorer les caractères qui ne sont pas dans l'alphabet
-                aCrypter.append(currentChar);
-                continue; // Passe à la prochaine itération
+    /**
+     * Constructeur sans chemin de fichier.
+     * Génère une clé publique Diffie-Hellman.
+     */
+    public Chiffrage() {
+        exposantChoisit = genererExposant();
+        this.clePublique = exponentiationModulaire(G, exposantChoisit, P);
+    }
+
+    /**
+     * Chiffre le fichier spécifié en utilisant le chiffrement de Vigenère.
+     *
+     * <p>
+     * Le fichier chiffré sera enregistré avec le même nom que le fichier original,
+     * suivi du suffixe "-c.csv".
+     * </p>
+     *
+     * @return le chemin du fichier chiffré.
+     * @throws RuntimeException si une erreur d'entrée/sortie survient.
+     */
+    public String chiffrer() throws IOException {
+        if (cleVigenere == null) {
+            throw new NullPointerException("La clé de Vigenère doit d'abord être calculée.");
+        }
+        try {
+            // Lecture du fichier à chiffrer
+            String cheminFichierChiffrer = cheminFichier.replace(".csv", "-c.csv");
+            StringBuilder contenu = new StringBuilder();
+            try (BufferedReader lecteur = new BufferedReader(new FileReader(cheminFichier))) {
+                String ligne;
+                while ((ligne = lecteur.readLine()) != null) {
+                    contenu.append(ligne).append("\n");
+                }
+            }
+            String contenuFichier = contenu.toString();
+
+            // Chiffrage du fichier
+            try (BufferedWriter writer = new BufferedWriter(new FileWriter(cheminFichierChiffrer))) {
+                StringBuilder textChiffer = new StringBuilder();
+                int k = 0;
+                for (int i = 0; i < contenuFichier.length(); i++) {
+                    int indexCaractereTexte = ALPHABET_PERSONNALISE.indexOf(contenuFichier.charAt(i));
+                    int indexCaractereCle = ALPHABET_PERSONNALISE.indexOf(cleVigenere.charAt(k));
+                    if (indexCaractereTexte == -1) {
+                        textChiffer.append(contenuFichier.charAt(i));
+                    } else {
+                        if (k == cleVigenere.length() - 1) {
+                            k = 0;
+                        } else {
+                            k++;
+                        }
+                        int valeurTotal = indexCaractereTexte + indexCaractereCle;
+                        textChiffer.append(ALPHABET_PERSONNALISE.charAt(valeurTotal % ALPHABET_PERSONNALISE.length()));
+                    }
+                }
+                writer.write(textChiffer.toString());
             }
 
-            // Valeur du caractère de la clé
-            int cleI = ALPHABET_TO_INT.get(cle.charAt(i % cle.length()));
-
-            char crypter = INT_TO_ALPHABET.get((messageI + cleI) % NOMBRE_LETTRE_ALPHABET);
-            aCrypter.append(crypter);
+            return cheminFichierChiffrer;
+        } catch (IOException e) {
+            throw new IOException("Erreur lors du chiffrement : " + e.getMessage(), e);
         }
-        return aCrypter.toString();
     }
 
-
     /**
-     * Déchiffre un message donné en utilisant une clé fournie.
+     * Déchiffre le fichier spécifié en utilisant le chiffrement de Vigenère.
      *
-     * @param message Le message à déchiffrer.
-     * @param cle     La clé de déchiffrement.
-     * @return Le message déchiffré.
+     * <p>
+     * Le fichier déchiffré sera enregistré avec le même nom que le fichier chiffré,
+     * suivi du suffixe "-dc.csv".
+     * </p>
+     *
+     * @return le chemin du fichier déchiffré.
+     * @throws RuntimeException si une erreur d'entrée/sortie survient.
      */
-    public static String dechiffrement(String message, String cle) {
-        StringBuilder aCrypter = new StringBuilder();
-        for (int i = 0; i < message.length(); i++) {
-            char currentChar = message.charAt(i);
-            Integer messageI = ALPHABET_TO_INT.get(currentChar);
+    public String dechiffrer() throws IOException {
+        if (cleVigenere == null) {
+            throw new NullPointerException("La clé de Vigenère doit d'abord être calculée.");
+        }
+        try {
+            //Lecture du fichier à déchiffrer
+            String cheminFichierDechiffrer = cheminFichier.replace("-c.csv", "-dc.csv");
+            StringBuilder contenu = new StringBuilder();
+            try (BufferedReader lecteur = new BufferedReader(new FileReader(cheminFichier))) {
+                String ligne;
+                while ((ligne = lecteur.readLine()) != null) {
+                    contenu.append(ligne).append("\n");
+                }
+            }
+            String contenuFichier = contenu.toString();
 
-            if (messageI == null) {
-                // Ignorer les caractères qui ne sont pas dans l'alphabet
-                aCrypter.append(currentChar);
-                continue; // Passe à la prochaine itération
+            //Déchiffrage du fichier
+            try (BufferedWriter writer = new BufferedWriter(new FileWriter(cheminFichierDechiffrer))) {
+                StringBuilder textDechiffrer = new StringBuilder();
+                int k = 0;
+                for (int i = 0; i < contenuFichier.length() - 1; i++) {
+                    int indexCaractereTexte = ALPHABET_PERSONNALISE.indexOf(contenuFichier.charAt(i));
+                    int indexCaractereCle = ALPHABET_PERSONNALISE.indexOf(cleVigenere.charAt(k));
+
+                    if (indexCaractereTexte == -1) {
+                        textDechiffrer.append(contenuFichier.charAt(i));
+                    } else {
+                        if (k == cleVigenere.length() - 1) {
+                            k = 0;
+                        } else {
+                            k++;
+                        }
+
+                        int valeurTotal = (indexCaractereTexte - indexCaractereCle) % ALPHABET_PERSONNALISE.length();
+                        if (valeurTotal < 0) {
+                            valeurTotal += ALPHABET_PERSONNALISE.length();
+                        }
+
+                        textDechiffrer.append(ALPHABET_PERSONNALISE.charAt(valeurTotal));
+                    }
+                }
+                writer.write(textDechiffrer.toString());
             }
 
-            // Valeur du caractère de la clé
-            int cleI = ALPHABET_TO_INT.get(cle.charAt(i % cle.length()));
-
-            int positionReelle = (messageI - cleI) % NOMBRE_LETTRE_ALPHABET;
-            positionReelle = positionReelle < 0 ? positionReelle + NOMBRE_LETTRE_ALPHABET : positionReelle;
-            char crypter = INT_TO_ALPHABET.get(positionReelle);
-            aCrypter.append(crypter);
+            return cheminFichierDechiffrer;
+        } catch (IOException e) {
+            throw new IOException("Erreur lors du chiffrement : " + e.getMessage(), e);
         }
-        return aCrypter.toString();
+    }
+
+    /**
+     * Génère une puissance aléatoire utilisée comme exposant pour Diffie-Hellman.
+     *
+     * @return une puissance aléatoire comprise entre {@link #EXPOSANT_MINIMUM} et {@link #EXPOSANT_MAXIMUM}.
+     */
+    private BigInteger genererExposant() {
+        return new BigInteger(EXPOSANT_MAXIMUM.bitLength(), new SecureRandom())
+                .mod(EXPOSANT_MAXIMUM.subtract(EXPOSANT_MINIMUM)).add(EXPOSANT_MINIMUM);
+    }
+
+    /**
+     * Effectue une exponentiation modulaire.
+     *
+     * @param base la base à élever.
+     * @param exponent l'exposant.
+     * @param modulo le modulo.
+     * @return le résultat de (base^exponent) mod modulo.
+     */
+    private BigInteger exponentiationModulaire(BigInteger base, BigInteger exponent, BigInteger modulo) {
+        if (modulo.equals(BigInteger.ONE)) {
+            return BigInteger.ZERO; // Dans ce cas, tout nombre modulo 1 est 0
+        }
+        return base.modPow(exponent, modulo);
     }
 
 
     /**
-     * Calcule le résultat de (a^exp) % modulo.
+     * Retourne la clé privée de Diffie-Hellman.
      *
-     * @param a      La base.
-     * @param exp    L'exposant.
-     * @param modulo Le modulo.
-     * @return Le résultat de (a^exp) % modulo.
+     * @return la clé privée.
      */
-    public static int exposantModulo(int a, int exp, int modulo) {
-        int result = 1;
-        a = a % modulo;
+    public BigInteger getClePublique() {
+        return clePublique;
+    }
 
-        while (exp > 0) {
-            if (exp % 2 == 1) {
-                result = (result * a) % modulo;
+    /**
+     * Calcule la clé partagée à partir de la clé publique distante.
+     *
+     * @param cle clé publique de l'autre participant au protocole Diffie-Hellman.
+     */
+    public void calculeClePartager(BigInteger cle) {
+        if(cle != null) {
+            this.clePartager = exponentiationModulaire(cle, exposantChoisit, P);
+        } else {
+            throw new IllegalArgumentException("Le gros entier ne peut être nul.");
+        }
+    }
+
+    /**
+     * Génère une clé de chiffrement Vigenère à partir de la clé partagée.
+     */
+    public void genererCleVigenere() {
+        if(clePartager != null) {
+            StringBuilder secretKey = new StringBuilder();
+            String gabString = clePartager.toString();
+            for (int i = 0; i < gabString.length(); i++) {
+                int index = Character.getNumericValue(gabString.charAt(i));
+                secretKey.append(ALPHABET_PERSONNALISE.charAt(index));
             }
-            exp = exp / 2;
-            a = (a * a) % modulo;
+            this.cleVigenere = secretKey.toString();
+        } else {
+            throw new NullPointerException("La clé partagée doit d'abord être calculée.");
         }
-
-        return result;
     }
 
     /**
-     * @return Une puissance aléatoire  dans la plage spécifiée
-     * [PUISSANCE_MINI, PUISSANCE_MAXI].
-     */
-    public static int genererPuissance() {
-        return (int)(Math.random()*
-                (PUISSANCE_MAXI + 1 - PUISSANCE_MINI)+PUISSANCE_MINI);
-
-    }
-
-    /**
-     * Génère une clé secrète basée sur l'algorithme
-     * d'échange de clés Diffie-Hellman.
+     * Modifie le chemin du fichier à crypter ou décrypter.
      *
-     * @return La clé secrète générée.
+     * @param cheminFichier nouveau chemin du fichier.
      */
-    public static String cleDepuisDiffie() {
-        String gabString = "" + gab;
-        int actuelle ;
-        StringBuilder cle = new StringBuilder();
-        for (int  i  = 0 ; i < gabString.length() ; i++ ) {
-            for (int j = 0 ; j < gabString.length() ; j++) {
-                actuelle = Integer.parseInt("" + gabString.charAt(i)
-                        + gabString.charAt(j));
-                actuelle = actuelle%NOMBRE_LETTRE_ALPHABET;
-                cle.append(INT_TO_ALPHABET.get(actuelle));
-            }
-        }
-        return cle.toString();
+    public void setCheminFichier(String cheminFichier) {
+        this.cheminFichier = cheminFichier;
     }
 
     /**
-     * Définit la valeur de la clé partagée (gab)
-     * utilisée dans l'échange de clés Diffie-Hellman.
+     * Retourne la cle partagée de Diffie-Hellman
      *
-     * @param nouveau La nouvelle valeur de la clé partagée.
+     * @return la clé partagée
      */
-    public static void setGab(int nouveau) {
-        gab = nouveau;
-    }
-
-    /**
-     * Obtient la valeur de la clé partagée (gab)
-     * utilisée dans l'échange de clés Diffie-Hellman.
-     *
-     * @return La valeur de la clé partagée.
-     */
-    public static int getGab() {
-        return gab;
+    public BigInteger getClePartager() {
+        return clePartager;
     }
 }

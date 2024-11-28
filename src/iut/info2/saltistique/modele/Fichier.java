@@ -2,9 +2,14 @@
  * Fichier.java          21/10/2024
  * IUT DE RODEZ            Pas de copyrights
  */
+
 package iut.info2.saltistique.modele;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileReader;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.FileNotFoundException;
 
 /**
  * La classe Fichier gère les opérations de lecture
@@ -15,7 +20,7 @@ import java.io.*;
  * La classe gère également les erreurs courantes liées à l'ouverture,
  * la lecture et la fermeture des fichiers.
  *
- * @author Jules Vialas, Néo Bécogné, Dorian Adams, Hugo Robles, Tom Gutierrez
+ * @author Hugo Robles, Tom Gutierrez
  */
 public class Fichier {
 
@@ -197,5 +202,18 @@ public class Fichier {
      */
     public File getFichierExploite() {
         return fichierExploite;
+    }
+
+    /**
+     * Ferme les BufferedReader et FileReader.
+     */
+    public void fermerFichier() {
+        try {
+            this.tamponFichier.close();
+            this.lecteurFichier.close();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
     }
 }

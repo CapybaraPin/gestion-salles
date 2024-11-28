@@ -40,7 +40,7 @@ public class ControleurAccueil extends Controleur {
     public Text descriptionNotification;
 
     /**
-     * Initialise différents éléments de la vue d'accueil.
+     * Initialise différents éléments de la vue.
      */
     @FXML
     void initialize() {
@@ -81,8 +81,8 @@ public class ControleurAccueil extends Controleur {
         List<File> files = event.getDragboard().getFiles(); // TODO : trouver un autre moyen que List
         String[] chemins;
         chemins = new String[files.size()];
-        for (Object file : files) {
-            chemins[files.indexOf(file)] = ((File) file).getAbsolutePath();
+        for (File file : files) {
+            chemins[files.indexOf(file)] = file.getAbsolutePath();
         }
         importerDonnees(chemins);
     }

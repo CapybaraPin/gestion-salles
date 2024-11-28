@@ -15,74 +15,55 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
-
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
+import java.net.InetAddress;
+import java.net.Socket;
 
 /**
  * Contrôleur général, permet d'importer toutes
  * les méthodes généralistes qui pourraient se répéter dans les autres contrôleurs.
  *
- * @author Jules VIALAS, Dorian ADAMS 
+ * @author Jules VIALAS, Dorian ADAMS
  */
 public class Controleur {
 
-    /**
-     * Cadre de la notification
-     */
+    /** Cadre de la notification */
     @FXML
     public VBox cadreNotification;
 
-    /**
-     * Bouton de confirmation de la notification
-     */
+    /** Bouton de confirmation de la notification */
     @FXML
     public Button boutonNotification;
 
-    /**
-     * Texte du titre de la notification
-     */
+    /** Texte du titre de la notification */
     @FXML
     public Text titreNotification;
 
-    /**
-     * Texte de la description de la notification
-     */
+    /** Texte de la description de la notification */
     @FXML
     public Text descriptionNotification;
 
-    /**
-     * Position de la souris en abscisse
-     */
+    /** Position de la souris en abscisse */
     double xOffset = 0;
 
-    /**
-     * Position de la souris en ordonné
-     */
+    /** Position de la souris en ordonné */
     double yOffset = 0;
 
-    /**
-     * Bouton de fermeture de la fenêtre
-     */
+    /** Bouton de fermeture de la fenêtre */
     @FXML
     private Button btnFermer;
 
-    /**
-     * Conteneur pour le menu de navigation.
-     */
+    /** Conteneur pour le menu de navigation. */
     @FXML
     private VBox conteneurMenu;
 
-    /**
-     * Couche utilisée pour fermer le menu de navigation.
-     */
+    /** Couche utilisée pour fermer le menu de navigation. */
     @FXML
     private Pane layerMenu;
 
-    /**
-     * Icône de fermeture de la fenêtre
-     */
+    /** Icône de fermeture de la fenêtre */
     @FXML
     private Pane iconeFermetureFenetre;
 
@@ -107,7 +88,6 @@ public class Controleur {
         Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
         stage.setIconified(true);
     }
-
 
     /**
      * Permet de vérifier les coordonnées de clique d'une souris
@@ -172,6 +152,7 @@ public class Controleur {
      * @throws UnsupportedOperationException si Desktop n'est pas supportée sur le système ou si l'action d'ouverture
      *                                       de fichier n'est pas supportée.
      */
+    @FXML
     public void clickAide() {
         try {
             File pdfFile = new File("src/ressources/noticeUtilisation.pdf");
@@ -229,6 +210,7 @@ public class Controleur {
     @FXML
     void handlerPartager() {
         Saltistique.showPopUp(Scenes.EXPORTER_RESEAU);
+        menuClick();
     }
 
     /**
@@ -248,5 +230,29 @@ public class Controleur {
             cadreNotification.setVisible(false);
             cadreNotification.setMouseTransparent(true);
         });
+    }
+
+    /**
+     * Méthode permettant la fermeture de la fenêtre de l'application en cours d'exécution
+     * Cette méthode est également appelée lors d'un évènement de clic
+     */
+    @FXML
+    public void adresseIP() {
+        try {
+            Socket socket = new Socket("8.8.8.8", 443);
+            InetAddress localIP = socket.getLocalAddress();
+            new Notification("Votre adresse IP ", "Votre adresse IP est "+localIP.getHostAddress());
+            socket.close();
+
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+
+    }
+
+    @FXML
+    void clickGenererPDF() {
+        //TODO
     }
 }

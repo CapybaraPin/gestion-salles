@@ -8,8 +8,11 @@ package iut.info2.saltistique.modele.donnees;
 import iut.info2.saltistique.modele.*;
 
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.ArrayList;
+import java.io.Serializable;
+import java.util.List;
 
 /**
  * Classe responsable de la gestion des données pour les salles, activités, utilisateurs et réservations.
@@ -19,9 +22,9 @@ import java.util.ArrayList;
  *
  * <p>Cette classe agit comme un conteneur central pour les données manipulées dans l'application.</p>
  *
- * @author Hugo ROBLES, Tom GUTIERREZ
+ * @author Tom GUTIERREZ, Hugo ROBLES
  */
-public class GestionDonnees {
+public class GestionDonnees implements Serializable {
 
     /**
      * HashMap contenant les salles, activités, utilisateurs,
@@ -39,7 +42,10 @@ public class GestionDonnees {
     private ArrayList<String[]> lignesIncorrectesUtilisateurs;
 
     /** Tableau des fichiers importés, utilisé pour traiter les données. */
-    private Fichier[] fichiers;
+    private transient Fichier[] fichiers;
+
+    /** Chemin des fichiers importés */
+    private String[] cheminFichiers;
 
     /**
      * Constructeur de la classe GestionDonnees.
@@ -73,6 +79,11 @@ public class GestionDonnees {
             lignesIncorrectesReservations.clear();
             lignesIncorrectesSalles.clear();
             lignesIncorrectesUtilisateurs.clear();
+
+            for (Fichier f : fichiers) {
+                f.fermerFichier();
+            }
+            fichiers = null;
         } catch (Exception e) {
             new Notification("Impossible de vider les données", "Erreur lors de la suppression des données.");
         }
@@ -90,10 +101,19 @@ public class GestionDonnees {
     /**
      * Retourne les fichiers actuellement associés à cette instance.
      *
+     * Si les fichiers n'ont pas été initialisés, ils sont créés à partir des chemins spécifiés.
+     *
      * @return Tableau de fichiers importés.
      */
-    public Fichier[] getFichiers() {
-        return this.fichiers;
+    public Fichier[] getFichiers() throws IOException {
+        if (fichiers == null) {
+            fichiers = new Fichier[4];
+            for (int i = 0; i < 4; i++) {
+                fichiers[i] = new Fichier(cheminFichiers[i]);
+            }
+        }
+
+        return fichiers;
     }
 
     /**
@@ -166,5 +186,9 @@ public class GestionDonnees {
      */
     public ArrayList<String[]> getLignesIncorrectesUtilisateurs() {
         return this.lignesIncorrectesUtilisateurs;
+    }
+
+    public void setCheminFichiers(String[] cheminFichiers) {
+        this.cheminFichiers = cheminFichiers;
     }
 }

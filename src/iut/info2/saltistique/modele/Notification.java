@@ -1,6 +1,12 @@
+/*
+ * Notification.java              21/10/2024
+ * IUT de Rodez, pas de copyrights
+ */
+
 package iut.info2.saltistique.modele;
 
 import iut.info2.saltistique.Saltistique;
+import iut.info2.saltistique.controleur.Controleur;
 import iut.info2.saltistique.controleur.ControleurAccueil;
 import iut.info2.saltistique.controleur.ControleurConsulterDonnees;
 import iut.info2.saltistique.controleur.ControleurDonneesIncorrectes;
@@ -9,19 +15,27 @@ import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.util.Duration;
 
-// TODO : rendre la classe Notification générique pour éviter la duplication de code
-// TODO : faire en sorte de séparer le titre et la description en fonction de l'exception
-//        exemple : "Erreur de connexion : Impossible de se connecter au serveur."
-//                : {"Erreur de connexion", "Impossible de se connecter au serveur."}
+/**
+ * <b>Notification</b> est une classe qui permet d'afficher des notifications à l'utilisateur.
+ * <p>
+ *     Les notifications sont affichées en haut de l'interface utilisateur et disparaissent automatiquement
+ *     après 7 secondes.
+ *     <br>
+ *     Les notifications sont composées d'un titre et d'une description.
+ *     <br>
+ *     <br>
+ * </p>
+ */
 public class Notification {
 
-    // Champs d'instance pour les informations de notification
+    /** Le titre de la notification */
     private String titre;
+
+    /** La description de la notification */
     private String description;
 
-    ControleurAccueil controleurAccueil = Saltistique.getController(Scenes.ACCUEIL);
-    ControleurConsulterDonnees controleurConsulterDonnees = Saltistique.getController(Scenes.CONSULTER_DONNEES);
-    ControleurDonneesIncorrectes controleurDonneesIncorrectes = Saltistique.getController(Scenes.CONSULTER_DONNEES_INCORRECTES);
+    // Récupère le controleur actuel
+    Controleur controleur = Saltistique.getController(Saltistique.getPrimaryStage().getScene());
 
     /**
      * Constructeur de Notification
@@ -37,67 +51,34 @@ public class Notification {
     }
 
     /**
-     * Affiche la notification dans l'interface pendant 8 secondes avec un effet de fondu à la fermeture.
+     * Affiche la notification dans l'interface pendant 7 secondes avec un effet de fondu à la fermeture.
      */
     private void afficher() {
 
-        for(Scenes scene : Saltistique.scenes.keySet()) {
-            if (Saltistique.getPrimaryStage().getScene() == Saltistique.scenes.get(scene)) {
-                switch (scene) {
-                    case ACCUEIL:
-                        controleurAccueil.cadreNotification.setMouseTransparent(false);
-                        controleurAccueil.titreNotification.setText(titre);
-                        controleurAccueil.descriptionNotification.setText(description);
-                        controleurAccueil.cadreNotification.setVisible(true);
-                        break;
-                    case CONSULTER_DONNEES:
-                        controleurConsulterDonnees.cadreNotification.setMouseTransparent(false);
-                        controleurConsulterDonnees.titreNotification.setText(titre);
-                        controleurConsulterDonnees.descriptionNotification.setText(description);
-                        controleurConsulterDonnees.cadreNotification.setVisible(true);
-                        break;
-                    case CONSULTER_DONNEES_INCORRECTES:
-                        controleurDonneesIncorrectes.cadreNotification.setMouseTransparent(false);
-                        controleurDonneesIncorrectes.titreNotification.setText(titre);
-                        controleurDonneesIncorrectes.descriptionNotification.setText(description);
-                        controleurDonneesIncorrectes.cadreNotification.setVisible(true);
-                        break;
-                }
 
-                Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(5), event -> {
+        controleur.cadreNotification.setMouseTransparent(false);
+        controleur.titreNotification.setText(titre);
+        controleur.descriptionNotification.setText(description);
+        controleur.cadreNotification.setVisible(true);
 
-                    // Applique un effet de fondu de fermeture
-                    FadeTransition fadeOut = new FadeTransition(Duration.seconds(0.5));
-                    fadeOut.setFromValue(1.0);
-                    fadeOut.setToValue(0.0);
+        Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(7), event -> {
 
-                    if (scene == Scenes.ACCUEIL) {
-                        fadeOut.setNode(controleurAccueil.cadreNotification);
-                    } else if (scene == Scenes.CONSULTER_DONNEES) {
-                        fadeOut.setNode(controleurConsulterDonnees.cadreNotification);
-                    } else if (scene == Scenes.CONSULTER_DONNEES_INCORRECTES) {
-                        fadeOut.setNode(controleurDonneesIncorrectes.cadreNotification);
-                    }
+            // Applique un effet de fondu de fermeture
+            FadeTransition fadeOut = new FadeTransition(Duration.seconds(0.5));
+            fadeOut.setFromValue(1.0);
+            fadeOut.setToValue(0.0);
 
-                    fadeOut.setOnFinished(e -> {
-                        if (scene == Scenes.ACCUEIL) {
-                            controleurAccueil.cadreNotification.setVisible(false);
-                            controleurAccueil.cadreNotification.setOpacity(1.0);
-                        } else if (scene == Scenes.CONSULTER_DONNEES) {
-                            controleurConsulterDonnees.cadreNotification.setVisible(false);
-                            controleurConsulterDonnees.cadreNotification.setOpacity(1.0);
-                        } else if (scene == Scenes.CONSULTER_DONNEES_INCORRECTES) {
-                            controleurDonneesIncorrectes.cadreNotification.setVisible(false);
-                            controleurDonneesIncorrectes.cadreNotification.setOpacity(1.0);
-                        }
-                    });
+            fadeOut.setNode(controleur.cadreNotification);
 
-                    fadeOut.play();
-                }));
+            fadeOut.setOnFinished(e -> {
+                controleur.cadreNotification.setVisible(false);
+                controleur.cadreNotification.setOpacity(1.0);
+            });
 
-                timeline.setCycleCount(1);
-                timeline.play();
-            }
-        }
+            fadeOut.play();
+        }));
+
+        timeline.setCycleCount(1);
+        timeline.play();
     }
 }

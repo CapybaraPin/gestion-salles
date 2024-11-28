@@ -20,8 +20,8 @@
       prefWidth="1366.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
       fx:controller="iut.info2.saltistique.controleur.ControleurAccueil">
    <stylesheets>
-      <URL value="@application.css"/>
-      <URL value="@style.css"/>
+      <URL value="@../../../../ressources/styles/application.css"/>
+      <URL value="@../../../../ressources/styles/style.css"/>
    </stylesheets>
    <styleClass>
       <String fx:value="background-radiant"/>
@@ -45,7 +45,7 @@
             <HBox.margin>
                <Insets left="10.0"/>
             </HBox.margin>
-            <Image url="@logo.png"/>
+            <Image url="@../../../../ressources/icones/logo.png"/>
          </ImageView>
          <Text strokeType="OUTSIDE" strokeWidth="0.0" styleClass="typo-default" text="Gestion de salles ">
             <font>
@@ -56,7 +56,7 @@
             </HBox.margin>
          </Text>
          <ImageView fitHeight="12.0" fitWidth="12.0" pickOnBounds="true" preserveRatio="true">
-            <Image url="@../../../../ressources/icons/arrow.png"/>
+            <Image url="@../../../../ressources/icones/arrow.png"/>
          </ImageView>
          <Text strokeType="OUTSIDE" strokeWidth="0.0" styleClass="typo-default" text="Importation des données">
             <font>
@@ -195,7 +195,7 @@
                      <HBox.margin>
                         <Insets right="5.0"/>
                      </HBox.margin>
-                     <Image url="@home.png"/>
+                     <Image url="@../../../../ressources/icones/home.png"/>
                   </ImageView>
                   <Text strokeType="OUTSIDE" strokeWidth="0.0" styleClass="typo-default"
                         text="Menu principal">
@@ -222,9 +222,21 @@
                      <HBox.margin>
                         <Insets right="5.0"/>
                      </HBox.margin>
-                     <Image url="@notice.png"/>
+                     <Image url="@../../../../ressources/icones/notice.png"/>
                   </ImageView>
                   <Text strokeType="OUTSIDE" strokeWidth="0.0" styleClass="typo-default" text="Aide"/>
+               </HBox>
+               <HBox alignment="CENTER_LEFT" onMouseClicked="#adresseIP" prefHeight="6.0" prefWidth="268.0" styleClass="btn-menu">
+                  <padding>
+                     <Insets left="10.0" right="10.0" />
+                  </padding>
+                  <ImageView fitHeight="20.0" fitWidth="40.0" opacity="0.0" pickOnBounds="true" preserveRatio="true" scaleX="0.8" scaleY="0.8">
+                     <HBox.margin>
+                        <Insets right="5.0" />
+                     </HBox.margin>
+                     <Image url="@../../../../ressources/icones/quit.png" />
+                  </ImageView>
+                  <Text strokeType="OUTSIDE" strokeWidth="0.0" styleClass="typo-default" text="Adresse IP " />
                </HBox>
                <Separator prefWidth="200.0" styleClass="menu-sepator">
                   <VBox.margin>
@@ -265,7 +277,7 @@
                   <HBox.margin>
                      <Insets left="10.0" top="10.0"/>
                   </HBox.margin>
-                  <Image url="@info.png"/>
+                  <Image url="@../../../../ressources/icones/info.png"/>
                </ImageView>
                <Text strokeType="OUTSIDE" strokeWidth="0.0"/>
                <VBox maxWidth="5.0" minWidth="310.0" prefHeight="200.0" prefWidth="5.0">

@@ -47,6 +47,14 @@ public class ControleurImporterReseau extends Controleur {
     private ProgressBar progressBar;
 
     /**
+     * Initialise différents éléments de la vue.
+     */
+    @FXML
+    void initialize() {
+        setHoverEffect();
+    }
+
+    /**
      * Gestionnaire d'événement déclenché lors du clic sur le bouton d'importation.
      * Lance l'importation des données depuis le réseau en utilisant les informations fournies
      * (adresse IP et port).
@@ -77,6 +85,7 @@ public class ControleurImporterReseau extends Controleur {
     @FXML
     public void finInmportationReseau(String dossier) {
         javafx.application.Platform.runLater(() -> {
+            progressVbox.setVisible(false);
             fermerFenetre();
 
             ControleurConsulterDonnees controleur = Saltistique.getController(Scenes.CONSULTER_DONNEES);
@@ -87,7 +96,6 @@ public class ControleurImporterReseau extends Controleur {
             if (fichiersExistants != null && fichiersExistants.length > 0) {
                 String[] cheminFichiers = new String[4];
                 for (int i = 0; i < 4; i++) {
-                    System.out.println("Fichier  : " + fichiersExistants[i].getAbsolutePath());
                     cheminFichiers[i] = fichiersExistants[i].getAbsolutePath();
                 }
                 try {

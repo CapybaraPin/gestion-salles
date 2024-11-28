@@ -4,6 +4,7 @@
  */
 package iut.info2.saltistique;
 
+import iut.info2.saltistique.modele.Notification;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -12,9 +13,9 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
+import java.io.*;
 import java.util.EnumMap;
 import java.util.HashMap;
-import java.io.IOException;
 
 import iut.info2.saltistique.modele.Scenes;
 import iut.info2.saltistique.modele.donnees.GestionDonnees;
@@ -47,8 +48,11 @@ public class Saltistique extends Application {
     /** Un EnumMap qui stocke les scènes associées à chaque valeur de l'énumération {@link Scenes}. */
     public static EnumMap<Scenes, Scene> scenes = new EnumMap<>(Scenes.class);
 
-    /** Un HashMap qui stocke les contrôleurs associés aux scènes. */
-    private static HashMap<Scenes, Object> controllers = new HashMap<>();
+    /** Un HashMap qui stocke les contrôleurs associés aux champs de l'énumération {@link Scenes}. */
+    private static HashMap<Scenes, Object> controllersScenes = new HashMap<>();
+
+    /** Un HashMap qui stocke les contrôleurs associés aux scènes. {@link Scene} */
+    private static HashMap<Scene, Object> controllersScene = new HashMap<>();
 
     /** La fenêtre principale (ou scène principale) de l'application JavaFX. */
     private static Stage primaryStage;
@@ -57,6 +61,9 @@ public class Saltistique extends Application {
 
     /** Prend en charge le lien entre le controleur et le modèle */
     public static GestionDonnees gestionDonnees;
+
+    /** Chemin du fichier de sauvegarde */
+    private static final String CHEMIN_SAUVEGARDE = "src/ressources/gestionDonnees.ser";
 
     /**
      * Méthode de démarrage de l'application JavaFX.
@@ -69,14 +76,36 @@ public class Saltistique extends Application {
      */
     @Override
     public void start(Stage primaryStage) {
+        chargerGestionDonnees();
         Saltistique.primaryStage = primaryStage;
         // Disable title bar
         primaryStage.initStyle(StageStyle.UNDECORATED);
         primaryStage.setResizable(false);
         primaryStage.setTitle("Gestion de salles");
-        primaryStage.getIcons().add(new Image("/iut/info2/saltistique/vue/logo.png"));
+        primaryStage.getIcons().add(new Image("/ressources/icones/logo.png"));
         loadScenes();
-        changeScene(Scenes.ACCUEIL);
+
+        if (estInstanceVide()) {
+            changeScene(Scenes.ACCUEIL);
+        } else {
+            changeScene(Scenes.CONSULTER_DONNEES);
+            new Notification("Chargement des données", "Les données précédentes ont été chargées.");
+        }
+
+    }
+
+    public boolean estInstanceVide() {
+        boolean reservationsVide;
+        boolean sallesVide;
+        boolean utilisateursVide;
+        boolean activitesVide;
+
+        reservationsVide = gestionDonnees.getReservations().isEmpty();
+        sallesVide = gestionDonnees.getSalles().isEmpty();
+        utilisateursVide = gestionDonnees.getUtilisateurs().isEmpty();
+        activitesVide = gestionDonnees.getActivites().isEmpty();
+
+        return reservationsVide && sallesVide && utilisateursVide && activitesVide;
     }
 
     /**
@@ -84,7 +113,7 @@ public class Saltistique extends Application {
      */
     @Override
     public void stop(){
-        // TODO: Implement closing of popUps on main window close
+        sauvegarderGestionDonnees();
     }
 
     /**
@@ -100,8 +129,8 @@ public class Saltistique extends Application {
                 FXMLLoader loader = new FXMLLoader(getClass().getResource(sceneEnum.getChemin()));
                 Scene scene = new Scene(loader.load());
                 scenes.put(sceneEnum, scene);
-                controllers.put(sceneEnum, loader.getController()); // Store the controller
-
+                controllersScenes.put(sceneEnum, loader.getController()); // Store the controller
+                controllersScene.put(scene, loader.getController());
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -151,7 +180,16 @@ public class Saltistique extends Application {
      * @return le contrôleur associé à la scène
      */
     public static <T> T getController(Scenes sceneEnum) {
-        return (T) controllers.get(sceneEnum);
+        return (T) controllersScenes.get(sceneEnum);
+    }
+
+    /**
+     * Méthode pour obtenir le contrôleur d'une scène.
+     *
+     * @param scene la scène
+     */
+    public static <T> T getController(Scene scene) {
+        return (T) controllersScene.get(scene);
     }
 
     /**
@@ -163,9 +201,10 @@ public class Saltistique extends Application {
      * @param args les arguments de ligne de commande
      */
     public static void main(String[] args) {
-        gestionDonnees = new GestionDonnees();
         launch();
     }
+
+
 
     /**
      * Retourne la scène principale de l'application, qui sert de fenêtre principale.
@@ -174,5 +213,28 @@ public class Saltistique extends Application {
      */
     public static Stage getPrimaryStage() {
         return primaryStage;
+    }
+
+    /**
+     * Sauvegarde l'objet GestionDonnees dans un fichier.
+     */
+    private void sauvegarderGestionDonnees() {
+        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(CHEMIN_SAUVEGARDE))) {
+            oos.writeObject(gestionDonnees);
+        } catch (IOException e) {
+            System.err.println("Erreur lors de la sauvegarde de GestionDonnees : " + e.getMessage());
+        }
+    }
+
+    /**
+     * Charge l'objet GestionDonnees depuis un fichier, ou crée une nouvelle instance si le fichier n'existe pas.
+     */
+    private void chargerGestionDonnees() {
+        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(CHEMIN_SAUVEGARDE))) {
+            gestionDonnees = (GestionDonnees) ois.readObject();
+        } catch (IOException | ClassNotFoundException e) {
+            System.out.println("Aucun état précédent trouvé ou erreur lors du chargement. Nouvelle instance créée.");
+            gestionDonnees = new GestionDonnees(); // Instance par défaut
+        }
     }
 }
